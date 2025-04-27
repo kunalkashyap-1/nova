@@ -28,12 +28,12 @@
 
 	$effect(() => {
 		loadConversations();
-		loadConversation(chatId);
+		// loadConversation(chatId);
 	});
 
 	$effect(() => {
 		if (chatState.activeConversationId !== chatId) {
-			loadConversation(chatId);
+			// loadConversation(chatId);
 		}
 	});
 
@@ -50,6 +50,20 @@
 			chatContainerContext.set(chatContainer);
 		}
 	});
+
+    // Auto-scroll to bottom when new messages arrive or when streaming content updates
+    $effect(() => {
+        if (chatContainer && !userScrolledUp && chatState.messages.length > 0) {
+            setTimeout(() => {
+                if (chatContainer) {
+                    chatContainer.scrollTo({
+                        top: chatContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
+        }
+    });
 </script>
 
 <div class="mx-auto flex min-h-0 w-full flex-1 flex-col">

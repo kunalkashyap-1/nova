@@ -1,4 +1,10 @@
 from fastapi import APIRouter
+from pydantic import BaseModel, EmailStr
+
+class UserOut(BaseModel):
+    id: int
+    username: str
+    email: EmailStr
 
 router = APIRouter()
 

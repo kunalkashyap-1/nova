@@ -16,8 +16,38 @@
 		}`}
 	>
 		<p class="whitespace-pre-wrap">{message.content}</p>
-		<div class="mt-1 text-right text-xs text-gray-400">
-			{formatTime(message.timestamp)}
-		</div>
+		{#if message.role === 'assistant' && message.meta}
+			<div class="meta">
+				<span>Model: {message.meta?.model}</span>
+				<span>Time: {message.meta?.time ? Math.round(message.meta.time / 1e9) + 's' : ''}</span>
+			</div>
+		{/if}
 	</div>
 </div>
+
+<style>
+	.chat-message {
+		margin-bottom: 0.5rem;
+	}
+	.chat-message.user .bubble {
+		background: #222;
+		color: #fff;
+		align-self: flex-end;
+	}
+	.chat-message.assistant .bubble {
+		background: #f3f3f3;
+		color: #222;
+		align-self: flex-start;
+	}
+	.bubble {
+		border-radius: 1rem;
+		padding: 0.75rem 1.25rem;
+		max-width: 80%;
+		display: inline-block;
+	}
+	.meta {
+		font-size: 0.8em;
+		color: #888;
+		margin-top: 0.25em;
+	}
+</style>

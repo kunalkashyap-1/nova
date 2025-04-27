@@ -6,7 +6,7 @@ load_dotenv()
 
 
 class Settings:
-    DATABSE_URL = os.getenv("DATABASE_URL","127.0.0.1")
+    DATABASE_URL = os.getenv("DATABASE_URL","127.0.0.1")
     SECRET_KEY = os.getenv("SECRET_KEY","dkslaflknui")
     ALGORITHM = os.getenv("ALGORITHM","HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES",30)

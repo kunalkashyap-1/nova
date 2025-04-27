@@ -22,10 +22,10 @@
 	let autoFocused = false;
 
 	const modelOptions = [
-		{ value: 'llama', label: 'Llama' },
-		{ value: 'deepseek-v3', label: 'DeepSeek v3' },
-		{ value: 'deepseek-r1', label: 'DeepSeek r1' },
-		{ value: 'mistral', label: 'Mistral' }
+		{ value: 'llama3.2:1b', label: 'Llama' },
+		{ value: 'gemma2:2b', label: 'Gemma' },
+		{ value: 'deepseek-r1:1.5b', label: 'DeepSeek r1' },
+		{ value: 'qwen2.5:3b', label: 'Qwen' }
 	];
 
 	function handleSend() {
