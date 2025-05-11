@@ -67,7 +67,7 @@
 </script>
 
 <div class="mx-auto flex min-h-0 w-full flex-1 flex-col">
-	<section class="max-h-full min-h-0 flex-1 overflow-y-auto p-4" bind:this={chatContainer}>
+	<section class="max-h-full min-h-0 flex-1 overflow-y-auto px-13" bind:this={chatContainer}>
 		{#if chatState.errorMessage}
 			<div class="mb-4 rounded border border-red-700 bg-red-900 px-4 py-3 text-red-100">
 				{chatState.errorMessage}

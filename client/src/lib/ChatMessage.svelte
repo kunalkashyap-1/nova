@@ -11,7 +11,7 @@
 
 <div class={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
 	<div
-		class={`max-w-3/4 rounded-lg p-3 ${
+		class={`min-w-2/4 max-w-3/4 rounded-lg p-3 ${
 			message.role === 'user' ? 'bg-green-800 text-gray-100' : 'bg-gray-700 text-gray-100'
 		}`}
 	>

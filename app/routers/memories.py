@@ -4,16 +4,22 @@ from datetime import datetime
 from app.database import get_db
 from app.schemas.memory import MemoryCreate, MemoryOut
 from app.models.memory import Memory
-import chromadb
+import chromadb 
+from chromadb.config import Settings
 from typing import List
+import os
+from dotenv import load_dotenv
 
 router = APIRouter()
+load_dotenv()
+
 
 MAX_MEMORIES = 200
 
 def get_chroma_client():
-    # You can change to chromadb.PersistentClient(path="./chroma_db") for persistent storage
-    return chromadb.Client()
+    env_path = os.getenv("CHROMA_DB_PATH", "../storage/chromadb")
+    chroma_client = chromadb.PersistentClient(path=env_path)
+    return chroma_client
 
 @router.post("/", response_model=MemoryOut)
 def create_memory(memory: MemoryCreate, chroma_client=Depends(get_chroma_client), user_id: str = ""):

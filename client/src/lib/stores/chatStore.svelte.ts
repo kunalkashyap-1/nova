@@ -179,7 +179,7 @@ export async function createNewChat(prompt: string): Promise<string | undefined>
 			prompt,
 			(msg) => {},
 			(meta) => {
-				const conversation = chatState.conversations.find(c => c.id === newId);
+				const conversation = chatState.conversations.find((c) => c.id === newId);
 				if (conversation) {
 					conversation.updatedAt = new Date().toISOString();
 					chatState.conversations = [...chatState.conversations];
@@ -199,7 +199,7 @@ export async function createNewChat(prompt: string): Promise<string | undefined>
 export async function sendMessage(content: string) {
 	if (!content.trim() || !chatState.activeConversationId) return;
 	const chatId = chatState.activeConversationId;
-	const conversation = chatState.conversations.find(c => c.id === chatId);
+	const conversation = chatState.conversations.find((c) => c.id === chatId);
 	if (conversation) {
 		conversation.updatedAt = new Date().toISOString();
 		chatState.conversations = [...chatState.conversations];
@@ -210,7 +210,7 @@ export async function sendMessage(content: string) {
 		content,
 		(msg) => {},
 		(meta) => {
-			const conversation = chatState.conversations.find(c => c.id === chatId);
+			const conversation = chatState.conversations.find((c) => c.id === chatId);
 			if (conversation) {
 				conversation.updatedAt = new Date().toISOString();
 				chatState.conversations = [...chatState.conversations];
@@ -251,7 +251,13 @@ function connectToChatSSE(
 	fetch(`${import.meta.env.VITE_BACKEND_API_URL}/api/v1/messages/`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ user_id, model, message: userMessage })
+		body: JSON.stringify({
+			user_id,
+			model,
+			message: userMessage,
+			provider: 'ollama',
+			chat_id: chatId
+		})
 	}).then(async (response) => {
 		if (!response.body) return;
 		const reader = response.body.getReader();
@@ -278,14 +284,14 @@ function connectToChatSSE(
 								chatState.messages = [...chatState.messages, assistantMsg];
 							}
 							assistantMsg = { ...assistantMsg, content: replyBuffer };
-							chatState.messages = chatState.messages.map(m =>
+							chatState.messages = chatState.messages.map((m) =>
 								m.id === assistantMsg!.id ? assistantMsg! : m
 							);
 							onAssistantMessage({ ...assistantMsg });
 							if (data.raw?.done) {
 								meta = { model: data.model, time: data.raw.total_duration };
 								assistantMsg = { ...assistantMsg, content: replyBuffer, meta };
-								chatState.messages = chatState.messages.map(m =>
+								chatState.messages = chatState.messages.map((m) =>
 									m.id === assistantMsg!.id ? assistantMsg! : m
 								);
 								onAssistantMessage({ ...assistantMsg });
