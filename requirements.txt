@@ -1,0 +1,47 @@
+# Web Framework
+fastapi==0.109.2
+uvicorn==0.27.1
+pydantic[email]==2.6.1
+
+# Database
+sqlalchemy==2.0.27
+alembic==1.13.1
+psycopg2-binary==2.9.9  # PostgreSQL driver
+
+# Cache and async
+redis>=4.5.4
+aioredis>=2.0.1
+asyncio>=3.4.3
+
+# Vector DB & Embeddings
+chromadb>=0.4.6
+sentence-transformers>=2.2.2
+
+# Proper tokenization
+tiktoken>=0.4.0
+
+# LLM Providers
+ollama>=0.1.4
+huggingface-hub>=0.15.1
+
+# Utilities
+python-dotenv==1.0.1
+tenacity>=8.2.2
+prometheus-client>=0.16.0  # For metrics
+structlog>=23.1.0  # Better logging
+
+# Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.9  # Form data parsing
+
+# CORS and static file serving
+aiofiles>=23.1.0
+
+# Development
+pytest==8.0.1
+pytest-asyncio>=0.21.0
+httpx==0.26.0  # For testing API
+
+# Additional dependencies
+email-validator==2.1.0.post1

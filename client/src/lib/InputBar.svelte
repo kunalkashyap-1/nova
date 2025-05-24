@@ -1,32 +1,24 @@
 <script lang="ts">
 	import { Send, Mic, Search } from '@lucide/svelte';
+	import ModelSelector from './components/ModelSelector.svelte';
+	import { selectedModel } from './stores/modelStore.svelte';
+
 	interface Props {
 		onSendMessage: (content: string) => void;
 		onVoiceInput: (event: Event) => void;
 		isLoading?: boolean;
 		disabled?: boolean;
-		selectedModel: string;
-		onModelChange: (model: string) => void;
 	}
 
 	let {
 		onSendMessage,
 		onVoiceInput,
 		isLoading = false,
-		disabled = false,
-		selectedModel,
-		onModelChange
+		disabled = false
 	}: Props = $props();
 	let message = $state('');
 	let textareaElement: HTMLTextAreaElement;
 	let autoFocused = false;
-
-	const modelOptions = [
-		{ value: 'llama3.2:1b', label: 'Llama' },
-		{ value: 'gemma2:2b', label: 'Gemma' },
-		{ value: 'deepseek-r1:1.5b', label: 'DeepSeek r1' },
-		{ value: 'qwen2.5:3b', label: 'Qwen' }
-	];
 
 	function handleSend() {
 		if (message.trim() && !isLoading && !disabled) {
@@ -164,21 +156,7 @@
           gap-2
         "
 			>
-				<select
-					bind:value={selectedModel}
-					onchange={(e) => onModelChange(e.currentTarget.value)}
-					class="
-            custom-select
-            w-auto
-            text-sm
-            sm:text-xs
-          "
-					disabled={isLoading}
-				>
-					{#each modelOptions as option}
-						<option value={option.value}>{option.label}</option>
-					{/each}
-				</select>
+				<ModelSelector />
 				<button
 					type="button"
 					class="
@@ -215,25 +193,6 @@
 </div>
 
 <style>
-	.custom-select {
-		background-color: #1f2937;
-		color: #e5e7eb;
-		border: none;
-		outline: none;
-		border-radius: 0.5rem;
-		box-shadow: none;
-	}
-
-	.custom-select:focus {
-		outline: none;
-		box-shadow: none;
-	}
-
-	.custom-select option {
-		background: #1f2937;
-		color: #e5e7eb;
-	}
-
 	/* Custom thin scrollbar for textarea */
 	textarea.flex-grow::-webkit-scrollbar {
 		width: 6px;

@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
+import api from '../api';
+// This is now the single source of truth for chat/conversation state. All components should use this store.
 // SSE Event Interfaces
 export interface SSEChatBaseEvent {
 	type: 'init' | 'message' | 'title_update';
@@ -59,7 +61,7 @@ export const chatState: ChatState = $state({
 		username: 'NovaUser',
 		profilePicUrl: ''
 	},
-	selectedModel: 'llama3.2:1b'
+	selectedModel: ''
 });
 
 // --- User Auth State ---
@@ -67,7 +69,13 @@ export type AuthUser = {
 	username: string;
 	profilePicUrl?: string;
 	isGuest: boolean;
+	tempUserId?: number;
 };
+
+function generateTempUserId(): number {
+	// Generate a random number between 10000 and 99999
+	return Math.floor(Math.random() * 90000) + 10000;
+}
 
 function loadUserFromLocalStorage(): AuthUser {
 	try {
@@ -77,20 +85,34 @@ function loadUserFromLocalStorage(): AuthUser {
 			return {
 				username: parsed.username || 'Guest User',
 				profilePicUrl: parsed.profilePicUrl || '',
-				isGuest: !parsed.username
+				isGuest: !parsed.username,
+				tempUserId: parsed.tempUserId || generateTempUserId()
 			};
 		}
 	} catch {}
-	return { username: 'Guest User', profilePicUrl: '', isGuest: true };
+	// For new users, generate a temp ID
+	const tempUserId = generateTempUserId();
+	return { 
+		username: 'Guest User', 
+		profilePicUrl: '', 
+		isGuest: true,
+		tempUserId 
+	};
 }
 
 export const authUser: AuthUser = $state(loadUserFromLocalStorage());
 
 export function setUser(user: Partial<AuthUser>) {
-	const merged = { ...authUser, ...user, isGuest: !user.username };
+	const merged = { 
+		...authUser, 
+		...user, 
+		isGuest: !user.username,
+		tempUserId: authUser.tempUserId || generateTempUserId() // Preserve or generate temp ID
+	};
 	authUser.username = merged.username;
 	authUser.profilePicUrl = merged.profilePicUrl || '';
 	authUser.isGuest = merged.isGuest;
+	authUser.tempUserId = merged.tempUserId;
 	localStorage.setItem('nova_user', JSON.stringify(merged));
 }
 
@@ -226,15 +248,12 @@ function connectToChatSSE(
 	onAssistantMessage: (msg: Message) => void,
 	onFinal?: (meta: { model?: string; time?: number }) => void
 ) {
-	const user_id = authUser.username || 'Guest';
+	const user_id = authUser.isGuest ? authUser.tempUserId : parseInt(authUser.username);
 	const model = chatState.selectedModel || 'llama3.2:1b';
 
-	// Only add user message if this is not the first message (for follow-ups)
-	if (
-		chatState.messages.length === 0 ||
-		chatState.messages[chatState.messages.length - 1].role !== 'user' ||
-		chatState.messages[chatState.messages.length - 1].content !== userMessage
-	) {
+	// Only add user message if it's not already the last message
+	const lastMessage = chatState.messages[chatState.messages.length - 1];
+	if (!lastMessage || lastMessage.content !== userMessage) {
 		const userMsg: Message = {
 			id: uuidv4(),
 			role: 'user',
@@ -244,69 +263,119 @@ function connectToChatSSE(
 		chatState.messages = [...chatState.messages, userMsg];
 	}
 
-	let assistantMsg: Message | null = null;
 	let replyBuffer = '';
+	let assistantMsg: Message | null = null;
 	let meta: { model?: string; time?: number } = {};
 
-	fetch(`${import.meta.env.VITE_BACKEND_API_URL}/api/v1/messages/`, {
+	fetch(`http://${import.meta.env.VITE_BACKEND_API_URL}/api/v1/messages/`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: {
+			'Content-Type': 'application/json',
+		},
 		body: JSON.stringify({
+			chat_id: chatId,
 			user_id,
 			model,
 			message: userMessage,
 			provider: 'ollama',
-			chat_id: chatId
+			stream: true,
+			context_strategy: 'hybrid',
+			optimize_context: true,
+			max_context_docs: 15
 		})
 	}).then(async (response) => {
-		if (!response.body) return;
-		const reader = response.body.getReader();
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		
+		const reader = response.body?.getReader();
+		if (!reader) {
+			throw new Error('No reader available');
+		}
+
 		const decoder = new TextDecoder();
 		let done = false;
-		while (!done) {
-			const { value, done: doneReading } = await reader.read();
-			done = doneReading;
-			if (value) {
-				const chunk = decoder.decode(value, { stream: true });
-				chunk.split(/\n\n/).forEach((eventStr) => {
-					if (eventStr.startsWith('data: ')) {
-						try {
-							const data = JSON.parse(eventStr.slice(6));
-							const content = data.reply ?? '';
-							replyBuffer += content;
-							if (!assistantMsg) {
-								assistantMsg = {
-									id: uuidv4(),
-									role: 'assistant',
-									content: '',
-									timestamp: new Date().toISOString()
-								};
-								chatState.messages = [...chatState.messages, assistantMsg];
-							}
-							assistantMsg = { ...assistantMsg, content: replyBuffer };
-							chatState.messages = chatState.messages.map((m) =>
-								m.id === assistantMsg!.id ? assistantMsg! : m
-							);
-							onAssistantMessage({ ...assistantMsg });
-							if (data.raw?.done) {
-								meta = { model: data.model, time: data.raw.total_duration };
-								assistantMsg = { ...assistantMsg, content: replyBuffer, meta };
+		
+		try {
+			while (!done) {
+				const { value, done: doneReading } = await reader.read();
+				done = doneReading;
+				if (value) {
+					const chunk = decoder.decode(value, { stream: true });
+					chunk.split(/\n\n/).forEach((eventStr) => {
+						if (eventStr.startsWith('data: ')) {
+							try {
+								const data = JSON.parse(eventStr.slice(6));
+								
+								// Handle errors
+								if (data.error) {
+									console.error('Error from server:', data.error);
+									chatState.errorMessage = data.error;
+									return;
+								}
+
+								const content = data.reply ?? '';
+								replyBuffer += content;
+								if (!assistantMsg) {
+									assistantMsg = {
+										id: uuidv4(),
+										role: 'assistant',
+										content: '',
+										timestamp: new Date().toISOString()
+									};
+									chatState.messages = [...chatState.messages, assistantMsg];
+								}
+								assistantMsg = { ...assistantMsg, content: replyBuffer };
 								chatState.messages = chatState.messages.map((m) =>
 									m.id === assistantMsg!.id ? assistantMsg! : m
 								);
 								onAssistantMessage({ ...assistantMsg });
-								onFinal && onFinal(meta);
+								
+								// Check if this is the final message
+								if (data.raw?.done || data.raw?.text) {
+									meta = { 
+										model: data.model, 
+										time: data.raw?.total_duration || data.raw?.time 
+									};
+									assistantMsg = { ...assistantMsg, content: replyBuffer, meta };
+									chatState.messages = chatState.messages.map((m) =>
+										m.id === assistantMsg!.id ? assistantMsg! : m
+									);
+									onAssistantMessage({ ...assistantMsg });
+									onFinal && onFinal(meta);
+								}
+							} catch (e) {
+								console.error('Failed to parse SSE chunk', e);
+								chatState.errorMessage = 'Failed to parse server response';
 							}
-						} catch (e) {
-							console.error('Failed to parse SSE chunk', e);
 						}
-					}
-				});
+					});
+				}
 			}
+		} catch (error) {
+			console.error('Error reading stream:', error);
+			chatState.errorMessage = 'Error reading response stream';
+		} finally {
+			reader.releaseLock();
 		}
+	}).catch((error) => {
+		console.error('Error in chat stream:', error);
+		chatState.errorMessage = error.message || 'Failed to connect to chat stream';
 	});
 }
 
 export function setSelectedModel(model: string) {
 	chatState.selectedModel = model;
+}
+
+export function fetchConversations() {
+	return loadConversations();
+}
+
+export function selectConversation(conversationId: string) {
+	return loadConversation(conversationId);
+}
+
+export function currentConversationId() {
+	return chatState.activeConversationId;
 }

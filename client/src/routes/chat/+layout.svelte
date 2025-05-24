@@ -127,8 +127,6 @@
 						onSendMessage={handleSendMessage}
 						isLoading={chatState.isLoading}
 						disabled={chatState.isLoading}
-						selectedModel={chatState.selectedModel}
-						onModelChange={setSelectedModel}
 						onVoiceInput={activateVoiceInput}
 					/>
 				</div>

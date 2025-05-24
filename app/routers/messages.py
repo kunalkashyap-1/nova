@@ -1,118 +1,256 @@
-from fastapi import APIRouter, status
-from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
-from typing import AsyncGenerator, Literal, List, Dict
-from ollama import AsyncClient, ResponseError, ChatResponse
 import json
+from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
+from typing import AsyncGenerator, List
 import os
+import logging
 
-from app.routers.memories import get_chroma_client
-# from app.utils.redis import cache_get, cache_set, cache_append_to_list, cache_get_list
+# Internal imports
+from app.database import get_db
+from app.models.conversation import Conversation
+from app.models.message import Message
+from app.utils.redis import cache_delete
 
-MAX_HISTORY = 15
-MAX_TOKENS = 30000
+# Import modularized services
+from app.services.message_service import (
+    store_message_in_db, 
+    store_in_vector_db,
+    get_chat_history,
+    get_context_for_query
+)
+from app.utils.token import trim_messages
+from app.utils.message_providers import (
+    process_ollama_response,
+    process_huggingface_response,
+    ollama_client
+)
+from app.schemas.message import MessageOut, MessageStreamRequest
 
-router = APIRouter()
+# Environment variables
+MAX_TOKENS = int(os.getenv("MAX_TOKENS", "30000"))
+MAX_HISTORY = int(os.getenv("MAX_HISTORY_ITEMS", "15"))
 
-# Initialize clients
-collection = get_chroma_client().get_or_create_collection(name="chat_context")
-ollama_client = AsyncClient(host=os.getenv("OLLAMA_HOST", "http://localhost:11434"))
+# Configure logging
+logger = logging.getLogger(__name__)
 
-
-class MessageStreamRequest(BaseModel):
-    chat_id: str
-    user_id: str
-    model: str
-    message: str
-    provider: Literal["ollama", "huggingface"] = "ollama"
-
-
-def trim_messages(messages: List[Dict], max_tokens: int) -> List[Dict]:
-    trimmed, total = [], 0
-    for msg in reversed(messages):
-        token_est = len(msg["content"].split())
-        if total + token_est > max_tokens:
-            break
-        trimmed.insert(0, msg)
-        total += token_est
-    return trimmed
+# Define router
+router = APIRouter(prefix="/api/v1/messages", tags=["Messages"])
 
 
-async def message_streamer(request: MessageStreamRequest) -> AsyncGenerator[str, None]:
-    # chat_key = f"history:{request.chat_id}"
-    # ctx_cache_key = f"context:{request.chat_id}:{hash(request.message)}"
-
-    # # Append user message to session chat history
-    # await cache_append_to_list(chat_key, {"role": "user", "content": request.message})
-
-    # Try cached context first (from Redis)
-    # cached_ctx = await cache_get(ctx_cache_key)
-    # if cached_ctx:
-    #     context_messages = json.loads(cached_ctx)
-    # else:
-    results = collection.query(
-        query_texts=[request.message],
-        n_results=MAX_HISTORY,
-        include=["documents"],
-        where={"chat_id": request.chat_id}
+async def message_streamer(
+    request: MessageStreamRequest,
+    db: Session = Depends(get_db)
+) -> AsyncGenerator[str, None]:
+    """
+    Stream a model response for a given message request.
+    
+    This function handles the core message processing workflow:
+    1. Verifies the conversation exists
+    2. Stores the user message in the database and vector store
+    3. Retrieves relevant context using the requested strategy
+    4. Gets chat history from database or cache
+    5. Formats all messages for the model
+    6. Streams the model response and stores it
+    
+    Args:
+        request: The message request with model details and content
+        db: Database session
+        
+    Yields:
+        Server-sent events with model responses
+    """
+    # Verify conversation exists
+    conversation = db.query(Conversation).filter(Conversation.id == request.chat_id).first()
+    if not conversation:
+        error_event = {
+            "error": "Conversation not found",
+            "status_code": 404
+        }
+        yield f"data: {json.dumps(error_event)}\n\n"
+        return
+        
+    # Store user message in database
+    from app.utils.token import estimate_tokens
+    user_message = await store_message_in_db(
+        db=db,
+        conversation_id=request.chat_id,
+        role="user",
+        content=request.message,
+        tokens_used=estimate_tokens(request.message)
     )
-    docs = results.get("documents", [[]])[0]
-    context_summary = "\n".join(docs)
-    context_messages = [{"role": "system", "content": f"Relevant context:\n{context_summary}"}]
-    #     await cache_set(ctx_cache_key, json.dumps(context_messages), ex=120)
-
+    
+    # Store in vector DB for future context
+    await store_in_vector_db(user_message.id, request.chat_id, request.message)
+    
+    # Get relevant context using the specified strategy
+    context_messages = await get_context_for_query(
+        conversation_id=request.chat_id,
+        query=request.message,
+        strategy=request.context_strategy,
+        optimize=request.optimize_context,
+        max_docs=request.max_context_docs
+    )
+    
     # Get recent chat history
-    # chat_history = (await cache_get_list(chat_key))[-MAX_HISTORY:]
-    chat_history = []  # Empty for now since Redis is disabled
-
-    # Merge and trim for token budget
-    messages = trim_messages(context_messages + chat_history, max_tokens=MAX_TOKENS)
-    print("messages", messages)
-    print("messages length", len(messages))
-
+    chat_history = await get_chat_history(db, request.chat_id)
+    
+    # Format messages for the model
+    formatted_history = []
+    for msg in chat_history:
+        formatted_history.append({
+            "role": msg["role"],
+            "content": msg["content"]
+        })
+    
+    # Add current user message
+    formatted_history.append({
+        "role": "user",
+        "content": request.message
+    })
+    
+    # Merge context and history, and trim to fit token budget
+    messages = trim_messages(context_messages + formatted_history, max_tokens=MAX_TOKENS)
+    
+    # Log conversation for debugging
+    logger.debug(f"Sending {len(messages)} messages to {request.provider} model {request.model}")
+    
+    # Process based on provider
     if request.provider == "ollama":
-        try:
-            collected_reply = ""
-            stream = await ollama_client.chat(
-                model=request.model,
-                messages=messages,
-                stream=True,
-            )
-            async for chunk in stream:
-                if isinstance(chunk, ChatResponse):
-                    reply = chunk.message.content
-                    raw = chunk.dict()
-                else:
-                    reply = chunk.get("message", {}).get("content", "")
-                    raw = chunk
-                collected_reply += reply
-
-                event = {
-                    "model": request.model,
-                    "user_id": request.user_id,
-                    "chat_id": request.chat_id,
-                    "reply": reply,
-                    "raw": raw,
-                }
-                yield f"data: {json.dumps(event)}\n\n"
-
-            # Store full assistant reply
-            # await cache_append_to_list(chat_key, {"role": "assistant", "content": collected_reply})
-            collection.add(
-                documents=[collected_reply],
-                metadatas=[{"chat_id": request.chat_id}],
-                ids=[f"{request.chat_id}:{hash(collected_reply)}"]
-            )
-
-        except ResponseError as e:
-            yield f"data: {json.dumps({'error': str(e), 'status_code': e.status_code})}\n\n"
+        # Get response from Ollama
+        stream = await ollama_client.chat(
+            model=request.model,
+            messages=messages,
+            stream=True,
+        )
+        async for chunk in process_ollama_response(
+            stream=stream, 
+            request=request, 
+            db=db, 
+            user_message_id=user_message.id,
+            store_message_func=store_message_in_db,
+            store_in_vector_db_func=store_in_vector_db
+        ):
+            yield chunk
+            
+    elif request.provider == "huggingface":
+        # Get response from HuggingFace
+        async for chunk in process_huggingface_response(
+            request=request, 
+            messages=messages, 
+            db=db, 
+            user_message_id=user_message.id,
+            store_message_func=store_message_in_db,
+            store_in_vector_db_func=store_in_vector_db
+        ):
+            yield chunk
+            
     else:
-        yield f"data: {json.dumps({'error': 'Provider not supported'})}\n\n"
+        # Provider not supported
+        yield f"data: {json.dumps({'error': f'Provider {request.provider} not supported'})}\n\n"
 
 
-@router.post("/", status_code=status.HTTP_200_OK)
-async def stream_message_reply(body: MessageStreamRequest):
+@router.post("/", status_code=status.HTTP_200_OK, summary="Stream a chat message reply")
+async def stream_message_reply(
+    body: MessageStreamRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Stream a reply to a user message using the specified model and provider.
+    
+    This endpoint:
+    - Creates a streaming response with the model's reply
+    - Stores both the user message and model response in the database
+    - Indexes messages in the vector database for future context
+    
+    Request body parameters:
+    - chat_id: ID of the conversation
+    - user_id: ID of the user sending the message
+    - model: ID of the model to use for generation
+    - message: Content of the user's message
+    - provider: "ollama" or "huggingface"
+    - stream: Whether to stream the response (default: True)
+    - context_strategy: Strategy to use for retrieving context
+    - optimize_context: Whether to optimize retrieved context
+    
+    Returns:
+        A streaming response with server-sent events containing the model's reply
+    """
     return StreamingResponse(
-        message_streamer(body),
+        message_streamer(body, db),
         media_type="text/event-stream",
     )
+
+
+@router.get("/conversation/{conversation_id}", status_code=status.HTTP_200_OK, summary="Get conversation messages")
+async def get_conversation_messages(conversation_id: int, db: Session = Depends(get_db)):
+    """
+    Get all messages for a specific conversation.
+    
+    This endpoint retrieves messages in chronological order (oldest to newest).
+    
+    Path parameters:
+    - conversation_id: ID of the conversation to retrieve messages for
+    
+    Returns:
+        A JSON object with a 'messages' array containing all messages in the conversation
+    """
+    messages = db.query(Message).filter(
+        Message.conversation_id == conversation_id
+    ).order_by(Message.created_at.asc()).all()
+    
+    return {"messages": messages}
+
+
+@router.delete("/message/{message_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete a message")
+async def delete_message(message_id: int, db: Session = Depends(get_db)):
+    """
+    Delete a specific message by ID.
+    
+    This endpoint:
+    - Removes the message from the database
+    - Removes the message from the vector database
+    - Invalidates related caches
+    
+    Path parameters:
+    - message_id: ID of the message to delete
+    
+    Returns:
+        204 No Content on success
+    
+    Raises:
+        404 Not Found: If the message doesn't exist
+    """
+    message = db.query(Message).filter(Message.id == message_id).first()
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    
+    # Delete from database
+    db.delete(message)
+    db.commit()
+    
+    # Delete from vector DB
+    from app.routers.memories import get_chroma_client
+    collection = get_chroma_client().get_or_create_collection(name="chat_context")
+    
+    try:
+        collection.delete(ids=[f"msg:{message_id}"])
+    except Exception as e:
+        logger.error(f"Error deleting from vector DB: {str(e)}")
+    
+    # Invalidate cache
+    await cache_delete(f"history:{message.conversation_id}")
+
+
+# Compatibility endpoint for ?conversation_id=...
+@router.get("/", response_model=List[MessageOut])
+def get_messages(conversation_id: int = None, db: Session = Depends(get_db)):
+    if conversation_id is not None:
+        return db.query(Message).filter(Message.conversation_id == conversation_id).all()
+    return []
+
+
+# Alias for /stream
+@router.post("/stream", status_code=status.HTTP_200_OK)
+async def stream_message_reply_alias(body: MessageStreamRequest, db: Session = Depends(get_db)):
+    return await stream_message_reply(body, db)
