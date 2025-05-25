@@ -49,9 +49,8 @@ async def message_streamer(
     1. Verifies the conversation exists
     2. Stores the user message in the database and vector store
     3. Retrieves relevant context using the requested strategy
-    4. Gets chat history from database or cache
-    5. Formats all messages for the model
-    6. Streams the model response and stores it
+    4. Gets last 2 messages for immediate context
+    5. Streams the model response and stores it
     
     Args:
         request: The message request with model details and content
@@ -92,25 +91,53 @@ async def message_streamer(
         max_docs=request.max_context_docs
     )
     
-    # Get recent chat history
-    chat_history = await get_chat_history(db, request.chat_id)
+    # Get last 2 messages for immediate context
+    recent_messages = db.query(Message).filter(
+        Message.conversation_id == request.chat_id
+    ).order_by(Message.created_at.desc()).limit(2).all()
     
-    # Format messages for the model
-    formatted_history = []
-    for msg in chat_history:
-        formatted_history.append({
-            "role": msg["role"],
-            "content": msg["content"]
+    # Format recent messages with clear role indicators
+    recent_context = []
+    for msg in reversed(recent_messages):  # Reverse to get chronological order
+        recent_context.append({
+            "role": msg.role,
+            "content": f"{msg.role.capitalize()}: {msg.content}"
         })
     
-    # Add current user message
-    formatted_history.append({
+    # Add current user message with consistent formatting
+    recent_context.append({
         "role": "user",
-        "content": request.message
+        "content": f"User: {request.message}"
     })
     
-    # Merge context and history, and trim to fit token budget
-    messages = trim_messages(context_messages + formatted_history, max_tokens=MAX_TOKENS)
+    # Format context messages consistently
+    formatted_context = []
+    for msg in context_messages:
+        if msg["role"] == "system":
+            # Format system messages with clear context markers
+            formatted_context.append({
+                "role": "system",
+                "content": f"Context Information:\n{msg['content']}"
+            })
+        else:
+            # Format other messages consistently
+            formatted_context.append({
+                "role": msg["role"],
+                "content": f"{msg['role'].capitalize()}: {msg['content']}"
+            })
+    
+    # Combine vector store context with recent messages
+    # Put recent messages first to maintain conversation flow
+    messages = recent_context + formatted_context
+    
+    # Add a system message at the start to set the context
+    # messages.insert(0, {
+    #     "role": "system",
+    #     "content": "You are a helpful AI assistant. Use the provided context and conversation history to provide accurate and relevant responses."
+    # })
+    
+    # Trim messages to fit token budget
+    messages = trim_messages(messages, max_tokens=MAX_TOKENS)
     
     # Log conversation for debugging
     logger.debug(f"Sending {len(messages)} messages to {request.provider} model {request.model}")

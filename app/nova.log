@@ -542,3 +542,257 @@
 2025-05-24 23:31:28,870 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.014607667922973633}
 2025-05-24 23:31:46,763 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.20275425910949707}
 2025-05-24 23:32:14,591 - INFO -  nova - Application shutdown
+2025-05-25 17:38:05,456 - INFO -  nova - Logger initialized
+2025-05-25 17:38:05,456 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 17:38:12,245 - INFO -  nova - Logger initialized
+2025-05-25 17:38:12,245 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 17:38:12,320 - INFO -  nova - Application startup complete
+2025-05-25 17:40:16,167 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 1.2579686641693115}
+2025-05-25 17:41:59,839 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.008505582809448242}
+2025-05-25 17:41:59,939 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.07493042945861816}
+2025-05-25 17:43:10,394 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.3311774730682373}
+2025-05-25 17:43:10,524 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.041977643966674805}
+2025-05-25 17:45:23,101 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.025331735610961914}
+2025-05-25 17:46:01,071 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-05-25 17:46:01,248 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.15171027183532715}
+2025-05-25 17:47:15,955 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.034142494201660156}
+2025-05-25 17:47:27,983 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.01377248764038086}
+2025-05-25 17:48:52,489 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.08047199249267578}
+2025-05-25 17:49:36,156 - INFO -  nova - Application shutdown
+2025-05-25 17:49:53,477 - INFO -  nova - Logger initialized
+2025-05-25 17:49:53,477 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 17:49:53,610 - INFO -  nova - Application startup complete
+2025-05-25 17:50:06,353 - INFO -  nova - Application shutdown
+2025-05-25 17:50:15,031 - INFO -  nova - Logger initialized
+2025-05-25 17:50:15,031 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 17:50:15,063 - INFO -  nova - Application startup complete
+2025-05-25 17:52:28,105 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.11676692962646484}
+2025-05-25 17:52:35,975 - INFO -  nova - Application shutdown
+2025-05-25 17:52:44,214 - INFO -  nova - Logger initialized
+2025-05-25 17:52:44,214 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 17:52:44,309 - INFO -  nova - Application startup complete
+2025-05-25 17:56:09,867 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.08941102027893066}
+2025-05-25 17:56:15,922 - INFO -  nova - Application shutdown
+2025-05-25 17:56:24,178 - INFO -  nova - Logger initialized
+2025-05-25 17:56:24,178 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 17:56:24,251 - INFO -  nova - Application startup complete
+2025-05-25 17:56:53,579 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.08734917640686035}
+2025-05-25 18:00:53,469 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.06451654434204102}
+2025-05-25 18:01:02,797 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0326840877532959}
+2025-05-25 18:01:54,294 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.015413045883178711}
+2025-05-25 18:02:19,631 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.021175622940063477}
+2025-05-25 18:02:44,175 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.026830673217773438}
+2025-05-25 18:02:59,243 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.004898786544799805}
+2025-05-25 18:03:04,606 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0017790794372558594}
+2025-05-25 18:03:18,634 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0}
+2025-05-25 18:04:47,576 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0}
+2025-05-25 18:07:36,795 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.36847591400146484}
+2025-05-25 18:07:39,854 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.021717071533203125}
+2025-05-25 18:08:06,467 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.030626296997070312}
+2025-05-25 18:09:53,430 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.07109212875366211}
+2025-05-25 18:10:03,556 - INFO -  nova - Application shutdown
+2025-05-25 18:10:20,589 - INFO -  nova - Logger initialized
+2025-05-25 18:10:20,598 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:10:20,748 - INFO -  nova - Application startup complete
+2025-05-25 18:10:20,779 - INFO -  nova - Application shutdown
+2025-05-25 18:10:29,927 - INFO -  nova - Logger initialized
+2025-05-25 18:10:29,927 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:10:29,996 - INFO -  nova - Application startup complete
+2025-05-25 18:10:30,136 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.1019124984741211}
+2025-05-25 18:10:48,406 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.013001680374145508}
+2025-05-25 18:11:15,112 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.02826404571533203}
+2025-05-25 18:12:13,295 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-05-25 18:12:13,329 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.0}
+2025-05-25 18:12:34,130 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.021036148071289062}
+2025-05-25 18:12:34,184 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.018044710159301758}
+2025-05-25 18:13:52,912 - INFO -  nova - Application shutdown
+2025-05-25 18:14:02,918 - INFO -  nova - Logger initialized
+2025-05-25 18:14:02,918 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:14:02,948 - INFO -  nova - Application startup complete
+2025-05-25 18:14:06,603 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.08941268920898438}
+2025-05-25 18:15:38,500 - INFO -  nova - Application shutdown
+2025-05-25 18:15:47,510 - INFO -  nova - Logger initialized
+2025-05-25 18:15:47,510 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:15:47,558 - INFO -  nova - Application startup complete
+2025-05-25 18:15:47,558 - INFO -  nova - Application shutdown
+2025-05-25 18:15:56,135 - INFO -  nova - Logger initialized
+2025-05-25 18:15:56,135 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:15:56,220 - INFO -  nova - Application startup complete
+2025-05-25 18:15:57,977 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.004307746887207031}
+2025-05-25 18:16:14,569 - INFO -  nova - Application shutdown
+2025-05-25 18:16:22,753 - INFO -  nova - Logger initialized
+2025-05-25 18:16:22,754 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:16:22,803 - INFO -  nova - Application startup complete
+2025-05-25 18:17:08,054 - INFO -  nova - Application shutdown
+2025-05-25 18:17:16,460 - INFO -  nova - Logger initialized
+2025-05-25 18:17:16,460 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:17:16,510 - INFO -  nova - Application startup complete
+2025-05-25 18:17:18,530 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.04108119010925293}
+2025-05-25 18:17:30,987 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.01633453369140625}
+2025-05-25 18:20:03,255 - INFO -  nova - Application shutdown
+2025-05-25 18:20:11,163 - INFO -  nova - Logger initialized
+2025-05-25 18:20:11,164 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:20:11,193 - INFO -  nova - Application startup complete
+2025-05-25 18:20:15,163 - INFO -  nova - Application shutdown
+2025-05-25 18:20:20,917 - INFO -  nova - Logger initialized
+2025-05-25 18:20:20,918 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:20:20,997 - INFO -  nova - Application startup complete
+2025-05-25 18:21:16,567 - INFO -  nova - Application shutdown
+2025-05-25 18:21:22,228 - INFO -  nova - Logger initialized
+2025-05-25 18:21:22,229 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:21:22,285 - INFO -  nova - Application startup complete
+2025-05-25 18:26:02,289 - INFO -  nova - Application shutdown
+2025-05-25 18:26:08,350 - INFO -  nova - Logger initialized
+2025-05-25 18:26:08,351 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:26:08,384 - INFO -  nova - Application startup complete
+2025-05-25 18:26:21,216 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.10600638389587402}
+2025-05-25 18:26:39,355 - INFO -  nova - Application shutdown
+2025-05-25 18:26:45,128 - INFO -  nova - Logger initialized
+2025-05-25 18:26:45,128 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:26:45,151 - INFO -  nova - Application startup complete
+2025-05-25 18:26:46,141 - INFO -  nova - Application shutdown
+2025-05-25 18:26:51,065 - INFO -  nova - Logger initialized
+2025-05-25 18:26:51,066 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:26:51,099 - INFO -  nova - Application startup complete
+2025-05-25 18:26:52,202 - INFO -  nova - Application shutdown
+2025-05-25 18:26:57,084 - INFO -  nova - Logger initialized
+2025-05-25 18:26:57,085 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:26:57,123 - INFO -  nova - Application startup complete
+2025-05-25 18:27:41,946 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.058322906494140625}
+2025-05-25 18:27:59,768 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.014997720718383789}
+2025-05-25 18:28:13,953 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.34810543060302734}
+2025-05-25 18:28:17,397 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 3.42141056060791}
+2025-05-25 18:29:54,678 - INFO -  nova - Application shutdown
+2025-05-25 18:30:03,488 - INFO -  nova - Logger initialized
+2025-05-25 18:30:03,489 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 18:30:03,519 - INFO -  nova - Application startup complete
+2025-05-25 18:36:49,948 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.19597482681274414}
+2025-05-25 18:46:12,394 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.4252817630767822}
+2025-05-25 19:00:50,984 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.1398296356201172}
+2025-05-25 19:01:26,470 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.013495445251464844}
+2025-05-25 19:01:44,497 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.003002166748046875}
+2025-05-25 19:01:45,074 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.5651681423187256}
+2025-05-25 19:01:45,092 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-05-25 19:01:45,666 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.5686442852020264}
+2025-05-25 19:04:28,516 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.06763386726379395}
+2025-05-25 19:06:57,173 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.13036894798278809}
+2025-05-25 19:08:03,625 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.6505568027496338}
+2025-05-25 19:08:03,854 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.19976162910461426}
+2025-05-25 19:09:40,693 - INFO -  nova - Application shutdown
+2025-05-25 19:47:16,938 - INFO -  nova - Logger initialized
+2025-05-25 19:47:16,938 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 19:47:24,144 - INFO -  nova - Logger initialized
+2025-05-25 19:47:24,144 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 19:47:24,209 - INFO -  nova - Application startup complete
+2025-05-25 19:47:55,433 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.5825929641723633}
+2025-05-25 19:51:51,361 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.11331915855407715}
+2025-05-25 19:53:31,609 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.01897287368774414}
+2025-05-25 19:54:15,303 - INFO -  nova - Application shutdown
+2025-05-25 19:54:38,102 - INFO -  nova - Logger initialized
+2025-05-25 19:54:38,105 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 19:54:46,696 - INFO -  nova - Logger initialized
+2025-05-25 19:54:46,700 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 19:54:46,782 - INFO -  nova - Application startup complete
+2025-05-25 19:56:18,257 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.25875377655029297}
+2025-05-25 19:57:08,135 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.6387572288513184}
+2025-05-25 19:57:08,954 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.7883434295654297}
+2025-05-25 19:59:32,112 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.40602707862854004}
+2025-05-25 20:00:00,896 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.015163183212280273}
+2025-05-25 20:01:01,277 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.09387636184692383}
+2025-05-25 20:01:01,459 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.16153836250305176}
+2025-05-25 20:03:36,044 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.22056055068969727}
+2025-05-25 20:03:55,078 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.148970365524292}
+2025-05-25 20:05:16,892 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.040517330169677734}
+2025-05-25 20:07:29,737 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.03048872947692871}
+2025-05-25 20:07:33,782 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.011215686798095703}
+2025-05-25 20:08:00,984 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-05-25 20:08:01,534 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.5280134677886963}
+2025-05-25 20:08:01,568 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0020279884338378906}
+2025-05-25 20:08:01,673 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.08017182350158691}
+2025-05-25 20:08:31,904 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.27065229415893555}
+2025-05-25 20:21:36,525 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.1429610252380371}
+2025-05-25 20:23:01,691 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.37430906295776367}
+2025-05-25 20:33:07,863 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.34688878059387207}
+2025-05-25 20:33:08,103 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.126939058303833}
+2025-05-25 20:35:05,677 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.12026381492614746}
+2025-05-25 20:42:18,183 - INFO -  nova - Application shutdown
+2025-05-25 20:42:36,575 - INFO -  nova - Logger initialized
+2025-05-25 20:42:36,575 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 20:42:36,698 - INFO -  nova - Application startup complete
+2025-05-25 20:43:38,868 - INFO -  nova - Application shutdown
+2025-05-25 20:43:47,750 - INFO -  nova - Logger initialized
+2025-05-25 20:43:47,750 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 20:43:47,798 - INFO -  nova - Application startup complete
+2025-05-25 20:45:52,174 - INFO -  nova - Application shutdown
+2025-05-25 20:46:01,523 - INFO -  nova - Logger initialized
+2025-05-25 20:46:01,529 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 20:46:01,638 - INFO -  nova - Application startup complete
+2025-05-25 20:46:06,236 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.9677588939666748}
+2025-05-25 20:48:37,940 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.26314449310302734}
+2025-05-25 20:51:04,712 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.28127431869506836}
+2025-05-25 20:51:34,434 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.24831652641296387}
+2025-05-25 20:51:58,134 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.057884931564331055}
+2025-05-25 20:52:06,158 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.21793198585510254}
+2025-05-25 20:52:38,771 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.04059910774230957}
+2025-05-25 21:00:20,191 - INFO -  nova - Application shutdown
+2025-05-25 21:00:35,917 - INFO -  nova - Logger initialized
+2025-05-25 21:00:35,919 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 21:00:36,040 - INFO -  nova - Application startup complete
+2025-05-25 21:00:36,085 - INFO -  nova - Application shutdown
+2025-05-25 21:00:45,431 - INFO -  nova - Logger initialized
+2025-05-25 21:00:45,442 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 21:00:45,585 - INFO -  nova - Application startup complete
+2025-05-25 21:00:53,028 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.9857032299041748}
+2025-05-25 21:01:22,763 - INFO -  nova - Application shutdown
+2025-05-25 21:01:36,034 - INFO -  nova - Logger initialized
+2025-05-25 21:01:36,044 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 21:01:36,204 - INFO -  nova - Application startup complete
+2025-05-25 21:10:46,153 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-05-25 21:10:47,457 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 1.2232940196990967}
+2025-05-25 21:11:32,304 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.4769866466522217}
+2025-05-25 21:13:28,447 - INFO -  nova - Application shutdown
+2025-05-25 21:13:38,487 - INFO -  nova - Logger initialized
+2025-05-25 21:13:38,488 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 21:13:38,517 - INFO -  nova - Application startup complete
+2025-05-25 21:14:40,667 - INFO -  nova - Application shutdown
+2025-05-25 21:14:45,901 - INFO -  nova - Logger initialized
+2025-05-25 21:14:45,902 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 21:14:45,954 - INFO -  nova - Application startup complete
+2025-05-25 21:14:47,826 - INFO -  nova - Application shutdown
+2025-05-25 21:14:53,697 - INFO -  nova - Logger initialized
+2025-05-25 21:14:53,697 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 21:14:53,728 - INFO -  nova - Application startup complete
+2025-05-25 21:14:59,964 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.7473256587982178}
+2025-05-25 21:15:36,742 - INFO -  nova - Application shutdown
+2025-05-25 21:15:43,352 - INFO -  nova - Logger initialized
+2025-05-25 21:15:43,353 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 21:15:43,398 - INFO -  nova - Application startup complete
+2025-05-25 21:16:06,566 - INFO -  nova - Application shutdown
+2025-05-25 21:16:12,217 - INFO -  nova - Logger initialized
+2025-05-25 21:16:12,219 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 21:16:12,288 - INFO -  nova - Application startup complete
+2025-05-25 21:16:32,373 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0009167194366455078}
+2025-05-25 21:16:32,872 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.48789167404174805}
+2025-05-25 21:16:33,343 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.4450550079345703}
+2025-05-25 21:16:47,280 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.14541339874267578}
+2025-05-25 21:17:26,290 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.18251371383666992}
+2025-05-25 21:18:28,249 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.12808537483215332}
+2025-05-25 21:45:37,971 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.4214010238647461}
+2025-05-25 22:07:56,998 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.06987452507019043}
+2025-05-25 22:12:37,027 - INFO -  nova - Application shutdown
+2025-05-25 22:12:50,314 - INFO -  nova - Logger initialized
+2025-05-25 22:12:50,315 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 22:12:50,437 - INFO -  nova - Application startup complete
+2025-05-25 22:12:50,452 - INFO -  nova - Application shutdown
+2025-05-25 22:12:58,472 - INFO -  nova - Logger initialized
+2025-05-25 22:12:58,473 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 22:12:58,559 - INFO -  nova - Application startup complete
+2025-05-25 22:13:45,442 - INFO -  nova - Application shutdown
+2025-05-25 22:13:54,255 - INFO -  nova - Logger initialized
+2025-05-25 22:13:54,257 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 22:13:54,322 - INFO -  nova - Application startup complete
+2025-05-25 22:22:25,194 - INFO -  nova - Application shutdown
+2025-05-25 22:26:29,818 - INFO -  nova - Logger initialized
+2025-05-25 22:26:29,818 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-05-25 22:26:29,930 - INFO -  nova - Application startup complete
+2025-05-25 22:31:16,291 - INFO -  nova - Application shutdown

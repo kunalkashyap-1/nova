@@ -13,7 +13,7 @@ class Conversation(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     model_id = Column(Integer, ForeignKey("models.id", ondelete="SET NULL"), nullable=True)
     system_prompt = Column(Text, nullable=True)
-    folder_id = Column(Integer, ForeignKey("folders.id", ondelete="SET NULL"), nullable=True)
+    folder_id = Column(Integer, nullable=True)
     is_pinned = Column(Boolean, default=False)
     is_archived = Column(Boolean, default=False)
     last_message_at = Column(DateTime(timezone=True), nullable=True)

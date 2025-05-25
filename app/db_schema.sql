@@ -52,12 +52,12 @@ INSERT INTO models (
 
 -- Conversations table
 CREATE TABLE conversations (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL DEFAULT 'New Conversation',
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     model_id INTEGER REFERENCES models(id) ON DELETE SET NULL,
     system_prompt TEXT,
-    folder_id INTEGER, -- For organizing conversations into folders
+    folder_id INTEGER,
     is_pinned BOOLEAN DEFAULT false,
     is_archived BOOLEAN DEFAULT false,
     last_message_at TIMESTAMP,

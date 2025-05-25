@@ -60,7 +60,7 @@ const createModelStore = () => {
 		fetchModels: async () => {
 			store.update((state: ModelStoreState) => ({ ...state, loading: true, error: null }));
 			try {
-				const response = await api.get('/api/v1/models/?provider=all');
+				const response = await api.get('/models/?provider=all');
 				const models = response.data;
 				store.update((state: ModelStoreState) => ({
 					...state,
@@ -82,7 +82,7 @@ const createModelStore = () => {
 		fetchModelsByProvider: async (provider: string) => {
 			store.update((state: ModelStoreState) => ({ ...state, loading: true, error: null }));
 			try {
-				const response = await api.get(`/api/v1/models?provider=${provider}`);
+				const response = await api.get(`/models?provider=${provider}`);
 				const models = response.data;
 				store.update((state: ModelStoreState) => ({
 					...state,
@@ -125,7 +125,7 @@ const createModelStore = () => {
 
 				// Update chatStore with model name
 				if (model) {
-					setSelectedModel(model.name);
+					setSelectedModel(model.model_id);
 				}
 
 				// Save preference

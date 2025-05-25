@@ -7,6 +7,11 @@
 		const date = new Date(timestamp);
 		return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	}
+
+	function formatDuration(time: number | undefined): string {
+		if (!time) return '';
+		return `${time.toFixed(2)}s`;
+	}
 </script>
 
 <div class={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -19,7 +24,9 @@
 		{#if message.role === 'assistant' && message.meta}
 			<div class="meta">
 				<span>Model: {message.meta?.model}</span>
-				<span>Time: {message.meta?.time ? Math.round(message.meta.time / 1e9) + 's' : ''}</span>
+				{#if message.meta?.time}
+					<span>Time: {formatDuration(message.meta.time)}</span>
+				{/if}
 			</div>
 		{/if}
 	</div>

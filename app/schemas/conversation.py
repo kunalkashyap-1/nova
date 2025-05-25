@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from uuid import UUID
 
 class ConversationCreate(BaseModel):
     title: str
@@ -17,7 +18,7 @@ class ConversationUpdate(BaseModel):
     folder_id: Optional[int] = None
 
 class ConversationOut(BaseModel):
-    id: int
+    id: UUID
     title: str
     user_id: int
     model_id: Optional[int] = None

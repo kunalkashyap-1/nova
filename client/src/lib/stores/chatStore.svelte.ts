@@ -61,7 +61,7 @@ export const chatState: ChatState = $state({
 		username: 'NovaUser',
 		profilePicUrl: ''
 	},
-	selectedModel: ''
+	selectedModel: 'deepseek-r1:1.5b'
 });
 
 // --- User Auth State ---
@@ -70,6 +70,11 @@ export type AuthUser = {
 	profilePicUrl?: string;
 	isGuest: boolean;
 	tempUserId?: number;
+	preferences?: {
+		theme?: string;
+		language?: string;
+		timezone?: string;
+	};
 };
 
 function generateTempUserId(): number {
@@ -86,17 +91,27 @@ function loadUserFromLocalStorage(): AuthUser {
 				username: parsed.username || 'Guest User',
 				profilePicUrl: parsed.profilePicUrl || '',
 				isGuest: !parsed.username,
-				tempUserId: parsed.tempUserId || generateTempUserId()
+				tempUserId: parsed.tempUserId || generateTempUserId(),
+				preferences: parsed.preferences || {
+					theme: 'light',
+					language: 'en',
+					timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+				}
 			};
 		}
 	} catch {}
-	// For new users, generate a temp ID
+	// For new users, generate a temp ID and default preferences
 	const tempUserId = generateTempUserId();
 	return { 
 		username: 'Guest User', 
 		profilePicUrl: '', 
 		isGuest: true,
-		tempUserId 
+		tempUserId,
+		preferences: {
+			theme: 'light',
+			language: 'en',
+			timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+		}
 	};
 }
 
@@ -107,12 +122,17 @@ export function setUser(user: Partial<AuthUser>) {
 		...authUser, 
 		...user, 
 		isGuest: !user.username,
-		tempUserId: authUser.tempUserId || generateTempUserId() // Preserve or generate temp ID
+		tempUserId: authUser.tempUserId || generateTempUserId(), // Preserve or generate temp ID
+		preferences: {
+			...authUser.preferences,
+			...user.preferences
+		}
 	};
 	authUser.username = merged.username;
 	authUser.profilePicUrl = merged.profilePicUrl || '';
 	authUser.isGuest = merged.isGuest;
 	authUser.tempUserId = merged.tempUserId;
+	authUser.preferences = merged.preferences;
 	localStorage.setItem('nova_user', JSON.stringify(merged));
 }
 
@@ -120,6 +140,11 @@ export function signOut() {
 	authUser.username = 'Guest User';
 	authUser.profilePicUrl = '';
 	authUser.isGuest = true;
+	authUser.preferences = {
+		theme: 'light',
+		language: 'en',
+		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+	};
 	localStorage.removeItem('nova_user');
 }
 
@@ -172,44 +197,58 @@ export async function loadConversation(id: string) {
 }
 
 export async function createNewChat(prompt: string): Promise<string | undefined> {
-	if (!prompt.trim()) {
-		setError('Please enter a chat prompt');
-		return undefined;
-	}
 	setLoading(true);
 	try {
-		const newId = uuidv4();
-		chatState.activeConversationId = newId;
-		// Add conversation to list
-		const newConversation: Conversation = {
-			id: newId,
-			title: `Chat: ${prompt.slice(0, 30)}${prompt.length > 30 ? '...' : ''}`,
-			updatedAt: new Date().toISOString()
-		};
-		chatState.conversations = [newConversation, ...chatState.conversations];
-		saveConversationsToStorage(chatState.conversations);
-		// Create user message first
-		const userMsg: Message = {
-			id: uuidv4(),
-			role: 'user',
-			content: prompt,
-			timestamp: new Date().toISOString()
-		};
-		chatState.messages = [userMsg];
-		connectToChatSSE(
-			newId,
-			prompt,
-			(msg) => {},
-			(meta) => {
-				const conversation = chatState.conversations.find((c) => c.id === newId);
-				if (conversation) {
-					conversation.updatedAt = new Date().toISOString();
-					chatState.conversations = [...chatState.conversations];
-					saveConversationsToStorage(chatState.conversations);
+		// Get user ID based on auth state
+		const user_id = authUser.isGuest ? authUser.tempUserId : parseInt(authUser.username);
+		
+		// Create conversation on backend first
+		try {
+			const response = await api.post(`/conversations/`, {
+				title: `Chat: ${prompt.slice(0, 30)}${prompt.length > 30 ? '...' : ''}`,
+				user_id: user_id
+			});
+
+			// Get the created conversation from response
+			const newConversation = response.data;
+			const newId = newConversation.id;
+			chatState.activeConversationId = newId;
+			
+			// Add conversation to list
+			chatState.conversations = [newConversation, ...chatState.conversations];
+			saveConversationsToStorage(chatState.conversations);
+			
+			// Create user message first
+			const userMsg: Message = {
+				id: uuidv4(),
+				role: 'user',
+				content: prompt,
+				timestamp: new Date().toISOString()
+			};
+			chatState.messages = [userMsg];
+			
+			// Now connect to SSE after conversation is created
+			connectToChatSSE(
+				newId,
+				prompt,
+				(msg) => {},
+				(meta) => {
+					const conversation = chatState.conversations.find((c) => c.id === newId);
+					if (conversation) {
+						conversation.updatedAt = new Date().toISOString();
+						chatState.conversations = [...chatState.conversations];
+						saveConversationsToStorage(chatState.conversations);
+					}
 				}
+			);
+			return newId;
+		} catch (error: any) {
+			console.error('Error creating conversation:', error);
+			if (error.response?.data?.detail?.[0]?.msg) {
+				throw new Error(error.response.data.detail[0].msg);
 			}
-		);
-		return newId;
+			throw new Error(error.message || 'Failed to create conversation on server');
+		}
 	} catch (e) {
 		setError('Failed to create new chat');
 		return undefined;
@@ -249,7 +288,7 @@ function connectToChatSSE(
 	onFinal?: (meta: { model?: string; time?: number }) => void
 ) {
 	const user_id = authUser.isGuest ? authUser.tempUserId : parseInt(authUser.username);
-	const model = chatState.selectedModel || 'llama3.2:1b';
+	const model = chatState.selectedModel || 'deepseek-r1:1.5b';
 
 	// Only add user message if it's not already the last message
 	const lastMessage = chatState.messages[chatState.messages.length - 1];

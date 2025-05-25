@@ -67,7 +67,7 @@
 </script>
 
 <div class="mx-auto flex min-h-0 w-full flex-1 flex-col">
-	<section class="max-h-full min-h-0 flex-1 overflow-y-auto px-13" bind:this={chatContainer}>
+	<section class="max-h-full min-h-0 flex-1 overflow-y-auto px-13 chat-container" bind:this={chatContainer}>
 		{#if chatState.errorMessage}
 			<div class="mb-4 rounded border border-red-700 bg-red-900 px-4 py-3 text-red-100">
 				{chatState.errorMessage}
@@ -93,4 +93,32 @@
 </div>
 
 <style>
+	/* For Webkit browsers (Chrome, Safari) */
+	.chat-container::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.chat-container::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.chat-container::-webkit-scrollbar-thumb {
+		background: rgba(156, 163, 175, 0.5);
+		border-radius: 4px;
+	}
+
+	.chat-container::-webkit-scrollbar-thumb:hover {
+		background: rgba(156, 163, 175, 0.7);
+	}
+
+	/* For Firefox */
+	.chat-container {
+		scrollbar-width: thin;
+		scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+	}
+
+	/* For Edge and IE */
+	.chat-container {
+		-ms-overflow-style: none;
+	}
 </style>

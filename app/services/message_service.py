@@ -11,7 +11,7 @@ from sqlalchemy.sql import func
 from app.models.message import Message
 from app.models.conversation import Conversation
 from app.utils.redis import (
-    cache_get, cache_set, cache_delete, cache_append_to_list, cache_get_list
+    cache_get, cache_set, cache_delete, cache_hset, cache_hget
 )
 from app.routers.memories import get_chroma_client
 

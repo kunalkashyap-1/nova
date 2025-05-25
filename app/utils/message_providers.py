@@ -7,9 +7,13 @@ import logging
 import json
 from typing import AsyncGenerator, List, Dict, Optional
 from datetime import datetime
+import torch
+from pathlib import Path
+from dotenv import load_dotenv
 
 # Model providers
 from ollama import AsyncClient as OllamaClient, ResponseError as OllamaResponseError, ChatResponse as OllamaChatResponse
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from huggingface_hub import InferenceClient
 
 # Internal imports
@@ -19,14 +23,66 @@ from app.schemas.message import MessageStreamRequest
 from app.utils.token import estimate_tokens
 
 logger = logging.getLogger(__name__)
+load_dotenv()
+
 
 # Initialize clients
-ollama_client = OllamaClient(host=os.getenv("OLLAMA_HOST", "http://localhost:11434"))
+# ollama_client = OllamaClient(host=os.getenv("OLLAMA_HOST", "http://localhost:11434"))
+
+# Local models directory
+
+LOCAL_MODELS_DIR = Path(os.getenv("HF_MODELS_PATH", "../hf_models"))
+LOCAL_MODELS_DIR.mkdir(exist_ok=True)
 
 # Optional HuggingFace Inference API client
 hf_api_key = os.getenv("HF_API_KEY")
 hf_client = InferenceClient(token=hf_api_key) if hf_api_key else None
 
+# Cache for local models
+local_model_cache = {}
+
+def get_local_model(model_name: str):
+    """
+    Get or load a local HuggingFace model.
+    
+    Args:
+        model_name: Name of the model to load
+        
+    Returns:
+        Tuple of (model, tokenizer, pipeline)
+    """
+    if model_name in local_model_cache:
+        return local_model_cache[model_name]
+    
+    model_path = LOCAL_MODELS_DIR / model_name
+    if not model_path.exists():
+        raise ValueError(f"Model {model_name} not found in local_models directory")
+    
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    logger.info(f"Loading model {model_name} on {device}")
+    
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(model_path)
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path,
+            torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+            device_map="auto" if device == "cuda" else None
+        )
+        
+        pipe = pipeline(
+            "text-generation",
+            model=model,
+            tokenizer=tokenizer,
+            device=device,
+            max_new_tokens=int(os.getenv("HF_MAX_NEW_TOKENS", "4019")),
+            temperature=float(os.getenv("HF_TEMPERATURE", "0.7"))
+        )
+        
+        local_model_cache[model_name] = (model, tokenizer, pipe)
+        return local_model_cache[model_name]
+    except Exception as e:
+        logger.error(f"Error loading model {model_name}: {str(e)}")
+        raise
 
 async def process_ollama_response(
     stream,
@@ -143,14 +199,6 @@ async def process_huggingface_response(
     Yields:
         Formatted SSE data with message chunks or complete responses
     """
-    if not hf_client:
-        error_event = {
-            "error": "HuggingFace API key not configured",
-            "status_code": 500
-        }
-        yield f"data: {json.dumps(error_event)}\n\n"
-        return
-
     conversation_text = ""
     for msg in messages:
         role = msg["role"]
@@ -166,37 +214,58 @@ async def process_huggingface_response(
     start_time = datetime.now()
     
     try:
+        # Get local model
+        model, tokenizer, pipe = get_local_model(request.model)
+        
         if request.stream:
-            for text_chunk in hf_client.text_generation(
-                request.model,
-                conversation_text + "Assistant: ",
-                max_new_tokens=int(os.getenv("HF_MAX_NEW_TOKENS", "512")),
-                temperature=float(os.getenv("HF_TEMPERATURE", "0.7")),
-                stream=True
-            ):
-                collected_reply += text_chunk
+            # For streaming, we'll generate token by token
+            inputs = tokenizer(conversation_text + "Assistant: ", return_tensors="pt")
+            if torch.cuda.is_available():
+                inputs = {k: v.to("cuda") for k, v in inputs.items()}
+            
+            generated_ids = []
+            for _ in range(int(os.getenv("HF_MAX_NEW_TOKENS", "4019"))):
+                outputs = model.generate(
+                    **inputs,
+                    max_new_tokens=1,
+                    temperature=float(os.getenv("HF_TEMPERATURE", "0.7")),
+                    pad_token_id=tokenizer.eos_token_id
+                )
+                next_token = outputs[0][-1]
+                generated_ids.append(next_token)
+                
+                # Decode the new token
+                new_text = tokenizer.decode([next_token])
+                collected_reply += new_text
                 
                 event = {
                     "model": request.model,
                     "user_id": request.user_id,
                     "chat_id": request.chat_id,
-                    "reply": text_chunk,
+                    "reply": new_text,
                     "raw": {
-                        "text": text_chunk,
+                        "text": new_text,
                         "done": False,
                         "time": (datetime.now() - start_time).total_seconds()
                     }
                 }
                 yield f"data: {json.dumps(event)}\n\n"
+                
+                # Update inputs for next iteration
+                inputs = {"input_ids": outputs}
                 await asyncio.sleep(float(os.getenv("TYPING_DELAY", "0.01")))
+                
+                # Check for end of generation
+                if next_token == tokenizer.eos_token_id:
+                    break
         else:
-            response = hf_client.text_generation(
-                request.model,
+            # Non-streaming generation
+            response = pipe(
                 conversation_text + "Assistant: ",
-                max_new_tokens=int(os.getenv("HF_MAX_NEW_TOKENS", "512")),
+                max_new_tokens=int(os.getenv("HF_MAX_NEW_TOKENS", "4019")),
                 temperature=float(os.getenv("HF_TEMPERATURE", "0.7"))
             )
-            collected_reply = response
+            collected_reply = response[0]["generated_text"][len(conversation_text + "Assistant: "):]
             
             event = {
                 "model": request.model,
@@ -249,7 +318,7 @@ async def process_huggingface_response(
             yield f"data: {json.dumps(final_event)}\n\n"
         
     except Exception as e:
-        logger.error(f"HuggingFace API error: {str(e)}")
+        logger.error(f"HuggingFace local model error: {str(e)}")
         error_event = {
             "error": str(e),
             "status_code": 500
