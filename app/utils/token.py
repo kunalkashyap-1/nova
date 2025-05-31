@@ -313,22 +313,30 @@ def truncate_to_token_limit(text: str, token_limit: int, model_name: Optional[st
 
 def trim_messages(messages: List[dict], max_tokens: int = DEFAULT_MAX_TOKENS) -> List[dict]:
     """
-    Trim messages to fit within token budget.
+    Trim messages to fit within token budget, preserving the system and latest user message.
     
     Args:
-        messages: List of message dictionaries with 'content' field
-        max_tokens: Maximum tokens to include
+        messages: List of message dicts with 'content' field
+        max_tokens: Max token budget
         
     Returns:
-        Trimmed list of messages
+        Trimmed message list
     """
-    trimmed, total = [], 0
-    # Process in reverse chronological (newest first), but we'll reverse back at the end
-    for msg in reversed(messages):
+    if not messages or len(messages) < 2:
+        return messages
+
+    system_msg = messages[0]           
+    final_user_msg = messages[-1]      
+    middle_msgs = messages[1:-1]        
+    total_tokens = estimate_tokens(system_msg["content"]) + estimate_tokens(final_user_msg["content"])
+    trimmed_middle = []
+
+    for msg in middle_msgs:
         token_est = estimate_tokens(msg["content"])
-        if total + token_est > max_tokens:
-            # If we can't fit this message, stop adding more
+        if total_tokens + token_est > max_tokens:
             break
-        trimmed.insert(0, msg)  # Add to beginning to maintain chronological order
-        total += token_est
-    return trimmed
+        trimmed_middle.append(msg)
+        total_tokens += token_est
+
+    return [system_msg] + trimmed_middle + [final_user_msg]
+

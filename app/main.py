@@ -6,7 +6,7 @@ import time
 # Application routers
 from app.routers import auth, commands, tasks, memories, tools, settings, messages, models
 from app.routers import conversations
-from app.logging import logger
+from app.nova_logger import logger
 
 # Load environment variables
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"

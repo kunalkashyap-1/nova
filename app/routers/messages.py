@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from typing import AsyncGenerator, List
 import os
 import logging
+import pprint
 
 # Internal imports
 from app.database import get_db
@@ -38,39 +39,50 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/messages", tags=["Messages"])
 
 
+def _format_content_for_llm(content: str) -> str:
+    """
+    Format message content for optimal LLM consumption.
+    Removes excessive whitespace and standardizes formatting.
+    """
+    if not content:
+        return ""
+    
+    # Clean up whitespace while preserving structure
+    lines = [line.strip() for line in content.split('\n')]
+    cleaned_lines = []
+    
+    for line in lines:
+        if line:  # Skip empty lines
+            cleaned_lines.append(line)
+        elif cleaned_lines and cleaned_lines[-1]:  # Preserve single line breaks
+            cleaned_lines.append("")
+    
+    # Join and remove excessive spacing
+    formatted = '\n'.join(cleaned_lines)
+    
+    # Remove multiple consecutive spaces but preserve intentional formatting
+    import re
+    formatted = re.sub(r' {3,}', '  ', formatted)  # Max 2 consecutive spaces
+    formatted = re.sub(r'\n{3,}', '\n\n', formatted)  # Max 2 consecutive newlines
+    
+    return formatted.strip()
+
 async def message_streamer(
     request: MessageStreamRequest,
     db: Session = Depends(get_db)
 ) -> AsyncGenerator[str, None]:
     """
-    Stream a model response for a given message request.
-    
-    This function handles the core message processing workflow:
-    1. Verifies the conversation exists
-    2. Stores the user message in the database and vector store
-    3. Retrieves relevant context using the requested strategy
-    4. Gets last 2 messages for immediate context
-    5. Streams the model response and stores it
-    
-    Args:
-        request: The message request with model details and content
-        db: Database session
-        
-    Yields:
-        Server-sent events with model responses
+    Stream a model response with optimized message formatting and context management.
     """
     # Verify conversation exists
     conversation = db.query(Conversation).filter(Conversation.id == request.chat_id).first()
     if not conversation:
-        error_event = {
-            "error": "Conversation not found",
-            "status_code": 404
-        }
-        yield f"data: {json.dumps(error_event)}\n\n"
+        yield f"data: {json.dumps({'error': 'Conversation not found', 'status_code': 404})}\n\n"
         return
-        
-    # Store user message in database
+
     from app.utils.token import estimate_tokens
+    
+    # Store user message in database
     user_message = await store_message_in_db(
         db=db,
         conversation_id=request.chat_id,
@@ -78,10 +90,10 @@ async def message_streamer(
         content=request.message,
         tokens_used=estimate_tokens(request.message)
     )
-    
+
     # Store in vector DB for future context
     await store_in_vector_db(user_message.id, request.chat_id, request.message)
-    
+
     # Get relevant context using the specified strategy
     context_messages = await get_context_for_query(
         conversation_id=request.chat_id,
@@ -90,61 +102,62 @@ async def message_streamer(
         optimize=request.optimize_context,
         max_docs=request.max_context_docs
     )
-    
-    # Get last 2 messages for immediate context
+
+    # Get last few messages for immediate context
     recent_messages = db.query(Message).filter(
         Message.conversation_id == request.chat_id
-    ).order_by(Message.created_at.desc()).limit(2).all()
-    
-    # Format recent messages with clear role indicators
-    recent_context = []
-    for msg in reversed(recent_messages):  # Reverse to get chronological order
-        recent_context.append({
-            "role": msg.role,
-            "content": f"{msg.role.capitalize()}: {msg.content}"
+    ).order_by(Message.created_at.desc()).offset(1).limit(6).all()
+
+
+    # === OPTIMIZED MESSAGE CONSTRUCTION ===
+    messages = [{
+        "role": "system",
+        "content": "You are a helpful AI assistant. Use the conversation history and provided context to give accurate, relevant responses and keep the tone and language human like unless the user says otherwise."
+    }]
+
+    # Deduplicate context messages (remove ones already in recent messages)
+    recent_content = {msg.content.strip().lower() for msg in recent_messages}
+    unique_context = [
+        msg for msg in context_messages 
+        if msg["content"].strip().lower() not in recent_content
+    ]
+
+    # pprint.pprint(context_messages, depth=4)
+    # pprint.pprint(unique_context, depth=4)
+
+    # Add unique context messages with optimized formatting
+    for msg in unique_context:
+        content = _format_content_for_llm(msg["content"])
+        messages.append({
+            "role": msg["role"],
+            "content": content
         })
-    
-    # Add current user message with consistent formatting
-    recent_context.append({
+
+    # Add recent messages in chronological order with optimized formatting
+    for msg in reversed(recent_messages):
+        content = _format_content_for_llm(msg.content)
+        messages.append({
+            "role": msg.role,
+            "content": content
+        })
+
+    # Add current user message with optimized formatting
+    messages.append({
         "role": "user",
-        "content": f"User: {request.message}"
+        "content": _format_content_for_llm(request.message)
     })
-    
-    # Format context messages consistently
-    formatted_context = []
-    for msg in context_messages:
-        if msg["role"] == "system":
-            # Format system messages with clear context markers
-            formatted_context.append({
-                "role": "system",
-                "content": f"Context Information:\n{msg['content']}"
-            })
-        else:
-            # Format other messages consistently
-            formatted_context.append({
-                "role": msg["role"],
-                "content": f"{msg['role'].capitalize()}: {msg['content']}"
-            })
-    
-    # Combine vector store context with recent messages
-    # Put recent messages first to maintain conversation flow
-    messages = recent_context + formatted_context
-    
-    # Add a system message at the start to set the context
-    # messages.insert(0, {
-    #     "role": "system",
-    #     "content": "You are a helpful AI assistant. Use the provided context and conversation history to provide accurate and relevant responses."
-    # })
-    
-    # Trim messages to fit token budget
+
+    # Use existing trim_messages function
     messages = trim_messages(messages, max_tokens=MAX_TOKENS)
-    
-    # Log conversation for debugging
-    logger.debug(f"Sending {len(messages)} messages to {request.provider} model {request.model}")
-    
-    # Process based on provider
+
+    # pprint.pprint({"this is complete message": messages},depth=4)
+
+    # Debug logging
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(f"Sending {len(messages)} messages to {request.provider} model {request.model}")
+
+    # === STREAM RESPONSE ===
     if request.provider == "ollama":
-        # Get response from Ollama
         stream = await ollama_client.chat(
             model=request.model,
             messages=messages,
@@ -159,9 +172,8 @@ async def message_streamer(
             store_in_vector_db_func=store_in_vector_db
         ):
             yield chunk
-            
+
     elif request.provider == "huggingface":
-        # Get response from HuggingFace
         async for chunk in process_huggingface_response(
             request=request, 
             messages=messages, 
@@ -171,10 +183,10 @@ async def message_streamer(
             store_in_vector_db_func=store_in_vector_db
         ):
             yield chunk
-            
     else:
-        # Provider not supported
         yield f"data: {json.dumps({'error': f'Provider {request.provider} not supported'})}\n\n"
+
+
 
 
 @router.post("/", status_code=status.HTTP_200_OK, summary="Stream a chat message reply")

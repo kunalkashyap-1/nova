@@ -315,8 +315,10 @@ async def get_context_for_query(
                 
                 # Join all context with citations
                 context_with_citations = "\n\n".join(context_blocks)
-                if citations:
-                    context_with_citations += "\n\n" + "References:\n" + "\n".join(citations)
+
+                # this might come in handly later on but right now i'm commenting this 
+                # if citations:
+                #     context_with_citations += "\n\n" + "References:\n" + "\n".join(citations)
                 
                 context_messages = [{
                     "role": "system", 

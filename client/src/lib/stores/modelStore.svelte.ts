@@ -19,6 +19,7 @@ type ModelStoreState = {
 	loading: boolean;
 	error: string | null;
 	selectedModelId: number | null;
+	selectedModelName: string | null;
 	selectedProvider: string;
 	parameters: Record<string, any>;
 };
@@ -31,7 +32,8 @@ const createModelStore = () => {
 		loading: false,
 		error: null,
 		selectedModelId: null,
-		selectedProvider: 'ollama', // Default provider
+		selectedModelName: 'deepseek-r1:1.5b',
+		selectedProvider: 'ollama',
 		parameters: { ...DEFAULT_PARAMS }
 	});
 
@@ -44,9 +46,11 @@ const createModelStore = () => {
 				store.update((state: ModelStoreState) => ({
 					...state,
 					selectedModelId: parsed.selectedModelId || null,
+					selectedModelName: parsed.selectedModelName || 'deepseek-r1:1.5b',
 					selectedProvider: parsed.selectedProvider || 'ollama',
 					parameters: { ...DEFAULT_PARAMS, ...parsed.parameters }
 				}));
+				setSelectedModel(parsed.selectedModelName);
 			} catch (e) {
 				console.error('Failed to parse saved model preferences', e);
 			}
@@ -97,6 +101,7 @@ const createModelStore = () => {
 						JSON.stringify({
 							selectedModelId: currentState.selectedModelId,
 							selectedProvider: provider,
+							selectedModelName: currentState.selectedModelName,
 							parameters: currentState.parameters
 						})
 					);
@@ -134,7 +139,8 @@ const createModelStore = () => {
 						'nova_model_preferences',
 						JSON.stringify({
 							selectedModelId: modelId,
-							selectedProvider: state.selectedProvider,
+							selectedProvider: model?.provider,
+							selectedModelName: model?.model_id,
 							parameters: newParams
 						})
 					);
@@ -161,6 +167,7 @@ const createModelStore = () => {
 						JSON.stringify({
 							selectedModelId: currentState.selectedModelId,
 							selectedProvider: currentState.selectedProvider,
+							selectedModelName: currentState.selectedModelName,
 							parameters: newParams
 						})
 					);

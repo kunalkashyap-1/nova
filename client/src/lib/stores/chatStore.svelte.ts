@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import api from '../api';
-// This is now the single source of truth for chat/conversation state. All components should use this store.
-// SSE Event Interfaces
+
 export interface SSEChatBaseEvent {
 	type: 'init' | 'message' | 'title_update';
 	id: string;
@@ -305,6 +304,7 @@ function connectToChatSSE(
 	let replyBuffer = '';
 	let assistantMsg: Message | null = null;
 	let meta: { model?: string; time?: number } = {};
+	const preferences = JSON.parse(localStorage.getItem("nova_model_preferences") || '{}');
 
 	fetch(`http://${import.meta.env.VITE_BACKEND_API_URL}/api/v1/messages/`, {
 		method: 'POST',
@@ -316,7 +316,8 @@ function connectToChatSSE(
 			user_id,
 			model,
 			message: userMessage,
-			provider: 'ollama',
+			provider: preferences.selectedProvider || 'ollama',
+			// stream: false,
 			stream: true,
 			context_strategy: 'hybrid',
 			optimize_context: true,

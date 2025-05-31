@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 from ollama import AsyncClient as OllamaClient, ResponseError as OllamaResponseError, ChatResponse as OllamaChatResponse
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from huggingface_hub import InferenceClient
+from transformers import TextIteratorStreamer
+from threading import Thread
 
 # Internal imports
 from app.models.message import Message
@@ -27,7 +29,7 @@ load_dotenv()
 
 
 # Initialize clients
-# ollama_client = OllamaClient(host=os.getenv("OLLAMA_HOST", "http://localhost:11434"))
+ollama_client = OllamaClient(host=os.getenv("OLLAMA_HOST", "http://localhost:11434"))
 
 # Local models directory
 
@@ -55,6 +57,7 @@ def get_local_model(model_name: str):
         return local_model_cache[model_name]
     
     model_path = LOCAL_MODELS_DIR / model_name
+    print(model_path);
     if not model_path.exists():
         raise ValueError(f"Model {model_name} not found in local_models directory")
     
@@ -66,19 +69,11 @@ def get_local_model(model_name: str):
         model = AutoModelForCausalLM.from_pretrained(
             model_path,
             torch_dtype=torch.float16 if device == "cuda" else torch.float32,
-            device_map="auto" if device == "cuda" else None
-        )
+            # device_map="auto" if device == "cuda" else None
+            device_map=None
+        ).to(device)
         
-        pipe = pipeline(
-            "text-generation",
-            model=model,
-            tokenizer=tokenizer,
-            device=device,
-            max_new_tokens=int(os.getenv("HF_MAX_NEW_TOKENS", "4019")),
-            temperature=float(os.getenv("HF_TEMPERATURE", "0.7"))
-        )
-        
-        local_model_cache[model_name] = (model, tokenizer, pipe)
+        local_model_cache[model_name] = (model, tokenizer)
         return local_model_cache[model_name]
     except Exception as e:
         logger.error(f"Error loading model {model_name}: {str(e)}")
@@ -186,7 +181,7 @@ async def process_huggingface_response(
     store_in_vector_db_func
 ) -> AsyncGenerator[str, None]:
     """
-    Process the response from HuggingFace models.
+    Process the response from HuggingFace models using TextIteratorStreamer.
     
     Args:
         request: The message request object
@@ -199,73 +194,137 @@ async def process_huggingface_response(
     Yields:
         Formatted SSE data with message chunks or complete responses
     """
-    conversation_text = ""
-    for msg in messages:
-        role = msg["role"]
-        content = msg["content"]
-        if role == "user":
-            conversation_text += f"User: {content}\n"
-        elif role == "assistant":
-            conversation_text += f"Assistant: {content}\n"
-        elif role == "system":
-            conversation_text += f"System: {content}\n"
-    
+    # print("messages", messages)
     collected_reply = ""
     start_time = datetime.now()
     
     try:
         # Get local model
-        model, tokenizer, pipe = get_local_model(request.model)
+        model, tokenizer = get_local_model(request.model)
+        
+        # Format messages properly using the tokenizer's chat template if available
+        if hasattr(tokenizer, 'apply_chat_template') and tokenizer.chat_template is not None:
+            # Use the model's built-in chat template
+            prompt = tokenizer.apply_chat_template(
+                messages, 
+                tokenize=False, 
+                add_generation_prompt=True
+            )
+        else:
+            # Fallback to a more standard chat format
+            conversation_text = ""
+            for msg in messages:
+                role = msg["role"]
+                content = msg["content"]
+                if role == "system":
+                    conversation_text += f"<|system|>\n{content}\n\n"
+                elif role == "user":
+                    conversation_text += f"<|user|>\n{content}\n\n"
+                elif role == "assistant":
+                    conversation_text += f"<|assistant|>\n{content}\n\n"
+            
+            # Add the assistant prompt for generation
+            prompt = conversation_text + "<|assistant|>\n"
         
         if request.stream:
-            # For streaming, we'll generate token by token
-            inputs = tokenizer(conversation_text + "Assistant: ", return_tensors="pt")
+            # Create TextIteratorStreamer for streaming
+            streamer = TextIteratorStreamer(
+                tokenizer, 
+                skip_prompt=True,
+                skip_special_tokens=True,
+                timeout=60.0
+            )
+            
+            # Tokenize input
+            inputs = tokenizer(
+                prompt,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                return_attention_mask=True
+            )
+            
             if torch.cuda.is_available():
                 inputs = {k: v.to("cuda") for k, v in inputs.items()}
             
-            generated_ids = []
-            for _ in range(int(os.getenv("HF_MAX_NEW_TOKENS", "4019"))):
+            # Generation kwargs - more conservative settings for better quality
+            generation_kwargs = {
+                **inputs,
+                "streamer": streamer,
+                "max_new_tokens": min(int(os.getenv("HF_MAX_NEW_TOKENS", "512")), 512),  # Reduced from 4019
+                "temperature": float(os.getenv("HF_TEMPERATURE", "0.3")),  # Lower temperature for more coherent responses
+                "top_p": 0.9,  # Add nucleus sampling
+                "top_k": 50,   # Add top-k sampling
+                "do_sample": True,
+                # "repetition_penalty": 1.1,  
+                "eos_token_id": tokenizer.eos_token_id,
+                "pad_token_id": tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id,
+            }
+            
+            # Start generation in a separate thread
+            thread = Thread(target=model.generate, kwargs=generation_kwargs)
+            thread.start()
+            
+            # Stream the tokens as they're generated
+            try:
+                for new_text in streamer:
+                    if new_text:  # Skip empty strings
+                        collected_reply += new_text
+                        
+                        event = {
+                            "model": request.model,
+                            "user_id": request.user_id,
+                            "chat_id": request.chat_id,
+                            "reply": new_text,
+                            "raw": {
+                                "text": new_text,
+                                "done": False,
+                                "time": (datetime.now() - start_time).total_seconds()
+                            }
+                        }
+                        yield f"data: {json.dumps(event)}\n\n"
+                        
+                        # Small delay to prevent overwhelming the client
+                        await asyncio.sleep(0.01)
+                        
+            except Exception as streaming_error:
+                logger.error(f"Streaming error: {str(streaming_error)}")
+                # Wait for the thread to complete
+                thread.join(timeout=5.0)
+                raise
+            
+            # Wait for the generation thread to complete
+            thread.join()
+            
+        else:
+            # Non-streaming generation - use model.generate instead of pipeline for consistency
+            inputs = tokenizer(
+                prompt,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                return_attention_mask=True
+            )
+            
+            if torch.cuda.is_available():
+                inputs = {k: v.to("cuda") for k, v in inputs.items()}
+            
+            with torch.no_grad():
                 outputs = model.generate(
                     **inputs,
-                    max_new_tokens=1,
-                    temperature=float(os.getenv("HF_TEMPERATURE", "0.7")),
-                    pad_token_id=tokenizer.eos_token_id
+                    max_new_tokens=min(int(os.getenv("HF_MAX_NEW_TOKENS", "512")), 512),
+                    temperature=float(os.getenv("HF_TEMPERATURE", "0.3")),
+                    top_p=0.9,
+                    top_k=50,
+                    do_sample=True,
+                    repetition_penalty=1.1,
+                    eos_token_id=tokenizer.eos_token_id,
+                    pad_token_id=tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id,
                 )
-                next_token = outputs[0][-1]
-                generated_ids.append(next_token)
-                
-                # Decode the new token
-                new_text = tokenizer.decode([next_token])
-                collected_reply += new_text
-                
-                event = {
-                    "model": request.model,
-                    "user_id": request.user_id,
-                    "chat_id": request.chat_id,
-                    "reply": new_text,
-                    "raw": {
-                        "text": new_text,
-                        "done": False,
-                        "time": (datetime.now() - start_time).total_seconds()
-                    }
-                }
-                yield f"data: {json.dumps(event)}\n\n"
-                
-                # Update inputs for next iteration
-                inputs = {"input_ids": outputs}
-                await asyncio.sleep(float(os.getenv("TYPING_DELAY", "0.01")))
-                
-                # Check for end of generation
-                if next_token == tokenizer.eos_token_id:
-                    break
-        else:
-            # Non-streaming generation
-            response = pipe(
-                conversation_text + "Assistant: ",
-                max_new_tokens=int(os.getenv("HF_MAX_NEW_TOKENS", "4019")),
-                temperature=float(os.getenv("HF_TEMPERATURE", "0.7"))
-            )
-            collected_reply = response[0]["generated_text"][len(conversation_text + "Assistant: "):]
+            
+            # Decode only the new tokens (skip the input)
+            new_tokens = outputs[0][inputs['input_ids'].shape[1]:]
+            collected_reply = tokenizer.decode(new_tokens, skip_special_tokens=True)
             
             event = {
                 "model": request.model,
@@ -281,11 +340,11 @@ async def process_huggingface_response(
             yield f"data: {json.dumps(event)}\n\n"
         
         # Get model_id from the model name
-        model = db.query(Model).filter(
+        model_record = db.query(Model).filter(
             Model.provider == "huggingface", 
             Model.model_id == request.model
         ).first()
-        model_id = model.id if model else None
+        model_id = model_record.id if model_record else None
 
         # Store assistant's reply in the database
         assistant_message = await store_message_func(
