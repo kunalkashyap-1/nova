@@ -4,7 +4,8 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import AsyncGenerator, List
 import os
-import logging
+# import logging
+from app.nova_logger import logger
 import pprint
 
 # Internal imports
@@ -24,7 +25,10 @@ from app.utils.token import trim_messages
 from app.utils.message_providers import (
     process_ollama_response,
     process_huggingface_response,
-    ollama_client
+    ollama_client,
+    model_manager,  # Import the model manager
+    get_current_provider_status,
+    cleanup_all_models
 )
 from app.schemas.message import MessageOut, MessageStreamRequest
 
@@ -33,7 +37,7 @@ MAX_TOKENS = int(os.getenv("MAX_TOKENS", "30000"))
 MAX_HISTORY = int(os.getenv("MAX_HISTORY_ITEMS", "15"))
 
 # Configure logging
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 # Define router
 router = APIRouter(prefix="/api/v1/messages", tags=["Messages"])
@@ -73,7 +77,12 @@ async def message_streamer(
 ) -> AsyncGenerator[str, None]:
     """
     Stream a model response with optimized message formatting and context management.
+    Enhanced with proper provider switching.
     """
+    # Log provider switch for debugging
+    current_status = get_current_provider_status()
+    logger.info(f"Request for {request.provider}. Current status: {current_status}")
+    
     # Verify conversation exists
     conversation = db.query(Conversation).filter(Conversation.id == request.chat_id).first()
     if not conversation:
@@ -108,11 +117,10 @@ async def message_streamer(
         Message.conversation_id == request.chat_id
     ).order_by(Message.created_at.desc()).offset(1).limit(6).all()
 
-
     # === OPTIMIZED MESSAGE CONSTRUCTION ===
     messages = [{
         "role": "system",
-        "content": "You are a helpful AI assistant. Use the conversation history and provided context to give accurate, relevant responses and keep the tone and language human like unless the user says otherwise."
+        "content": "You are a helpful AI assistant. Use the conversation history and provided context to give accurate, relevant responses and keep the tone and language human like unless the user says otherwise. Also Keep responses short unless asked otherwise."
     }]
 
     # Deduplicate context messages (remove ones already in recent messages)
@@ -121,9 +129,6 @@ async def message_streamer(
         msg for msg in context_messages 
         if msg["content"].strip().lower() not in recent_content
     ]
-
-    # pprint.pprint(context_messages, depth=4)
-    # pprint.pprint(unique_context, depth=4)
 
     # Add unique context messages with optimized formatting
     for msg in unique_context:
@@ -150,43 +155,46 @@ async def message_streamer(
     # Use existing trim_messages function
     messages = trim_messages(messages, max_tokens=MAX_TOKENS)
 
-    # pprint.pprint({"this is complete message": messages},depth=4)
-
     # Debug logging
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(f"Sending {len(messages)} messages to {request.provider} model {request.model}")
+    # if logger.isEnabledFor(logging.DEBUG):
+        # logger.debug(f"Sending {len(messages)} messages to {request.provider} model {request.model}")
 
-    # === STREAM RESPONSE ===
-    if request.provider == "ollama":
-        stream = await ollama_client.chat(
-            model=request.model,
-            messages=messages,
-            stream=True,
-        )
-        async for chunk in process_ollama_response(
-            stream=stream, 
-            request=request, 
-            db=db, 
-            user_message_id=user_message.id,
-            store_message_func=store_message_in_db,
-            store_in_vector_db_func=store_in_vector_db
-        ):
-            yield chunk
+    # === STREAM RESPONSE WITH PROPER PROVIDER MANAGEMENT ===
+    try:
+        if request.provider == "ollama":
+            # The model_manager.prepare_ollama() is called inside process_ollama_response
+            stream = await ollama_client.chat(
+                model=request.model,
+                messages=messages,
+                stream=True,
+            )
+            async for chunk in process_ollama_response(
+                stream=stream, 
+                request=request, 
+                db=db, 
+                user_message_id=user_message.id,
+                store_message_func=store_message_in_db,
+                store_in_vector_db_func=store_in_vector_db
+            ):
+                yield chunk
 
-    elif request.provider == "huggingface":
-        async for chunk in process_huggingface_response(
-            request=request, 
-            messages=messages, 
-            db=db, 
-            user_message_id=user_message.id,
-            store_message_func=store_message_in_db,
-            store_in_vector_db_func=store_in_vector_db
-        ):
-            yield chunk
-    else:
-        yield f"data: {json.dumps({'error': f'Provider {request.provider} not supported'})}\n\n"
-
-
+        elif request.provider == "huggingface":
+            # The model_manager.switch_to_provider() is called inside process_huggingface_response
+            async for chunk in process_huggingface_response(
+                request=request, 
+                messages=messages, 
+                db=db, 
+                user_message_id=user_message.id,
+                store_message_func=store_message_in_db,
+                store_in_vector_db_func=store_in_vector_db
+            ):
+                yield chunk
+        else:
+            yield f"data: {json.dumps({'error': f'Provider {request.provider} not supported'})}\n\n"
+            
+    except Exception as e:
+        logger.error(f"Error in message streaming: {str(e)}")
+        yield f"data: {json.dumps({'error': str(e), 'status_code': 500})}\n\n"
 
 
 @router.post("/", status_code=status.HTTP_200_OK, summary="Stream a chat message reply")
@@ -199,6 +207,7 @@ async def stream_message_reply(
     
     This endpoint:
     - Creates a streaming response with the model's reply
+    - Properly manages model resources between providers
     - Stores both the user message and model response in the database
     - Indexes messages in the vector database for future context
     
@@ -293,3 +302,21 @@ def get_messages(conversation_id: int = None, db: Session = Depends(get_db)):
 @router.post("/stream", status_code=status.HTTP_200_OK)
 async def stream_message_reply_alias(body: MessageStreamRequest, db: Session = Depends(get_db)):
     return await stream_message_reply(body, db)
+
+
+# Debug endpoints for model management
+@router.get("/debug/provider-status", summary="Get current provider status")
+def get_provider_status():
+    """Get current provider and model status for debugging"""
+    return get_current_provider_status()
+
+
+@router.post("/debug/cleanup-models", summary="Manually cleanup all models")
+def manual_cleanup():
+    """Manually cleanup all loaded models - useful for debugging"""
+    try:
+        cleanup_all_models()
+        return {"status": "success", "message": "All models cleaned up"}
+    except Exception as e:
+        logger.error(f"Error during manual cleanup: {str(e)}")
+        return {"status": "error", "message": str(e)}

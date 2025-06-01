@@ -2,3 +2,4 @@ storage
 .env
 __pycache__
 chromadb
+nova.log

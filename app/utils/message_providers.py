@@ -1,10 +1,8 @@
-"""
-Message provider clients and utility functions for handling different LLM provider APIs.
-"""
 import os
 import asyncio
-import logging
+# import logging
 import json
+import gc
 from typing import AsyncGenerator, List, Dict, Optional
 from datetime import datetime
 import torch
@@ -13,26 +11,26 @@ from dotenv import load_dotenv
 
 # Model providers
 from ollama import AsyncClient as OllamaClient, ResponseError as OllamaResponseError, ChatResponse as OllamaChatResponse
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from huggingface_hub import InferenceClient
 from transformers import TextIteratorStreamer
 from threading import Thread
+import requests
 
 # Internal imports
 from app.models.message import Message
 from app.models.model import Model
 from app.schemas.message import MessageStreamRequest
 from app.utils.token import estimate_tokens
+from app.nova_logger import logger
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 load_dotenv()
-
 
 # Initialize clients
 ollama_client = OllamaClient(host=os.getenv("OLLAMA_HOST", "http://localhost:11434"))
 
 # Local models directory
-
 LOCAL_MODELS_DIR = Path(os.getenv("HF_MODELS_PATH", "../hf_models"))
 LOCAL_MODELS_DIR.mkdir(exist_ok=True)
 
@@ -40,44 +38,118 @@ LOCAL_MODELS_DIR.mkdir(exist_ok=True)
 hf_api_key = os.getenv("HF_API_KEY")
 hf_client = InferenceClient(token=hf_api_key) if hf_api_key else None
 
-# Cache for local models
-local_model_cache = {}
+# Global model management
+class ModelManager:
+    """Manages model loading/unloading to prevent resource conflicts"""
+    
+    def __init__(self):
+        self.current_provider = None
+        self.current_model_name = None
+        self.hf_model = None
+        self.hf_tokenizer = None
+        self.ollama_active = False
+        
+    def cleanup_hf_models(self):
+        """Clean up HuggingFace models from memory"""
+        if self.hf_model is not None:
+            logger.info(f"Cleaning up HF model: {self.current_model_name}")
+            del self.hf_model
+            del self.hf_tokenizer
+            self.hf_model = None
+            self.hf_tokenizer = None
+            
+            # Clear CUDA cache if available
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+                torch.cuda.synchronize()
+            
+            # Force garbage collection
+            gc.collect()
+            
+    def cleanup_ollama(self):
+        """Clean up Ollama resources"""
+        if self.ollama_active:
+            logger.info("Cleaning up Ollama resources")
+            self.ollama_active = False
+            # stop_res = requests.post(f"{os.getenv('OLLAMA_HOST', 'http://localhost:11434')}/api/stop")
+            # if stop_res.status_code != 200:
+            #     logger.error(f"Failed to stop Ollama: {stop_res.text}")
+            
+    def switch_to_provider(self, provider: str, model_name: str = None):
+        """Switch to a different provider, cleaning up the previous one"""
+        if self.current_provider == provider and self.current_model_name == model_name:
+            return  # Already using this provider/model
+            
+        logger.info(f"Switching from {self.current_provider} to {provider}")
+        
+        # Clean up current provider
+        if self.current_provider == "huggingface":
+            self.cleanup_hf_models()
+        elif self.current_provider == "ollama":
+            self.cleanup_ollama()
+            
+        # Update current provider
+        self.current_provider = provider
+        self.current_model_name = model_name
+        
+        if provider == "ollama":
+            self.ollama_active = True
+            
+    def get_hf_model(self, model_name: str):
+        """Get or load a HuggingFace model with proper cleanup"""
+        # Switch to HF provider (will cleanup ollama if needed)
+        self.switch_to_provider("huggingface", model_name)
+        
+        # If we already have this model loaded, return it
+        if (self.hf_model is not None and 
+            self.hf_tokenizer is not None and 
+            self.current_model_name == model_name):
+            return self.hf_model, self.hf_tokenizer
+            
+        # Clean up any existing HF model
+        self.cleanup_hf_models()
+        
+        model_path = LOCAL_MODELS_DIR / model_name
+        if not model_path.exists():
+            raise ValueError(f"Model {model_name} not found in local_models directory")
+        
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        logger.info(f"Loading HF model {model_name} on {device}")
+        
+        try:
+            self.hf_tokenizer = AutoTokenizer.from_pretrained(str(model_path))
+            self.hf_model = AutoModelForCausalLM.from_pretrained(
+                str(model_path),
+                torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+                device_map=None
+            ).to(device)
+            
+            self.current_model_name = model_name
+            return self.hf_model, self.hf_tokenizer
+            
+        except Exception as e:
+            logger.error(f"Error loading model {model_name}: {str(e)}")
+            self.cleanup_hf_models()
+            raise
+            
+    def prepare_ollama(self):
+        """Prepare for Ollama usage"""
+        self.switch_to_provider("ollama")
+
+# Global model manager instance
+model_manager = ModelManager()
 
 def get_local_model(model_name: str):
     """
-    Get or load a local HuggingFace model.
+    Get or load a local HuggingFace model with proper resource management.
     
     Args:
         model_name: Name of the model to load
         
     Returns:
-        Tuple of (model, tokenizer, pipeline)
+        Tuple of (model, tokenizer)
     """
-    if model_name in local_model_cache:
-        return local_model_cache[model_name]
-    
-    model_path = LOCAL_MODELS_DIR / model_name
-    print(model_path);
-    if not model_path.exists():
-        raise ValueError(f"Model {model_name} not found in local_models directory")
-    
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    logger.info(f"Loading model {model_name} on {device}")
-    
-    try:
-        tokenizer = AutoTokenizer.from_pretrained(model_path)
-        model = AutoModelForCausalLM.from_pretrained(
-            model_path,
-            torch_dtype=torch.float16 if device == "cuda" else torch.float32,
-            # device_map="auto" if device == "cuda" else None
-            device_map=None
-        ).to(device)
-        
-        local_model_cache[model_name] = (model, tokenizer)
-        return local_model_cache[model_name]
-    except Exception as e:
-        logger.error(f"Error loading model {model_name}: {str(e)}")
-        raise
+    return model_manager.get_hf_model(model_name)
 
 async def process_ollama_response(
     stream,
@@ -89,18 +161,11 @@ async def process_ollama_response(
 ) -> AsyncGenerator[str, None]:
     """
     Process the streaming response from Ollama.
-    
-    Args:
-        stream: Ollama streaming response
-        request: The message request object
-        db: Database session
-        user_message_id: ID of the user message this is responding to
-        store_message_func: Function to store message in database
-        store_in_vector_db_func: Function to store message in vector database
-        
-    Yields:
-        Formatted SSE data with message chunks
+    Enhanced with proper resource management.
     """
+    # Ensure we're using Ollama provider
+    model_manager.prepare_ollama()
+    
     collected_reply = ""
     start_time = datetime.now()
     
@@ -182,24 +247,13 @@ async def process_huggingface_response(
 ) -> AsyncGenerator[str, None]:
     """
     Process the response from HuggingFace models using TextIteratorStreamer.
-    
-    Args:
-        request: The message request object
-        messages: Formatted messages to send to the model
-        db: Database session
-        user_message_id: ID of the user message this is responding to
-        store_message_func: Function to store message in database
-        store_in_vector_db_func: Function to store message in vector database
-        
-    Yields:
-        Formatted SSE data with message chunks or complete responses
+    Enhanced with proper resource management.
     """
-    # print("messages", messages)
     collected_reply = ""
     start_time = datetime.now()
     
     try:
-        # Get local model
+        # Get local model with proper resource management
         model, tokenizer = get_local_model(request.model)
         
         # Format messages properly using the tokenizer's chat template if available
@@ -251,12 +305,11 @@ async def process_huggingface_response(
             generation_kwargs = {
                 **inputs,
                 "streamer": streamer,
-                "max_new_tokens": min(int(os.getenv("HF_MAX_NEW_TOKENS", "512")), 512),  # Reduced from 4019
-                "temperature": float(os.getenv("HF_TEMPERATURE", "0.3")),  # Lower temperature for more coherent responses
-                "top_p": 0.9,  # Add nucleus sampling
-                "top_k": 50,   # Add top-k sampling
+                "max_new_tokens": min(int(os.getenv("HF_MAX_NEW_TOKENS", "512")), 512),
+                "temperature": float(os.getenv("HF_TEMPERATURE", "0.3")),
+                "top_p": 0.9,
+                "top_k": 50,
                 "do_sample": True,
-                # "repetition_penalty": 1.1,  
                 "eos_token_id": tokenizer.eos_token_id,
                 "pad_token_id": tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id,
             }
@@ -297,7 +350,7 @@ async def process_huggingface_response(
             thread.join()
             
         else:
-            # Non-streaming generation - use model.generate instead of pipeline for consistency
+            # Non-streaming generation
             inputs = tokenizer(
                 prompt,
                 return_tensors="pt",
@@ -313,7 +366,7 @@ async def process_huggingface_response(
                 outputs = model.generate(
                     **inputs,
                     max_new_tokens=min(int(os.getenv("HF_MAX_NEW_TOKENS", "512")), 512),
-                    temperature=float(os.getenv("HF_TEMPERATURE", "0.3")),
+                    temperature=float(os.getenv("HF_TEMPERATURE", "0.7")),
                     top_p=0.9,
                     top_k=50,
                     do_sample=True,
@@ -383,3 +436,20 @@ async def process_huggingface_response(
             "status_code": 500
         }
         yield f"data: {json.dumps(error_event)}\n\n"
+
+# Additional utility functions for manual cleanup
+def cleanup_all_models():
+    """Clean up all loaded models - useful for manual cleanup"""
+    model_manager.cleanup_hf_models()
+    model_manager.cleanup_ollama()
+    model_manager.current_provider = None
+    model_manager.current_model_name = None
+
+def get_current_provider_status():
+    """Get current provider status for debugging"""
+    return {
+        "current_provider": model_manager.current_provider,
+        "current_model": model_manager.current_model_name,
+        "hf_model_loaded": model_manager.hf_model is not None,
+        "ollama_active": model_manager.ollama_active
+    }
