@@ -604,3 +604,73 @@
 2025-06-01 21:05:18,146 - INFO -  nova - Cleaning up Ollama resources
 2025-06-01 21:05:18,146 - INFO -  nova - Loading HF model Qwen/Qwen2.5-0.5B-Instruct on cuda
 2025-06-01 21:05:57,696 - INFO -  nova - Application shutdown
+2025-06-02 21:07:11,644 - INFO -  nova - Logger initialized
+2025-06-02 21:08:02,733 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-02 21:08:11,170 - INFO -  nova - Logger initialized
+2025-06-02 21:08:32,689 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-02 21:08:32,813 - INFO -  nova - Application startup complete
+2025-06-02 21:09:16,277 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.39461231231689453}
+2025-06-02 21:22:11,740 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.027693986892700195}
+2025-06-02 21:24:28,776 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.023020029067993164}
+2025-06-02 21:26:57,449 - INFO -  nova - Application shutdown
+2025-06-02 21:27:17,073 - INFO -  nova - Logger initialized
+2025-06-02 21:28:16,735 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-02 21:28:16,860 - INFO -  nova - Application startup complete
+2025-06-02 21:30:39,215 - INFO -  nova - Application shutdown
+2025-06-02 21:30:49,566 - INFO -  nova - Logger initialized
+2025-06-02 21:31:08,608 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-02 21:31:08,736 - INFO -  nova - Application startup complete
+2025-06-02 21:34:30,827 - INFO -  nova - Application shutdown
+2025-06-02 21:34:44,223 - INFO -  nova - Logger initialized
+2025-06-02 21:35:08,677 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-02 21:35:08,799 - INFO -  nova - Application startup complete
+2025-06-02 21:52:35,035 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-06-02 21:52:35,710 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.6275317668914795}
+2025-06-02 21:52:35,798 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.006894588470458984}
+2025-06-02 21:52:36,038 - INFO -  nova - Request for ollama. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False}
+2025-06-02 21:52:37,012 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 1.021031379699707}
+2025-06-02 21:52:40,707 - INFO -  nova - Switching from None to ollama
+2025-06-02 22:01:35,520 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.031436920166015625}
+2025-06-02 22:05:52,220 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.2915022373199463}
+2025-06-02 22:05:52,276 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True}
+2025-06-02 22:05:52,426 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.15674591064453125}
+2025-06-02 22:06:34,183 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True}
+2025-06-02 22:06:34,425 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.2603781223297119}
+2025-06-02 22:07:10,187 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True}
+2025-06-02 22:07:10,248 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.06950235366821289}
+2025-06-02 22:08:00,164 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True}
+2025-06-02 22:08:00,509 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.3552074432373047}
+2025-06-02 22:08:03,697 - INFO -  nova - Switching from ollama to huggingface
+2025-06-02 22:08:03,699 - INFO -  nova - Cleaning up Ollama resources
+2025-06-02 22:08:03,784 - INFO -  nova - Loading HF model Qwen/Qwen2.5-0.5B-Instruct on cuda
+2025-06-02 22:08:42,788 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False}
+2025-06-02 22:08:42,843 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.05538821220397949}
+2025-06-02 22:11:35,620 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False}
+2025-06-02 22:11:35,649 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.03427004814147949}
+2025-06-02 22:11:48,589 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False}
+2025-06-02 22:11:48,650 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.06558108329772949}
+2025-06-02 22:11:56,063 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False}
+2025-06-02 22:11:56,081 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.028799772262573242}
+2025-06-02 22:12:08,368 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False}
+2025-06-02 22:12:08,399 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.03574228286743164}
+2025-06-02 22:12:24,233 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False}
+2025-06-02 22:12:24,391 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.1703500747680664}
+2025-06-02 22:13:22,578 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False}
+2025-06-02 22:13:22,813 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.23795366287231445}
+2025-06-02 22:13:37,087 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False}
+2025-06-02 22:13:37,294 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.21906399726867676}
+2025-06-02 22:34:47,667 - INFO -  nova - Application shutdown
+2025-06-02 22:35:00,540 - INFO -  nova - Logger initialized
+2025-06-02 22:35:44,323 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-02 22:35:44,369 - INFO -  nova - Application startup complete
+2025-06-02 22:36:03,567 - INFO -  nova - Request for huggingface. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_threads': 0}
+2025-06-02 22:36:04,129 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.5728838443756104}
+2025-06-02 22:36:06,048 - INFO -  nova - Switching from None to huggingface
+2025-06-02 22:36:06,112 - INFO -  nova - Loading HF model Qwen/Qwen2.5-0.5B-Instruct on cuda
+2025-06-02 22:36:18,565 - INFO -  nova - Waiting for generation thread to stop...
+2025-06-02 22:36:20,576 - WARNING -  nova - Generation thread did not stop gracefully
+2025-06-02 22:37:55,070 - INFO -  nova - Application shutdown
+2025-06-02 22:38:02,434 - INFO -  nova - Logger initialized
+2025-06-02 22:38:10,651 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-02 22:38:10,697 - INFO -  nova - Application startup complete
+2025-06-02 22:38:10,704 - INFO -  nova - Application shutdown

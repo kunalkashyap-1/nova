@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import api from '../api';
 
+let currentAbortController: AbortController | null = null;
+
 export interface SSEChatBaseEvent {
 	type: 'init' | 'message' | 'title_update';
 	id: string;
@@ -48,6 +50,8 @@ export type ChatState = {
 		profilePicUrl: string;
 	};
 	selectedModel: string;
+	// Add stream state directly to the store
+	isStreamActive: boolean;
 };
 
 export const chatState: ChatState = $state({
@@ -60,7 +64,8 @@ export const chatState: ChatState = $state({
 		username: 'NovaUser',
 		profilePicUrl: ''
 	},
-	selectedModel: 'deepseek-r1:1.5b'
+	selectedModel: 'deepseek-r1:1.5b',
+	isStreamActive: false
 });
 
 // --- User Auth State ---
@@ -281,127 +286,170 @@ export async function sendMessage(content: string) {
 }
 
 function connectToChatSSE(
-	chatId: string,
-	userMessage: string,
-	onAssistantMessage: (msg: Message) => void,
-	onFinal?: (meta: { model?: string; time?: number }) => void
+    chatId: string,
+    userMessage: string,
+    onAssistantMessage: (msg: Message) => void,
+    onFinal?: (meta: { model?: string; time?: number }) => void,
+    onStopped?: () => void
 ) {
-	const user_id = authUser.isGuest ? authUser.tempUserId : parseInt(authUser.username);
-	const model = chatState.selectedModel || 'deepseek-r1:1.5b';
+    // Create new abort controller for this request
+    currentAbortController = new AbortController();
+    
+    // Update stream state immediately when starting
+    chatState.isStreamActive = true;
+    
+    const user_id = authUser.isGuest ? authUser.tempUserId : parseInt(authUser.username);
+    const model = chatState.selectedModel || 'deepseek-r1:1.5b';
+    
+    // Only add user message if it's not already the last message
+    const lastMessage = chatState.messages[chatState.messages.length - 1];
+    if (!lastMessage || lastMessage.content !== userMessage) {
+        const userMsg: Message = {
+            id: uuidv4(),
+            role: 'user',
+            content: userMessage,
+            timestamp: new Date().toISOString()
+        };
+        chatState.messages = [...chatState.messages, userMsg];
+    }
+    
+    let replyBuffer = '';
+    let assistantMsg: Message | null = null;
+    let meta: { model?: string; time?: number } = {};
+    const preferences = JSON.parse(localStorage.getItem("nova_model_preferences") || '{}');
+    
+    fetch(`http://${import.meta.env.VITE_BACKEND_API_URL}/api/v1/messages/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            chat_id: chatId,
+            user_id,
+            model,
+            message: userMessage,
+            provider: preferences.selectedProvider || 'ollama',
+            stream: true,
+            context_strategy: 'hybrid',
+            optimize_context: true,
+            max_context_docs: 15
+        }),
+        // Add abort signal
+        signal: currentAbortController.signal
+    }).then(async (response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+       
+        const reader = response.body?.getReader();
+        if (!reader) {
+            throw new Error('No reader available');
+        }
+        const decoder = new TextDecoder();
+        let done = false;
+       
+        try {
+            while (!done) {
+                const { value, done: doneReading } = await reader.read();
+                done = doneReading;
+                
+                if (value) {
+                    const chunk = decoder.decode(value, { stream: true });
+                    chunk.split(/\n\n/).forEach((eventStr) => {
+                        if (eventStr.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(eventStr.slice(6));
+                               
+                                // Handle errors
+                                if (data.error) {
+                                    console.error('Error from server:', data.error);
+                                    chatState.errorMessage = data.error;
+                                    return;
+                                }
+                                
+                                const content = data.reply ?? '';
+                                replyBuffer += content;
+                                
+                                if (!assistantMsg) {
+                                    assistantMsg = {
+                                        id: uuidv4(),
+                                        role: 'assistant',
+                                        content: '',
+                                        timestamp: new Date().toISOString()
+                                    };
+                                    chatState.messages = [...chatState.messages, assistantMsg];
+                                }
+                                
+                                assistantMsg = { ...assistantMsg, content: replyBuffer };
+                                chatState.messages = chatState.messages.map((m) =>
+                                    m.id === assistantMsg!.id ? assistantMsg! : m
+                                );
+                                onAssistantMessage({ ...assistantMsg });
+                               
+                                // Check if this is the final message
+                                if (data.raw?.done || data.raw?.text) {
+                                    meta = {
+                                        model: data.model,
+                                        time: data.raw?.total_duration || data.raw?.time
+                                    };
+                                    assistantMsg = { ...assistantMsg, content: replyBuffer, meta };
+                                    chatState.messages = chatState.messages.map((m) =>
+                                        m.id === assistantMsg!.id ? assistantMsg! : m
+                                    );
+                                    onAssistantMessage({ ...assistantMsg });
+                                    onFinal && onFinal(meta);
+                                }
+                            } catch (e) {
+                                console.error('Failed to parse SSE chunk', e);
+                                chatState.errorMessage = 'Failed to parse server response';
+                            }
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            // Check if this was an abort
+            if (error instanceof DOMException && error.name === 'AbortError') {
+                console.log('Stream was aborted by user');
+                onStopped && onStopped();
+                return;
+            }
+            console.error('Error reading stream:', error);
+            chatState.errorMessage = 'Error reading response stream';
+        } finally {
+            reader.releaseLock();
+            // Always reset stream state when done
+            chatState.isStreamActive = false;
+            currentAbortController = null;
+        }
+    }).catch((error) => {
+        // Check if this was an abort
+        if (error.name === 'AbortError') {
+            console.log('Request was aborted by user');
+            onStopped && onStopped();
+        } else {
+            console.error('Error in chat stream:', error);
+            chatState.errorMessage = error.message || 'Failed to connect to chat stream';
+        }
+        // Always reset stream state on error/abort
+        chatState.isStreamActive = false;
+        currentAbortController = null;
+    });
+}
 
-	// Only add user message if it's not already the last message
-	const lastMessage = chatState.messages[chatState.messages.length - 1];
-	if (!lastMessage || lastMessage.content !== userMessage) {
-		const userMsg: Message = {
-			id: uuidv4(),
-			role: 'user',
-			content: userMessage,
-			timestamp: new Date().toISOString()
-		};
-		chatState.messages = [...chatState.messages, userMsg];
-	}
+// Function to stop the current stream
+export function stopCurrentStream(): boolean {
+    if (currentAbortController) {
+        currentAbortController.abort();
+        currentAbortController = null;
+        chatState.isStreamActive = false;
+        return true; 
+    }
+    return false; 
+}
 
-	let replyBuffer = '';
-	let assistantMsg: Message | null = null;
-	let meta: { model?: string; time?: number } = {};
-	const preferences = JSON.parse(localStorage.getItem("nova_model_preferences") || '{}');
-
-	fetch(`http://${import.meta.env.VITE_BACKEND_API_URL}/api/v1/messages/`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			chat_id: chatId,
-			user_id,
-			model,
-			message: userMessage,
-			provider: preferences.selectedProvider || 'ollama',
-			// stream: false,
-			stream: true,
-			context_strategy: 'hybrid',
-			optimize_context: true,
-			max_context_docs: 15
-		})
-	}).then(async (response) => {
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-		
-		const reader = response.body?.getReader();
-		if (!reader) {
-			throw new Error('No reader available');
-		}
-
-		const decoder = new TextDecoder();
-		let done = false;
-		
-		try {
-			while (!done) {
-				const { value, done: doneReading } = await reader.read();
-				done = doneReading;
-				if (value) {
-					const chunk = decoder.decode(value, { stream: true });
-					chunk.split(/\n\n/).forEach((eventStr) => {
-						if (eventStr.startsWith('data: ')) {
-							try {
-								const data = JSON.parse(eventStr.slice(6));
-								
-								// Handle errors
-								if (data.error) {
-									console.error('Error from server:', data.error);
-									chatState.errorMessage = data.error;
-									return;
-								}
-
-								const content = data.reply ?? '';
-								replyBuffer += content;
-								if (!assistantMsg) {
-									assistantMsg = {
-										id: uuidv4(),
-										role: 'assistant',
-										content: '',
-										timestamp: new Date().toISOString()
-									};
-									chatState.messages = [...chatState.messages, assistantMsg];
-								}
-								assistantMsg = { ...assistantMsg, content: replyBuffer };
-								chatState.messages = chatState.messages.map((m) =>
-									m.id === assistantMsg!.id ? assistantMsg! : m
-								);
-								onAssistantMessage({ ...assistantMsg });
-								
-								// Check if this is the final message
-								if (data.raw?.done || data.raw?.text) {
-									meta = { 
-										model: data.model, 
-										time: data.raw?.total_duration || data.raw?.time 
-									};
-									assistantMsg = { ...assistantMsg, content: replyBuffer, meta };
-									chatState.messages = chatState.messages.map((m) =>
-										m.id === assistantMsg!.id ? assistantMsg! : m
-									);
-									onAssistantMessage({ ...assistantMsg });
-									onFinal && onFinal(meta);
-								}
-							} catch (e) {
-								console.error('Failed to parse SSE chunk', e);
-								chatState.errorMessage = 'Failed to parse server response';
-							}
-						}
-					});
-				}
-			}
-		} catch (error) {
-			console.error('Error reading stream:', error);
-			chatState.errorMessage = 'Error reading response stream';
-		} finally {
-			reader.releaseLock();
-		}
-	}).catch((error) => {
-		console.error('Error in chat stream:', error);
-		chatState.errorMessage = error.message || 'Failed to connect to chat stream';
-	});
+export function isStreamActive(): boolean {
+    return chatState.isStreamActive;
 }
 
 export function setSelectedModel(model: string) {

@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { Send, Mic, Search } from '@lucide/svelte';
+	import { Send, Mic, Search, StopCircle } from '@lucide/svelte';
 	import ModelSelector from './components/ModelSelector.svelte';
+	import { chatState, stopCurrentStream } from '$lib/stores/chatStore.svelte';
 	import { selectedModel } from './stores/modelStore.svelte';
 
 	interface Props {
@@ -10,12 +11,7 @@
 		disabled?: boolean;
 	}
 
-	let {
-		onSendMessage,
-		onVoiceInput,
-		isLoading = false,
-		disabled = false
-	}: Props = $props();
+	let { onSendMessage, onVoiceInput, isLoading = false, disabled = false }: Props = $props();
 	let message = $state('');
 	let textareaElement: HTMLTextAreaElement;
 	let autoFocused = false;
@@ -130,9 +126,22 @@
 					{disabled}
 				></textarea>
 
-				<button
-					onclick={handleSend}
-					class={`
+				{#if chatState.isStreamActive}
+					<button
+						onclick={stopCurrentStream}
+						class={`
+						 text-red-500 hover:text-red-600
+						rounded-full
+						p-2 sm:p-1
+						`}
+						aria-label="Stop message"
+					>
+						<StopCircle class="h-5 w-5 sm:h-5 sm:w-5" />
+					</button>
+				{:else}
+					<button
+						onclick={handleSend}
+						class={`
             rounded-full
             p-2
             sm:p-1
@@ -142,11 +151,12 @@
 								: 'text-green-400 hover:text-green-300'
 						}
           `}
-					disabled={!message.trim() || isLoading || disabled}
-					aria-label="Send message"
-				>
-					<Send class="h-5 w-5 sm:h-5 sm:w-5" />
-				</button>
+						disabled={!message.trim() || isLoading || disabled}
+						aria-label="Send message"
+					>
+						<Send class="h-5 w-5 sm:h-5 sm:w-5" />
+					</button>
+				{/if}
 			</div>
 
 			<div

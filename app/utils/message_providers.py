@@ -1,6 +1,5 @@
 import os
 import asyncio
-# import logging
 import json
 import gc
 from typing import AsyncGenerator, List, Dict, Optional
@@ -8,13 +7,15 @@ from datetime import datetime
 import torch
 from pathlib import Path
 from dotenv import load_dotenv
+import threading
+import time
 
 # Model providers
 from ollama import AsyncClient as OllamaClient, ResponseError as OllamaResponseError, ChatResponse as OllamaChatResponse
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from huggingface_hub import InferenceClient
 from transformers import TextIteratorStreamer
-from threading import Thread
+from threading import Thread, Event
 import requests
 
 # Internal imports
@@ -24,7 +25,6 @@ from app.schemas.message import MessageStreamRequest
 from app.utils.token import estimate_tokens
 from app.nova_logger import logger
 
-# logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Initialize clients
@@ -48,6 +48,7 @@ class ModelManager:
         self.hf_model = None
         self.hf_tokenizer = None
         self.ollama_active = False
+        self.generation_threads = set()  # Track active generation threads
         
     def cleanup_hf_models(self):
         """Clean up HuggingFace models from memory"""
@@ -71,9 +72,20 @@ class ModelManager:
         if self.ollama_active:
             logger.info("Cleaning up Ollama resources")
             self.ollama_active = False
-            # stop_res = requests.post(f"{os.getenv('OLLAMA_HOST', 'http://localhost:11434')}/api/stop")
-            # if stop_res.status_code != 200:
-            #     logger.error(f"Failed to stop Ollama: {stop_res.text}")
+            
+    def register_thread(self, thread):
+        """Register a generation thread"""
+        self.generation_threads.add(thread)
+        
+    def unregister_thread(self, thread):
+        """Unregister a generation thread"""
+        self.generation_threads.discard(thread)
+        
+    def stop_all_generations(self):
+        """Stop all active generation threads"""
+        for thread in list(self.generation_threads):
+            if hasattr(thread, 'stop_event'):
+                thread.stop_event.set()
             
     def switch_to_provider(self, provider: str, model_name: str = None):
         """Switch to a different provider, cleaning up the previous one"""
@@ -81,6 +93,9 @@ class ModelManager:
             return  # Already using this provider/model
             
         logger.info(f"Switching from {self.current_provider} to {provider}")
+        
+        # Stop any running generations
+        self.stop_all_generations()
         
         # Clean up current provider
         if self.current_provider == "huggingface":
@@ -139,6 +154,66 @@ class ModelManager:
 # Global model manager instance
 model_manager = ModelManager()
 
+
+class StoppableTextIteratorStreamer(TextIteratorStreamer):
+    """TextIteratorStreamer that can be stopped externally"""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stop_event = Event()
+        
+    def put(self, value):
+        if not self.stop_event.is_set():
+            super().put(value)
+            
+    def end(self):
+        if not self.stop_event.is_set():
+            super().end()
+            
+    def stop(self):
+        """Stop the streamer"""
+        self.stop_event.set()
+        # Put a sentinel value to unblock any waiting threads
+        try:
+            super().end()
+        except:
+            pass
+
+
+class StoppableGenerationThread(Thread):
+    """Thread that can be stopped and monitors for abort conditions"""
+    
+    def __init__(self, model, generation_kwargs, stop_event):
+        super().__init__()
+        self.model = model
+        self.generation_kwargs = generation_kwargs
+        self.stop_event = stop_event
+        self.daemon = True  # Dies when main thread dies
+        
+    def run(self):
+        try:
+            # Monitor stop event during generation
+            original_generate = self.model.generate
+            
+            def stoppable_generate(*args, **kwargs):
+                if self.stop_event.is_set():
+                    return None
+                return original_generate(*args, **kwargs)
+            
+            # Replace generate method temporarily
+            self.model.generate = stoppable_generate
+            
+            if not self.stop_event.is_set():
+                self.model.generate(**self.generation_kwargs)
+                
+        except Exception as e:
+            logger.error(f"Generation thread error: {str(e)}")
+        finally:
+            # Restore original generate method
+            if hasattr(self, 'model'):
+                self.model.generate = original_generate
+
+
 def get_local_model(model_name: str):
     """
     Get or load a local HuggingFace model with proper resource management.
@@ -150,6 +225,7 @@ def get_local_model(model_name: str):
         Tuple of (model, tokenizer)
     """
     return model_manager.get_hf_model(model_name)
+
 
 async def process_ollama_response(
     stream,
@@ -246,11 +322,14 @@ async def process_huggingface_response(
     store_in_vector_db_func
 ) -> AsyncGenerator[str, None]:
     """
-    Process the response from HuggingFace models using TextIteratorStreamer.
-    Enhanced with proper resource management.
+    Process the response from HuggingFace models with proper abort handling.
+    Enhanced with stop event monitoring and cleanup.
     """
     collected_reply = ""
     start_time = datetime.now()
+    stop_event = Event()
+    generation_thread = None
+    streamer = None
     
     try:
         # Get local model with proper resource management
@@ -281,12 +360,12 @@ async def process_huggingface_response(
             prompt = conversation_text + "<|assistant|>\n"
         
         if request.stream:
-            # Create TextIteratorStreamer for streaming
-            streamer = TextIteratorStreamer(
+            # Create StoppableTextIteratorStreamer for streaming with abort capability
+            streamer = StoppableTextIteratorStreamer(
                 tokenizer, 
                 skip_prompt=True,
                 skip_special_tokens=True,
-                timeout=60.0
+                timeout=10.0  # Shorter timeout for better responsiveness
             )
             
             # Tokenize input
@@ -314,43 +393,101 @@ async def process_huggingface_response(
                 "pad_token_id": tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id,
             }
             
-            # Start generation in a separate thread
-            thread = Thread(target=model.generate, kwargs=generation_kwargs)
-            thread.start()
+            # Start generation in a stoppable thread
+            generation_thread = StoppableGenerationThread(model, generation_kwargs, stop_event)
+            generation_thread.start()
             
-            # Stream the tokens as they're generated
+            # Register the thread for cleanup
+            model_manager.register_thread(generation_thread)
+            
+            # Stream the tokens as they're generated with abort monitoring
             try:
-                for new_text in streamer:
-                    if new_text:  # Skip empty strings
-                        collected_reply += new_text
+                timeout_count = 0
+                max_timeouts = 5  # Maximum number of consecutive timeouts before aborting
+                
+                while generation_thread.is_alive() or not streamer.stop_event.is_set():
+                    try:
+                        # Check if we should stop
+                        if stop_event.is_set():
+                            logger.info("Generation aborted by client disconnect")
+                            break
+                            
+                        # Get next token with short timeout
+                        new_text = next(iter(streamer), None)
                         
-                        event = {
-                            "model": request.model,
-                            "user_id": request.user_id,
-                            "chat_id": request.chat_id,
-                            "reply": new_text,
-                            "raw": {
-                                "text": new_text,
-                                "done": False,
-                                "time": (datetime.now() - start_time).total_seconds()
+                        if new_text is None:
+                            # Check if thread is still alive
+                            if not generation_thread.is_alive():
+                                break
+                            timeout_count += 1
+                            if timeout_count >= max_timeouts:
+                                logger.warning("Too many timeouts, stopping generation")
+                                stop_event.set()
+                                break
+                            await asyncio.sleep(0.1)
+                            continue
+                            
+                        timeout_count = 0  # Reset timeout counter
+                        
+                        if new_text:  # Skip empty strings
+                            collected_reply += new_text
+                            
+                            event = {
+                                "model": request.model,
+                                "user_id": request.user_id,
+                                "chat_id": request.chat_id,
+                                "reply": new_text,
+                                "raw": {
+                                    "text": new_text,
+                                    "done": False,
+                                    "time": (datetime.now() - start_time).total_seconds()
+                                }
                             }
-                        }
-                        yield f"data: {json.dumps(event)}\n\n"
+                            
+                            try:
+                                yield f"data: {json.dumps(event)}\n\n"
+                            except Exception as stream_error:
+                                # Client disconnected, stop generation
+                                logger.info(f"Client disconnected: {stream_error}")
+                                stop_event.set()
+                                break
+                                
+                            # Small delay to prevent overwhelming the client
+                            await asyncio.sleep(0.01)
+                            
+                    except StopIteration:
+                        # Streamer finished
+                        break
+                    except Exception as streaming_error:
+                        logger.error(f"Streaming error: {str(streaming_error)}")
+                        stop_event.set()
+                        break
                         
-                        # Small delay to prevent overwhelming the client
-                        await asyncio.sleep(0.01)
-                        
-            except Exception as streaming_error:
-                logger.error(f"Streaming error: {str(streaming_error)}")
-                # Wait for the thread to complete
-                thread.join(timeout=5.0)
-                raise
-            
-            # Wait for the generation thread to complete
-            thread.join()
+            except GeneratorExit:
+                # Generator was closed (client disconnected)
+                logger.info("Generator closed, stopping HF generation")
+                stop_event.set()
+            except Exception as e:
+                logger.error(f"Unexpected error in streaming: {str(e)}")
+                stop_event.set()
+            finally:
+                # Cleanup: Stop the generation thread and streamer
+                if streamer:
+                    streamer.stop()
+                stop_event.set()
+                
+                if generation_thread and generation_thread.is_alive():
+                    logger.info("Waiting for generation thread to stop...")
+                    generation_thread.join(timeout=2.0)
+                    if generation_thread.is_alive():
+                        logger.warning("Generation thread did not stop gracefully")
+                
+                # Unregister the thread
+                if generation_thread:
+                    model_manager.unregister_thread(generation_thread)
             
         else:
-            # Non-streaming generation
+            # Non-streaming generation with abort capability
             inputs = tokenizer(
                 prompt,
                 return_tensors="pt",
@@ -361,6 +498,10 @@ async def process_huggingface_response(
             
             if torch.cuda.is_available():
                 inputs = {k: v.to("cuda") for k, v in inputs.items()}
+            
+            # Quick check if we should abort before generation
+            if stop_event.is_set():
+                return
             
             with torch.no_grad():
                 outputs = model.generate(
@@ -374,6 +515,10 @@ async def process_huggingface_response(
                     eos_token_id=tokenizer.eos_token_id,
                     pad_token_id=tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id,
                 )
+            
+            # Check again if we should abort after generation
+            if stop_event.is_set():
+                return
             
             # Decode only the new tokens (skip the input)
             new_tokens = outputs[0][inputs['input_ids'].shape[1]:]
@@ -392,58 +537,80 @@ async def process_huggingface_response(
             }
             yield f"data: {json.dumps(event)}\n\n"
         
-        # Get model_id from the model name
-        model_record = db.query(Model).filter(
-            Model.provider == "huggingface", 
-            Model.model_id == request.model
-        ).first()
-        model_id = model_record.id if model_record else None
+        # Only store in database if we weren't aborted and have content
+        if not stop_event.is_set() and collected_reply.strip():
+            # Get model_id from the model name
+            model_record = db.query(Model).filter(
+                Model.provider == "huggingface", 
+                Model.model_id == request.model
+            ).first()
+            model_id = model_record.id if model_record else None
 
-        # Store assistant's reply in the database
-        assistant_message = await store_message_func(
-            db=db,
-            conversation_id=request.chat_id,
-            role="assistant",
-            content=collected_reply,
-            model_id=model_id,
-            tokens_used=estimate_tokens(collected_reply),
-            message_metadata={"provider": "huggingface"},
-            parent_message_id=user_message_id
-        )
-        
-        # Store in vector DB for future context
-        await store_in_vector_db_func(assistant_message.id, request.chat_id, collected_reply)
-        
-        # Send final event for streaming responses
-        if request.stream:
-            final_event = {
-                "model": request.model,
-                "user_id": request.user_id,
-                "chat_id": request.chat_id,
-                "reply": "",
-                "raw": {
-                    "text": collected_reply,
-                    "done": True,
-                    "total_duration": (datetime.now() - start_time).total_seconds()
+            # Store assistant's reply in the database
+            assistant_message = await store_message_func(
+                db=db,
+                conversation_id=request.chat_id,
+                role="assistant",
+                content=collected_reply,
+                model_id=model_id,
+                tokens_used=estimate_tokens(collected_reply),
+                message_metadata={"provider": "huggingface"},
+                parent_message_id=user_message_id
+            )
+            
+            # Store in vector DB for future context
+            await store_in_vector_db_func(assistant_message.id, request.chat_id, collected_reply)
+            
+            # Send final event for streaming responses
+            if request.stream:
+                final_event = {
+                    "model": request.model,
+                    "user_id": request.user_id,
+                    "chat_id": request.chat_id,
+                    "reply": "",
+                    "raw": {
+                        "text": collected_reply,
+                        "done": True,
+                        "total_duration": (datetime.now() - start_time).total_seconds()
+                    }
                 }
-            }
-            yield f"data: {json.dumps(final_event)}\n\n"
+                yield f"data: {json.dumps(final_event)}\n\n"
+        else:
+            logger.info("Generation was aborted or produced no content, not storing in database")
         
+    except GeneratorExit:
+        # Client disconnected
+        logger.info("Client disconnected during HuggingFace generation")
+        stop_event.set()
     except Exception as e:
         logger.error(f"HuggingFace local model error: {str(e)}")
+        stop_event.set()
         error_event = {
             "error": str(e),
             "status_code": 500
         }
-        yield f"data: {json.dumps(error_event)}\n\n"
+        try:
+            yield f"data: {json.dumps(error_event)}\n\n"
+        except:
+            pass  # Client may have disconnected
+    finally:
+        # Final cleanup
+        if streamer:
+            streamer.stop()
+        stop_event.set()
+        if generation_thread:
+            model_manager.unregister_thread(generation_thread)
+
 
 # Additional utility functions for manual cleanup
 def cleanup_all_models():
     """Clean up all loaded models - useful for manual cleanup"""
+    model_manager.stop_all_generations()
     model_manager.cleanup_hf_models()
     model_manager.cleanup_ollama()
     model_manager.current_provider = None
     model_manager.current_model_name = None
+
 
 def get_current_provider_status():
     """Get current provider status for debugging"""
@@ -451,5 +618,6 @@ def get_current_provider_status():
         "current_provider": model_manager.current_provider,
         "current_model": model_manager.current_model_name,
         "hf_model_loaded": model_manager.hf_model is not None,
-        "ollama_active": model_manager.ollama_active
+        "ollama_active": model_manager.ollama_active,
+        "active_threads": len(model_manager.generation_threads)
     }
