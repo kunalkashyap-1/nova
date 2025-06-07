@@ -77,92 +77,101 @@ async def message_streamer(
 ) -> AsyncGenerator[str, None]:
     """
     Stream a model response with optimized message formatting and context management.
-    Enhanced with proper provider switching.
+    Enhanced with proper provider switching and session management.
     """
     # Log provider switch for debugging
     current_status = get_current_provider_status()
     logger.info(f"Request for {request.provider}. Current status: {current_status}")
     
-    # Verify conversation exists
-    conversation = db.query(Conversation).filter(Conversation.id == request.chat_id).first()
-    if not conversation:
-        yield f"data: {json.dumps({'error': 'Conversation not found', 'status_code': 404})}\n\n"
-        return
-
-    from app.utils.token import estimate_tokens
+    # Create user session for this request
+    session_id = model_manager.create_user_session(
+        user_id=str(request.user_id), 
+        chat_id=str(request.chat_id)
+    )
+    logger.info(f"Created session {session_id} for user {request.user_id}")
     
-    # Store user message in database
-    user_message = await store_message_in_db(
-        db=db,
-        conversation_id=request.chat_id,
-        role="user",
-        content=request.message,
-        tokens_used=estimate_tokens(request.message)
-    )
-
-    # Store in vector DB for future context
-    await store_in_vector_db(user_message.id, request.chat_id, request.message)
-
-    # Get relevant context using the specified strategy
-    context_messages = await get_context_for_query(
-        conversation_id=request.chat_id,
-        query=request.message,
-        strategy=request.context_strategy,
-        optimize=request.optimize_context,
-        max_docs=request.max_context_docs
-    )
-
-    # Get last few messages for immediate context
-    recent_messages = db.query(Message).filter(
-        Message.conversation_id == request.chat_id
-    ).order_by(Message.created_at.desc()).offset(1).limit(6).all()
-
-    # === OPTIMIZED MESSAGE CONSTRUCTION ===
-    messages = [{
-        "role": "system",
-        "content": "You are a helpful AI assistant. Use the conversation history and provided context to give accurate, relevant responses and keep the tone and language human like unless the user says otherwise. Also Keep responses short unless asked otherwise."
-    }]
-
-    # Deduplicate context messages (remove ones already in recent messages)
-    recent_content = {msg.content.strip().lower() for msg in recent_messages}
-    unique_context = [
-        msg for msg in context_messages 
-        if msg["content"].strip().lower() not in recent_content
-    ]
-
-    # Add unique context messages with optimized formatting
-    for msg in unique_context:
-        content = _format_content_for_llm(msg["content"])
-        messages.append({
-            "role": msg["role"],
-            "content": content
-        })
-
-    # Add recent messages in chronological order with optimized formatting
-    for msg in reversed(recent_messages):
-        content = _format_content_for_llm(msg.content)
-        messages.append({
-            "role": msg.role,
-            "content": content
-        })
-
-    # Add current user message with optimized formatting
-    messages.append({
-        "role": "user",
-        "content": _format_content_for_llm(request.message)
-    })
-
-    # Use existing trim_messages function
-    messages = trim_messages(messages, max_tokens=MAX_TOKENS)
-
-    # Debug logging
-    # if logger.isEnabledFor(logging.DEBUG):
-        # logger.debug(f"Sending {len(messages)} messages to {request.provider} model {request.model}")
-
-    # === STREAM RESPONSE WITH PROPER PROVIDER MANAGEMENT ===
     try:
+        # Verify conversation exists
+        conversation = db.query(Conversation).filter(Conversation.id == request.chat_id).first()
+        if not conversation:
+            yield f"data: {json.dumps({'error': 'Conversation not found', 'status_code': 404})}\n\n"
+            return
+
+        from app.utils.token import estimate_tokens
+        
+        # Store user message in database
+        user_message = await store_message_in_db(
+            db=db,
+            conversation_id=request.chat_id,
+            role="user",
+            content=request.message,
+            tokens_used=estimate_tokens(request.message)
+        )
+
+        # Store in vector DB for future context
+        await store_in_vector_db(user_message.id, request.chat_id, request.message)
+
+        # Get relevant context using the specified strategy
+        context_messages = await get_context_for_query(
+            conversation_id=request.chat_id,
+            query=request.message,
+            strategy=request.context_strategy,
+            optimize=request.optimize_context,
+            max_docs=request.max_context_docs
+        )
+
+        # Get last few messages for immediate context
+        recent_messages = db.query(Message).filter(
+            Message.conversation_id == request.chat_id
+        ).order_by(Message.created_at.desc()).offset(1).limit(6).all()
+
+        # === OPTIMIZED MESSAGE CONSTRUCTION ===
+        messages = [{
+            "role": "system",
+            "content": "You are a helpful AI assistant. Use the conversation history and provided context to give accurate, relevant responses and keep the tone and language human like unless the user says otherwise. Also Keep responses short unless asked otherwise."
+        }]
+
+        # Deduplicate context messages (remove ones already in recent messages)
+        recent_content = {msg.content.strip().lower() for msg in recent_messages}
+        unique_context = [
+            msg for msg in context_messages 
+            if msg["content"].strip().lower() not in recent_content
+        ]
+
+        # Add unique context messages with optimized formatting
+        for msg in unique_context:
+            content = _format_content_for_llm(msg["content"])
+            messages.append({
+                "role": msg["role"],
+                "content": content
+            })
+
+        # Add recent messages in chronological order with optimized formatting
+        for msg in reversed(recent_messages):
+            content = _format_content_for_llm(msg.content)
+            messages.append({
+                "role": msg.role,
+                "content": content
+            })
+
+        # Add current user message with optimized formatting
+        messages.append({
+            "role": "user",
+            "content": _format_content_for_llm(request.message)
+        })
+
+        # Use existing trim_messages function
+        messages = trim_messages(messages, max_tokens=MAX_TOKENS)
+
+        # Debug logging
+        # if logger.isEnabledFor(logging.DEBUG):
+            # logger.debug(f"Sending {len(messages)} messages to {request.provider} model {request.model}")
+
+        # === STREAM RESPONSE WITH PROPER PROVIDER MANAGEMENT ===
         if request.provider == "ollama":
-            # The model_manager.prepare_ollama() is called inside process_ollama_response
+            # Switch to ollama provider
+            model_manager.switch_to_provider("ollama", request.model)
+            
             stream = await ollama_client.chat(
                 model=request.model,
                 messages=messages,
@@ -174,19 +183,23 @@ async def message_streamer(
                 db=db, 
                 user_message_id=user_message.id,
                 store_message_func=store_message_in_db,
-                store_in_vector_db_func=store_in_vector_db
+                store_in_vector_db_func=store_in_vector_db,
+                session_id=session_id
             ):
                 yield chunk
 
         elif request.provider == "huggingface":
-            # The model_manager.switch_to_provider() is called inside process_huggingface_response
+            # Switch to huggingface provider
+            model_manager.switch_to_provider("huggingface", request.model)
+            
             async for chunk in process_huggingface_response(
                 request=request, 
                 messages=messages, 
                 db=db, 
                 user_message_id=user_message.id,
                 store_message_func=store_message_in_db,
-                store_in_vector_db_func=store_in_vector_db
+                store_in_vector_db_func=store_in_vector_db,
+                session_id=session_id
             ):
                 yield chunk
         else:
@@ -195,6 +208,11 @@ async def message_streamer(
     except Exception as e:
         logger.error(f"Error in message streaming: {str(e)}")
         yield f"data: {json.dumps({'error': str(e), 'status_code': 500})}\n\n"
+    finally:
+        # Always clean up the session when streaming is done
+        if session_id:
+            model_manager.stop_user_session(session_id, force=True)
+            logger.info(f"Cleaned up session {session_id}")
 
 
 @router.post("/", status_code=status.HTTP_200_OK, summary="Stream a chat message reply")
@@ -210,6 +228,7 @@ async def stream_message_reply(
     - Properly manages model resources between providers
     - Stores both the user message and model response in the database
     - Indexes messages in the vector database for future context
+    - Manages user sessions for proper resource cleanup
     
     Request body parameters:
     - chat_id: ID of the conversation
@@ -319,4 +338,16 @@ def manual_cleanup():
         return {"status": "success", "message": "All models cleaned up"}
     except Exception as e:
         logger.error(f"Error during manual cleanup: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+
+# New endpoint to stop a specific user session
+@router.post("/debug/stop-session/{session_id}", summary="Stop a specific user session")
+def stop_user_session_endpoint(session_id: str):
+    """Stop a specific user session - useful for debugging"""
+    try:
+        model_manager.stop_user_session(session_id, force=True)
+        return {"status": "success", "message": f"Session {session_id} stopped"}
+    except Exception as e:
+        logger.error(f"Error stopping session {session_id}: {str(e)}")
         return {"status": "error", "message": str(e)}
