@@ -25,6 +25,7 @@ def create_conversation(convo: ConversationCreate, db: Session = Depends(get_db)
             email=f"guest_{convo.user_id}@temporary.com",
             username=f"guest_{convo.user_id}",
             password_hash="",  
+            is_guest=True
         )
         db.add(user)
         db.flush() 

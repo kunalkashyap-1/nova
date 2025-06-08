@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, func
+from sqlalchemy import Column, Integer, String, Text, DateTime, func, Boolean
 from app.database import Base
 
 class User(Base):
@@ -13,5 +13,6 @@ class User(Base):
     bio = Column(Text, default='')
     preferred_language = Column(String(50), default='')
     timezone = Column(String(100), default='')
+    is_guest = Column(Boolean, default=False)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now()) 

@@ -8,6 +8,7 @@ CREATE TABLE users (
     bio TEXT DEFAULT '',
     preferred_language VARCHAR(50) DEFAULT '',
     timezone VARCHAR(100) DEFAULT '',
+    is_guest BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

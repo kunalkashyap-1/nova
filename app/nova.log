@@ -100,3 +100,41 @@
 2025-06-07 22:28:04,665 - INFO -  nova - Session 62430_4bb6fb0f-d517-41fb-adac-246393f7f4a2_1c304b24 already cleaned up or does not exist.
 2025-06-07 22:28:04,666 - INFO -  nova - Cleaned up session 62430_4bb6fb0f-d517-41fb-adac-246393f7f4a2_1c304b24
 2025-06-07 22:45:08,781 - INFO -  nova - Application shutdown
+2025-06-08 15:44:45,424 - INFO -  nova - Logger initialized
+2025-06-08 15:45:42,281 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-08 15:45:47,406 - INFO -  nova - Logger initialized
+2025-06-08 15:45:58,292 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-08 15:45:58,365 - INFO -  nova - Application startup complete
+2025-06-08 16:41:58,749 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.616457462310791}
+2025-06-08 16:45:09,875 - INFO -  nova - Application shutdown
+2025-06-08 17:25:29,675 - INFO -  nova - Logger initialized
+2025-06-08 17:25:34,404 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-08 17:25:34,448 - INFO -  nova - Application startup complete
+2025-06-08 17:29:32,310 - INFO -  nova - Application shutdown
+2025-06-08 17:29:36,860 - INFO -  nova - Logger initialized
+2025-06-08 17:29:42,792 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-08 17:29:42,864 - INFO -  nova - Application startup complete
+2025-06-08 17:29:42,872 - INFO -  nova - Application shutdown
+2025-06-08 17:29:46,975 - INFO -  nova - Logger initialized
+2025-06-08 17:29:52,592 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-08 17:29:52,655 - INFO -  nova - Application startup complete
+2025-06-08 19:39:36,205 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.8697457313537598}
+2025-06-08 19:41:39,604 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/register'), 'method': 'POST'}, 'process Time': 0.0015513896942138672}
+2025-06-08 21:21:41,566 - INFO -  nova - Application shutdown
+2025-06-08 21:21:49,403 - INFO -  nova - Logger initialized
+2025-06-08 21:22:00,417 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-08 21:22:00,517 - INFO -  nova - Application startup complete
+2025-06-08 21:23:20,273 - INFO -  nova - Application shutdown
+2025-06-08 21:23:26,476 - INFO -  nova - Logger initialized
+2025-06-08 21:23:35,079 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-08 21:23:35,179 - INFO -  nova - Application startup complete
+2025-06-08 21:25:18,992 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/register'), 'method': 'POST'}, 'process Time': 0.03426980972290039}
+2025-06-08 21:29:21,514 - INFO -  nova - Application shutdown
+2025-06-08 21:29:28,150 - INFO -  nova - Logger initialized
+2025-06-08 21:29:38,701 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-08 21:29:38,807 - INFO -  nova - Application startup complete
+2025-06-08 21:30:38,817 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/register'), 'method': 'POST'}, 'process Time': 1.1863791942596436}
+2025-06-08 21:30:39,243 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.06280398368835449}
+2025-06-08 21:32:03,885 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.010098695755004883}
+2025-06-08 21:32:04,959 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.01614999771118164}
+2025-06-08 21:34:41,176 - INFO -  nova - Application shutdown
