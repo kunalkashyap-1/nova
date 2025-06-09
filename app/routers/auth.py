@@ -12,6 +12,8 @@ import os
 import uuid
 import shutil
 from pathlib import Path
+import mimetypes
+from fastapi.responses import FileResponse
 
 router = APIRouter(prefix="/api/v1/auth", tags=["Authentication"])
 
@@ -368,3 +370,32 @@ async def reset_password(
     # Verify reset token and update password
     
     return {"message": "Password reset successfully"}
+
+@router.get("/media/{filename}")
+async def get_media_file(filename: str):
+    """Serve uploaded media files (profile pictures, etc.)"""
+    # Construct the file path
+    file_path = UPLOAD_DIR / filename
+    
+    # Check if file exists
+    if not file_path.exists() or not file_path.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    # Security check: ensure the file is within the upload directory
+    # This prevents directory traversal attacks
+    try:
+        file_path.resolve().relative_to(UPLOAD_DIR.resolve())
+    except ValueError:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # Get MIME type for proper content-type header
+    mime_type, _ = mimetypes.guess_type(str(file_path))
+    if mime_type is None:
+        mime_type = "application/octet-stream"
+    
+    # Return the file
+    return FileResponse(
+        path=str(file_path),
+        media_type=mime_type,
+        filename=filename
+    )

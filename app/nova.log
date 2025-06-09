@@ -138,3 +138,133 @@
 2025-06-08 21:32:03,885 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.010098695755004883}
 2025-06-08 21:32:04,959 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.01614999771118164}
 2025-06-08 21:34:41,176 - INFO -  nova - Application shutdown
+2025-06-09 22:00:40,835 - INFO -  nova - Logger initialized
+2025-06-09 22:01:27,575 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-09 22:01:31,091 - INFO -  nova - Logger initialized
+2025-06-09 22:01:37,550 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-09 22:01:37,618 - INFO -  nova - Application startup complete
+2025-06-09 22:04:27,320 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'OPTIONS'}, 'process Time': 0.0009760856628417969}
+2025-06-09 22:04:28,386 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.7380897998809814}
+2025-06-09 22:04:29,023 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.06558895111083984}
+2025-06-09 22:19:07,365 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0}
+2025-06-09 22:19:10,761 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0147247314453125}
+2025-06-09 22:19:19,803 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.4158790111541748}
+2025-06-09 22:19:19,866 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.017429590225219727}
+2025-06-09 22:21:00,808 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0015254020690917969}
+2025-06-09 22:21:02,682 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.011235952377319336}
+2025-06-09 22:29:10,894 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.010917186737060547}
+2025-06-09 22:29:23,434 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.42580080032348633}
+2025-06-09 22:29:23,493 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.021531343460083008}
+2025-06-09 22:31:47,472 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-06-09 22:31:47,622 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.13905835151672363}
+2025-06-09 22:31:47,646 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0029942989349365234}
+2025-06-09 22:31:47,703 - INFO -  nova - Request for ollama. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_sessions': 0}
+2025-06-09 22:31:47,706 - INFO -  nova - Created session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_224d8ad4 for user 62332
+2025-06-09 22:31:47,708 - INFO -  nova - Created session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_224d8ad4 for user 62332
+2025-06-09 22:31:48,254 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.5778191089630127}
+2025-06-09 22:31:50,707 - INFO -  nova - Switching from None (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-09 22:31:50,713 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-09 22:32:02,398 - INFO -  nova - Stopping session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_224d8ad4 (force=False)
+2025-06-09 22:32:02,399 - INFO -  nova - Cleaned up session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_224d8ad4
+2025-06-09 22:32:02,399 - INFO -  nova - Session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_224d8ad4 already cleaned up or does not exist.
+2025-06-09 22:32:02,399 - INFO -  nova - Cleaned up session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_224d8ad4
+2025-06-09 22:32:44,257 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True, 'active_sessions': 0}
+2025-06-09 22:32:44,258 - INFO -  nova - Created session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_22867616 for user 62332
+2025-06-09 22:32:44,259 - INFO -  nova - Created session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_22867616 for user 62332
+2025-06-09 22:32:44,369 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.11720514297485352}
+2025-06-09 22:32:45,931 - INFO -  nova - Switching from ollama (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-09 22:32:45,932 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-09 22:32:51,690 - INFO -  nova - Stopping session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_22867616 (force=False)
+2025-06-09 22:32:51,692 - INFO -  nova - Cleaned up session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_22867616
+2025-06-09 22:32:51,692 - INFO -  nova - Session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_22867616 already cleaned up or does not exist.
+2025-06-09 22:32:51,692 - INFO -  nova - Cleaned up session 62332_60549816-7873-4caa-b5d0-b5fd34538a6c_22867616
+2025-06-09 22:32:51,819 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.12180852890014648}
+2025-06-09 22:32:51,840 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True, 'active_sessions': 0}
+2025-06-09 22:32:51,843 - INFO -  nova - Created session 62332_ede789f2-6a48-40cb-9ef9-86e2ed6e307f_9f2b6e1a for user 62332
+2025-06-09 22:32:51,843 - INFO -  nova - Created session 62332_ede789f2-6a48-40cb-9ef9-86e2ed6e307f_9f2b6e1a for user 62332
+2025-06-09 22:32:51,877 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.043435096740722656}
+2025-06-09 22:32:53,463 - INFO -  nova - Switching from ollama (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-09 22:32:53,464 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-09 22:32:59,030 - INFO -  nova - Stopping session 62332_ede789f2-6a48-40cb-9ef9-86e2ed6e307f_9f2b6e1a (force=False)
+2025-06-09 22:32:59,031 - INFO -  nova - Cleaned up session 62332_ede789f2-6a48-40cb-9ef9-86e2ed6e307f_9f2b6e1a
+2025-06-09 22:32:59,032 - INFO -  nova - Session 62332_ede789f2-6a48-40cb-9ef9-86e2ed6e307f_9f2b6e1a already cleaned up or does not exist.
+2025-06-09 22:32:59,032 - INFO -  nova - Cleaned up session 62332_ede789f2-6a48-40cb-9ef9-86e2ed6e307f_9f2b6e1a
+2025-06-09 22:37:34,992 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.010137319564819336}
+2025-06-09 22:37:45,131 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.12406253814697266}
+2025-06-09 22:37:45,148 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True, 'active_sessions': 0}
+2025-06-09 22:37:45,150 - INFO -  nova - Created session 1_8c855f4e-05fd-4a92-bcb7-e61ae0b88df7_5acb6eb0 for user 1
+2025-06-09 22:37:45,151 - INFO -  nova - Created session 1_8c855f4e-05fd-4a92-bcb7-e61ae0b88df7_5acb6eb0 for user 1
+2025-06-09 22:37:45,182 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.03749585151672363}
+2025-06-09 22:37:47,020 - INFO -  nova - Switching from ollama (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-09 22:37:47,021 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-09 22:37:53,754 - INFO -  nova - Stopping session 1_8c855f4e-05fd-4a92-bcb7-e61ae0b88df7_5acb6eb0 (force=False)
+2025-06-09 22:37:53,756 - INFO -  nova - Cleaned up session 1_8c855f4e-05fd-4a92-bcb7-e61ae0b88df7_5acb6eb0
+2025-06-09 22:37:53,756 - INFO -  nova - Session 1_8c855f4e-05fd-4a92-bcb7-e61ae0b88df7_5acb6eb0 already cleaned up or does not exist.
+2025-06-09 22:37:53,758 - INFO -  nova - Cleaned up session 1_8c855f4e-05fd-4a92-bcb7-e61ae0b88df7_5acb6eb0
+2025-06-09 22:38:57,199 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0015208721160888672}
+2025-06-09 22:39:20,515 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.00893712043762207}
+2025-06-09 22:39:34,431 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.3940470218658447}
+2025-06-09 22:39:35,015 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.008887290954589844}
+2025-06-09 22:39:38,764 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.03763294219970703}
+2025-06-09 22:39:38,788 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True, 'active_sessions': 0}
+2025-06-09 22:39:38,789 - INFO -  nova - Created session 1_69f0da7b-2900-4ffb-9685-43d526ef7a6b_936850b5 for user 1
+2025-06-09 22:39:38,792 - INFO -  nova - Created session 1_69f0da7b-2900-4ffb-9685-43d526ef7a6b_936850b5 for user 1
+2025-06-09 22:39:38,813 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.030725479125976562}
+2025-06-09 22:39:40,242 - INFO -  nova - Switching from ollama (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-09 22:39:40,243 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-09 22:39:43,888 - INFO -  nova - Stopping session 1_69f0da7b-2900-4ffb-9685-43d526ef7a6b_936850b5 (force=False)
+2025-06-09 22:39:43,889 - INFO -  nova - Cleaned up session 1_69f0da7b-2900-4ffb-9685-43d526ef7a6b_936850b5
+2025-06-09 22:39:43,889 - INFO -  nova - Session 1_69f0da7b-2900-4ffb-9685-43d526ef7a6b_936850b5 already cleaned up or does not exist.
+2025-06-09 22:39:43,890 - INFO -  nova - Cleaned up session 1_69f0da7b-2900-4ffb-9685-43d526ef7a6b_936850b5
+2025-06-09 22:40:10,093 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.12591958045959473}
+2025-06-09 22:40:10,125 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True, 'active_sessions': 0}
+2025-06-09 22:40:10,128 - INFO -  nova - Created session 1_3f0967f6-86dd-4d8a-995e-2069bb91a02f_3e50305c for user 1
+2025-06-09 22:40:10,130 - INFO -  nova - Created session 1_3f0967f6-86dd-4d8a-995e-2069bb91a02f_3e50305c for user 1
+2025-06-09 22:40:10,159 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.04340863227844238}
+2025-06-09 22:40:11,689 - INFO -  nova - Switching from ollama (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-09 22:40:11,690 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-09 22:40:19,125 - INFO -  nova - Stopping session 1_3f0967f6-86dd-4d8a-995e-2069bb91a02f_3e50305c (force=False)
+2025-06-09 22:40:19,125 - INFO -  nova - Cleaned up session 1_3f0967f6-86dd-4d8a-995e-2069bb91a02f_3e50305c
+2025-06-09 22:40:19,126 - INFO -  nova - Session 1_3f0967f6-86dd-4d8a-995e-2069bb91a02f_3e50305c already cleaned up or does not exist.
+2025-06-09 22:40:19,127 - INFO -  nova - Cleaned up session 1_3f0967f6-86dd-4d8a-995e-2069bb91a02f_3e50305c
+2025-06-09 22:45:28,083 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.010126829147338867}
+2025-06-09 22:53:13,698 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0010738372802734375}
+2025-06-09 22:53:32,663 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.4545114040374756}
+2025-06-09 22:53:33,290 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.01514291763305664}
+2025-06-09 22:55:35,616 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.007896184921264648}
+2025-06-09 22:55:42,830 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.02227950096130371}
+2025-06-09 22:55:42,852 - INFO -  nova - Request for ollama. Current status: {'current_provider': 'ollama', 'current_model': None, 'hf_model_loaded': False, 'ollama_active': True, 'active_sessions': 0}
+2025-06-09 22:55:42,853 - INFO -  nova - Created session 1_9da1fac2-e8ed-4f50-9d75-23bc395a6cc9_09361941 for user 1
+2025-06-09 22:55:42,857 - INFO -  nova - Created session 1_9da1fac2-e8ed-4f50-9d75-23bc395a6cc9_09361941 for user 1
+2025-06-09 22:55:42,893 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.04871678352355957}
+2025-06-09 22:55:44,448 - INFO -  nova - Switching from ollama (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-09 22:55:44,449 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-09 22:55:52,228 - INFO -  nova - Stopping session 1_9da1fac2-e8ed-4f50-9d75-23bc395a6cc9_09361941 (force=False)
+2025-06-09 22:55:52,228 - INFO -  nova - Cleaned up session 1_9da1fac2-e8ed-4f50-9d75-23bc395a6cc9_09361941
+2025-06-09 22:55:52,230 - INFO -  nova - Session 1_9da1fac2-e8ed-4f50-9d75-23bc395a6cc9_09361941 already cleaned up or does not exist.
+2025-06-09 22:55:52,231 - INFO -  nova - Cleaned up session 1_9da1fac2-e8ed-4f50-9d75-23bc395a6cc9_09361941
+2025-06-09 22:56:27,191 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.006763935089111328}
+2025-06-09 22:57:59,566 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.001554250717163086}
+2025-06-09 22:58:13,792 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.0010006427764892578}
+2025-06-09 23:03:27,379 - INFO -  nova - Application shutdown
+2025-06-09 23:03:33,177 - INFO -  nova - Logger initialized
+2025-06-09 23:03:43,447 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-09 23:03:43,540 - INFO -  nova - Application startup complete
+2025-06-09 23:03:53,148 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.0009982585906982422}
+2025-06-09 23:04:20,297 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.0010151863098144531}
+2025-06-09 23:04:29,278 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.0016078948974609375}
+2025-06-09 23:05:09,297 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.16658592224121094}
+2025-06-09 23:08:34,369 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.3140580654144287}
+2025-06-09 23:08:34,430 - INFO -  nova - Request for ollama. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_sessions': 0}
+2025-06-09 23:08:34,434 - INFO -  nova - Created session 1_536f1447-dd18-488b-aa63-eaf69b9755c2_c5ec43cd for user 1
+2025-06-09 23:08:34,439 - INFO -  nova - Created session 1_536f1447-dd18-488b-aa63-eaf69b9755c2_c5ec43cd for user 1
+2025-06-09 23:08:34,884 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.49835658073425293}
+2025-06-09 23:08:36,774 - INFO -  nova - Switching from None (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-09 23:08:36,777 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-09 23:08:43,655 - INFO -  nova - Stopping session 1_536f1447-dd18-488b-aa63-eaf69b9755c2_c5ec43cd (force=False)
+2025-06-09 23:08:43,656 - INFO -  nova - Cleaned up session 1_536f1447-dd18-488b-aa63-eaf69b9755c2_c5ec43cd
+2025-06-09 23:08:43,657 - INFO -  nova - Session 1_536f1447-dd18-488b-aa63-eaf69b9755c2_c5ec43cd already cleaned up or does not exist.
+2025-06-09 23:08:43,659 - INFO -  nova - Cleaned up session 1_536f1447-dd18-488b-aa63-eaf69b9755c2_c5ec43cd
+2025-06-09 23:24:00,826 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0016925334930419922}
+2025-06-09 23:24:03,379 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.12920236587524414}
+2025-06-09 23:27:37,660 - INFO -  nova - Application shutdown

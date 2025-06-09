@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import api from '../api';
+import { authStore } from './auth.svelte';
 
 let currentAbortController: AbortController | null = null;
 
@@ -45,10 +46,6 @@ export type ChatState = {
 	activeConversationId: string | null;
 	isLoading: boolean;
 	errorMessage: string;
-	user: {
-		username: string;
-		profilePicUrl: string;
-	};
 	selectedModel: string;
 	// Add stream state directly to the store
 	isStreamActive: boolean;
@@ -60,97 +57,9 @@ export const chatState: ChatState = $state({
 	activeConversationId: null,
 	isLoading: false,
 	errorMessage: '',
-	user: {
-		username: 'NovaUser',
-		profilePicUrl: ''
-	},
 	selectedModel: 'deepseek-r1:1.5b',
 	isStreamActive: false
 });
-
-// --- User Auth State ---
-export type AuthUser = {
-	username: string;
-	profilePicUrl?: string;
-	isGuest: boolean;
-	tempUserId?: number;
-	preferences?: {
-		theme?: string;
-		language?: string;
-		timezone?: string;
-	};
-};
-
-function generateTempUserId(): number {
-	// Generate a random number between 10000 and 99999
-	return Math.floor(Math.random() * 90000) + 10000;
-}
-
-function loadUserFromLocalStorage(): AuthUser {
-	try {
-		const raw = localStorage.getItem('nova_user');
-		if (raw) {
-			const parsed = JSON.parse(raw);
-			return {
-				username: parsed.username || 'Guest User',
-				profilePicUrl: parsed.profilePicUrl || '',
-				isGuest: !parsed.username,
-				tempUserId: parsed.tempUserId || generateTempUserId(),
-				preferences: parsed.preferences || {
-					theme: 'light',
-					language: 'en',
-					timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-				}
-			};
-		}
-	} catch {}
-	// For new users, generate a temp ID and default preferences
-	const tempUserId = generateTempUserId();
-	return { 
-		username: 'Guest User', 
-		profilePicUrl: '', 
-		isGuest: true,
-		tempUserId,
-		preferences: {
-			theme: 'light',
-			language: 'en',
-			timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-		}
-	};
-}
-
-export const authUser: AuthUser = $state(loadUserFromLocalStorage());
-
-export function setUser(user: Partial<AuthUser>) {
-	const merged = { 
-		...authUser, 
-		...user, 
-		isGuest: !user.username,
-		tempUserId: authUser.tempUserId || generateTempUserId(), // Preserve or generate temp ID
-		preferences: {
-			...authUser.preferences,
-			...user.preferences
-		}
-	};
-	authUser.username = merged.username;
-	authUser.profilePicUrl = merged.profilePicUrl || '';
-	authUser.isGuest = merged.isGuest;
-	authUser.tempUserId = merged.tempUserId;
-	authUser.preferences = merged.preferences;
-	localStorage.setItem('nova_user', JSON.stringify(merged));
-}
-
-export function signOut() {
-	authUser.username = 'Guest User';
-	authUser.profilePicUrl = '';
-	authUser.isGuest = true;
-	authUser.preferences = {
-		theme: 'light',
-		language: 'en',
-		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-	};
-	localStorage.removeItem('nova_user');
-}
 
 export function setLoading(isLoading: boolean) {
 	chatState.isLoading = isLoading;
@@ -200,11 +109,21 @@ export async function loadConversation(id: string) {
 	setLoading(false);
 }
 
+// Helper function to get user ID from auth store
+function getUserId(): string | number {
+	const user = authStore.user;
+	// console.log(user);
+	if (!user) {
+		return 'guest';
+	}
+	return user.id || user.username || 'guest';
+}
+
 export async function createNewChat(prompt: string): Promise<string | undefined> {
 	setLoading(true);
 	try {
-		// Get user ID based on auth state
-		const user_id = authUser.isGuest ? authUser.tempUserId : parseInt(authUser.username);
+		// Get user ID from auth store
+		const user_id = getUserId();
 		
 		// Create conversation on backend first
 		try {
@@ -298,7 +217,8 @@ function connectToChatSSE(
     // Update stream state immediately when starting
     chatState.isStreamActive = true;
     
-    const user_id = authUser.isGuest ? authUser.tempUserId : parseInt(authUser.username);
+    // Get user ID from auth store
+    const user_id = getUserId();
     const model = chatState.selectedModel || 'deepseek-r1:1.5b';
     
     // Only add user message if it's not already the last message
