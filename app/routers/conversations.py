@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
 from app.models.conversation import Conversation
 from app.models.user import User
 from app.schemas.conversation import ConversationCreate, ConversationUpdate, ConversationOut
+from app.models.message import Message
 
 router = APIRouter(prefix="/api/v1/conversations", tags=["Conversations"])
 
@@ -47,3 +48,22 @@ def update_conversation(id: int, updates: ConversationUpdate, db: Session = Depe
     db.commit()
     db.refresh(conversation)
     return conversation 
+
+@router.get("/messages/{conversation_id}", status_code=status.HTTP_200_OK, summary="Get conversation messages")
+async def get_conversation_messages(conversation_id: int, db: Session = Depends(get_db)):
+    """
+    Get all messages for a specific conversation.
+    
+    This endpoint retrieves messages in chronological order (oldest to newest).
+    
+    Path parameters:
+    - conversation_id: ID of the conversation to retrieve messages for
+    
+    Returns:
+        A JSON object with a 'messages' array containing all messages in the conversation
+    """
+    messages = db.query(Message).filter(
+        Message.conversation_id == conversation_id
+    ).order_by(Message.created_at.asc()).all()
+    
+    return {"messages": messages}

@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import api from '../api';
+import api from '../api/api';
 import { authStore } from './auth.svelte';
+import { indexedDBManager, ensureDBInitialized } from './indexedDB';
 
 let currentAbortController: AbortController | null = null;
 
@@ -47,8 +48,8 @@ export type ChatState = {
 	isLoading: boolean;
 	errorMessage: string;
 	selectedModel: string;
-	// Add stream state directly to the store
 	isStreamActive: boolean;
+	isDBInitialized: boolean;
 };
 
 export const chatState: ChatState = $state({
@@ -58,7 +59,8 @@ export const chatState: ChatState = $state({
 	isLoading: false,
 	errorMessage: '',
 	selectedModel: 'deepseek-r1:1.5b',
-	isStreamActive: false
+	isStreamActive: false,
+	isDBInitialized: false
 });
 
 export function setLoading(isLoading: boolean) {
@@ -74,7 +76,52 @@ export function setError(message: string) {
 	}, 5000);
 }
 
-// --- Conversation Persistence ---
+// Initialize IndexedDB and sync recent conversations
+export async function initializeDB(): Promise<void> {
+	try {
+		await ensureDBInitialized();
+		chatState.isDBInitialized = true;
+		
+		// Load conversations from IndexedDB first
+		const localConversations = await indexedDBManager.getAllConversations();
+		chatState.conversations = localConversations;
+		
+		// Get the 5 most recent conversations and check if we have their messages
+		const recentConversations = await indexedDBManager.getRecentConversations(5);
+		const conversationsToFetch: string[] = [];
+		
+		for (const conv of recentConversations) {
+			const hasMessages = await indexedDBManager.hasConversationMessages(conv.id);
+			if (!hasMessages) {
+				conversationsToFetch.push(conv.id);
+			}
+		}
+		
+		// Fetch missing conversation messages from API
+		if (conversationsToFetch.length > 0) {
+			await fetchAndSyncConversationMessages(conversationsToFetch);
+		}
+		
+	} catch (error) {
+		console.error('Failed to initialize IndexedDB:', error);
+		setError('Failed to initialize local storage');
+		// Fallback to localStorage
+		chatState.conversations = loadConversationsFromStorage();
+	}
+}
+
+// Fetch messages for conversations that don't have them locally
+async function fetchAndSyncConversationMessages(conversationIds: string[]): Promise<void> {
+	try {
+		if (chatState.isDBInitialized) {
+			await indexedDBManager.syncConversationMessages(conversationIds);
+		}
+	} catch (error) {
+		console.error('Failed to sync conversation messages:', error);
+	}
+}
+
+// --- Conversation Persistence (Updated) ---
 function saveConversationsToStorage(conversations: Conversation[]) {
 	try {
 		localStorage.setItem('nova_conversations', JSON.stringify(conversations));
@@ -89,22 +136,98 @@ function loadConversationsFromStorage(): Conversation[] {
 	return [];
 }
 
+// Updated to use IndexedDB
+async function saveConversationsToIndexedDB(conversations: Conversation[]) {
+    // Prepare plain objects to avoid proxies / non-cloneable values
+    const plainConversations: Conversation[] = conversations.map((c) => ({
+        id: c.id,
+        title: c.title,
+        updatedAt: c.updatedAt || new Date().toISOString()
+    }));
+	if (chatState.isDBInitialized) {
+		try {
+			await indexedDBManager.saveConversations(plainConversations);
+		} catch (error) {
+			console.error('Failed to save conversations to IndexedDB:', error);
+			// Fallback to localStorage
+			saveConversationsToStorage(conversations);
+		}
+	} else {
+		saveConversationsToStorage(conversations);
+	}
+}
+
 export async function loadConversations() {
+    // Ensure IndexedDB is ready before attempting to read
+    if (!chatState.isDBInitialized) {
+        try {
+            await initializeDB();
+        } catch (e) {
+            console.error('Failed to initialize DB in loadConversations:', e);
+        }
+    }
 	setLoading(true);
 	try {
-		chatState.conversations = loadConversationsFromStorage();
+		if (chatState.isDBInitialized) {
+			chatState.conversations = await indexedDBManager.getAllConversations();
+		} else {
+			chatState.conversations = loadConversationsFromStorage();
+		}
 	} catch (e) {
+		console.error('Failed to load conversations:', e);
 		setError('Failed to load conversations');
+		// Fallback to localStorage
+		chatState.conversations = loadConversationsFromStorage();
 	} finally {
 		setLoading(false);
 	}
 }
 
 export async function loadConversation(id: string) {
+    // Ensure IndexedDB is ready before attempting to load messages
+    if (!chatState.isDBInitialized) {
+        try {
+            await initializeDB();
+        } catch (e) {
+            console.error('Failed to initialize DB in loadConversation:', e);
+        }
+    }
 	setLoading(true);
+	
 	if (chatState.activeConversationId !== id) {
 		chatState.messages = [];
+		
+		// Load messages from IndexedDB if available
+		if (chatState.isDBInitialized) {
+			try {
+				const messages = await indexedDBManager.getConversationMessages(id);
+				chatState.messages = messages;
+				
+				// If no messages found locally, try to fetch from API
+				if (messages.length === 0) {
+					try {
+						const apiMessages = await indexedDBManager.fetchConversationMessagesFromAPI(id);
+						const messagesWithConvId = apiMessages.map(msg => ({
+							...msg,
+							conversation_id: id
+						}));
+						
+						chatState.messages = apiMessages;
+						
+						// Save to IndexedDB for future use
+						if (messagesWithConvId.length > 0) {
+							await indexedDBManager.saveMessages(messagesWithConvId);
+						}
+					} catch (apiError) {
+						console.error('Failed to fetch messages from API:', apiError);
+					}
+				}
+			} catch (error) {
+				console.error('Failed to load messages from IndexedDB:', error);
+			}
+		}
 	}
+	
 	chatState.activeConversationId = id;
 	setLoading(false);
 }
@@ -112,7 +235,6 @@ export async function loadConversation(id: string) {
 // Helper function to get user ID from auth store
 function getUserId(): string | number {
 	const user = authStore.user;
-	// console.log(user);
 	if (!user) {
 		return 'guest';
 	}
@@ -120,26 +242,37 @@ function getUserId(): string | number {
 }
 
 export async function createNewChat(prompt: string): Promise<string | undefined> {
+    // Make sure DB is ready before we start saving
+    if (!chatState.isDBInitialized) {
+        try {
+            await initializeDB();
+        } catch (e) {
+            console.error('Failed to initialize DB in createNewChat:', e);
+        }
+    }
 	setLoading(true);
 	try {
-		// Get user ID from auth store
 		const user_id = getUserId();
 		
 		// Create conversation on backend first
 		try {
-			const response = await api.post(`/conversations/`, {
+			const response = await api.post('/conversations/', {
 				title: `Chat: ${prompt.slice(0, 30)}${prompt.length > 30 ? '...' : ''}`,
 				user_id: user_id
 			});
 
-			// Get the created conversation from response
-			const newConversation = response.data;
+			const apiConv = response.data;
+            const newConversation: Conversation = {
+                id: apiConv.id,
+                title: apiConv.title,
+                updatedAt: apiConv.updated_at || apiConv.updatedAt || new Date().toISOString()
+            };
 			const newId = newConversation.id;
 			chatState.activeConversationId = newId;
 			
-			// Add conversation to list
+			// Add conversation to list and save to IndexedDB
 			chatState.conversations = [newConversation, ...chatState.conversations];
-			saveConversationsToStorage(chatState.conversations);
+			await saveConversationsToIndexedDB(chatState.conversations);
 			
 			// Create user message first
 			const userMsg: Message = {
@@ -150,17 +283,22 @@ export async function createNewChat(prompt: string): Promise<string | undefined>
 			};
 			chatState.messages = [userMsg];
 			
+			// Save user message to IndexedDB
+			if (chatState.isDBInitialized) {
+				await indexedDBManager.saveMessage({ ...userMsg, conversation_id: newId });
+			}
+			
 			// Now connect to SSE after conversation is created
 			connectToChatSSE(
 				newId,
 				prompt,
 				(msg) => {},
-				(meta) => {
+				async (meta) => {
 					const conversation = chatState.conversations.find((c) => c.id === newId);
 					if (conversation) {
 						conversation.updatedAt = new Date().toISOString();
 						chatState.conversations = [...chatState.conversations];
-						saveConversationsToStorage(chatState.conversations);
+						await saveConversationsToIndexedDB(chatState.conversations);
 					}
 				}
 			);
@@ -181,24 +319,34 @@ export async function createNewChat(prompt: string): Promise<string | undefined>
 }
 
 export async function sendMessage(content: string) {
+    // Ensure DB before we save conversation updates & messages
+    if (!chatState.isDBInitialized) {
+        try {
+            await initializeDB();
+        } catch (e) {
+            console.error('Failed to initialize DB in sendMessage:', e);
+        }
+    }
 	if (!content.trim() || !chatState.activeConversationId) return;
 	const chatId = chatState.activeConversationId;
+	
 	const conversation = chatState.conversations.find((c) => c.id === chatId);
 	if (conversation) {
 		conversation.updatedAt = new Date().toISOString();
 		chatState.conversations = [...chatState.conversations];
-		saveConversationsToStorage(chatState.conversations);
+		await saveConversationsToIndexedDB(chatState.conversations);
 	}
+	
 	connectToChatSSE(
 		chatId,
 		content,
 		(msg) => {},
-		(meta) => {
+		async (meta) => {
 			const conversation = chatState.conversations.find((c) => c.id === chatId);
 			if (conversation) {
 				conversation.updatedAt = new Date().toISOString();
 				chatState.conversations = [...chatState.conversations];
-				saveConversationsToStorage(chatState.conversations);
+				await saveConversationsToIndexedDB(chatState.conversations);
 			}
 		}
 	);
@@ -223,14 +371,21 @@ function connectToChatSSE(
     
     // Only add user message if it's not already the last message
     const lastMessage = chatState.messages[chatState.messages.length - 1];
+    let userMsg: Message;
+    
     if (!lastMessage || lastMessage.content !== userMessage) {
-        const userMsg: Message = {
+        userMsg = {
             id: uuidv4(),
             role: 'user',
             content: userMessage,
             timestamp: new Date().toISOString()
         };
         chatState.messages = [...chatState.messages, userMsg];
+        
+        // Save user message to IndexedDB
+        if (chatState.isDBInitialized) {
+            indexedDBManager.saveMessage({ ...userMsg, conversation_id: chatId }).catch(console.error);
+        }
     }
     
     let replyBuffer = '';
@@ -254,7 +409,6 @@ function connectToChatSSE(
             optimize_context: true,
             max_context_docs: 15
         }),
-        // Add abort signal
         signal: currentAbortController.signal
     }).then(async (response) => {
         if (!response.ok) {
@@ -317,6 +471,15 @@ function connectToChatSSE(
                                         m.id === assistantMsg!.id ? assistantMsg! : m
                                     );
                                     onAssistantMessage({ ...assistantMsg });
+                                    
+                                    // Save final assistant message to IndexedDB
+                                    if (chatState.isDBInitialized && assistantMsg) {
+                                        indexedDBManager.saveMessage({ 
+                                            ...assistantMsg, 
+                                            conversation_id: chatId 
+                                        }).catch(console.error);
+                                    }
+                                    
                                     onFinal && onFinal(meta);
                                 }
                             } catch (e) {
@@ -386,4 +549,33 @@ export function selectConversation(conversationId: string) {
 
 export function currentConversationId() {
 	return chatState.activeConversationId;
+}
+
+// Additional utility functions for IndexedDB management
+export async function clearLocalData(): Promise<void> {
+	if (chatState.isDBInitialized) {
+		try {
+			await indexedDBManager.clearAll();
+			chatState.conversations = [];
+			chatState.messages = [];
+			chatState.activeConversationId = null;
+		} catch (error) {
+			console.error('Failed to clear IndexedDB:', error);
+			setError('Failed to clear local data');
+		}
+	}
+	// Also clear localStorage as fallback
+	localStorage.removeItem('nova_conversations');
+}
+
+export async function getStorageInfo() {
+	if (chatState.isDBInitialized) {
+		try {
+			return await indexedDBManager.getStorageSize();
+		} catch (error) {
+			console.error('Failed to get storage info:', error);
+			return null;
+		}
+	}
+	return null;
 }

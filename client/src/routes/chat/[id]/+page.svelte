@@ -28,12 +28,12 @@
 
 	$effect(() => {
 		loadConversations();
-		// loadConversation(chatId);
+		loadConversation(chatId);
 	});
 
 	$effect(() => {
 		if (chatState.activeConversationId !== chatId) {
-			// loadConversation(chatId);
+			loadConversation(chatId);
 		}
 	});
 

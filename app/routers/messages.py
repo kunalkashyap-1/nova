@@ -26,7 +26,7 @@ from app.utils.message_providers import (
     process_ollama_response,
     process_huggingface_response,
     ollama_client,
-    model_manager,  # Import the model manager
+    model_manager,
     get_current_provider_status,
     cleanup_all_models
 )
@@ -247,26 +247,6 @@ async def stream_message_reply(
         message_streamer(body, db),
         media_type="text/event-stream",
     )
-
-
-@router.get("/conversation/{conversation_id}", status_code=status.HTTP_200_OK, summary="Get conversation messages")
-async def get_conversation_messages(conversation_id: int, db: Session = Depends(get_db)):
-    """
-    Get all messages for a specific conversation.
-    
-    This endpoint retrieves messages in chronological order (oldest to newest).
-    
-    Path parameters:
-    - conversation_id: ID of the conversation to retrieve messages for
-    
-    Returns:
-        A JSON object with a 'messages' array containing all messages in the conversation
-    """
-    messages = db.query(Message).filter(
-        Message.conversation_id == conversation_id
-    ).order_by(Message.created_at.asc()).all()
-    
-    return {"messages": messages}
 
 
 @router.delete("/message/{message_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete a message")

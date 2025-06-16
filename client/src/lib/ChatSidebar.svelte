@@ -2,15 +2,18 @@
     const { isSidebarCollapsed, toggleSidebar, openNewChatModal, activateVoiceInput } = $props();
     import { ChevronLeft, ChevronRight, Search, User, Mic } from '@lucide/svelte';
     import { chatState, loadConversations } from '$lib/stores/chatStore.svelte';
+    import { onMount } from 'svelte';
     import { authStore } from '$lib/stores/auth.svelte';
     import type { Conversation } from '$lib/stores/chatStore.svelte';
-    import { goto } from '$app/navigation';
-    
     let sortedConversations: Conversation[] = $derived(
         [...chatState.conversations].sort(
             (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         )
     );
+    import { goto } from '$app/navigation';
+    
+    
+        
 
     // Handle sign out
     async function handleSignOut() {
@@ -21,6 +24,9 @@
             console.error('Sign out error:', error);
         }
     }
+    onMount(() => {
+        loadConversations();
+    });
 </script>
 
 {#if !isSidebarCollapsed}
@@ -115,9 +121,9 @@
                     </div>
                 </div>
                 
-                {#if authStore.isLoading}
+                <!-- {#if authStore.isLoading}
                     <div class="h-2 w-2 animate-pulse rounded-full bg-gray-400"></div>
-                {/if}
+                {/if} -->
             </div>
         </div>
     </aside>

@@ -268,3 +268,238 @@
 2025-06-09 23:24:00,826 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0016925334930419922}
 2025-06-09 23:24:03,379 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.12920236587524414}
 2025-06-09 23:27:37,660 - INFO -  nova - Application shutdown
+2025-06-10 21:22:07,471 - INFO -  nova - Logger initialized
+2025-06-10 21:25:32,897 - INFO -  nova - Logger initialized
+2025-06-10 21:25:44,916 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-10 21:25:52,179 - INFO -  nova - Logger initialized
+2025-06-10 21:26:04,184 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-10 21:26:04,259 - INFO -  nova - Application startup complete
+2025-06-10 22:42:56,820 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'OPTIONS'}, 'process Time': 0.001046895980834961}
+2025-06-10 22:42:57,815 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.6828079223632812}
+2025-06-10 22:42:58,914 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.17371892929077148}
+2025-06-10 22:42:58,935 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.23232078552246094}
+2025-06-10 22:43:05,148 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0009799003601074219}
+2025-06-10 22:43:05,213 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.05666780471801758}
+2025-06-10 22:43:05,225 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0006377696990966797}
+2025-06-10 22:43:05,281 - INFO -  nova - Request for ollama. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_sessions': 0}
+2025-06-10 22:43:05,288 - INFO -  nova - Created session 1_a3f45c36-d8ed-4c55-ba06-b49446a2c102_11b9b9ed for user 1
+2025-06-10 22:43:05,295 - INFO -  nova - Created session 1_a3f45c36-d8ed-4c55-ba06-b49446a2c102_11b9b9ed for user 1
+2025-06-10 22:43:05,770 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.5155148506164551}
+2025-06-10 22:43:08,365 - INFO -  nova - Switching from None (model: None) to ollama (model: deepseek-r1:1.5b)
+2025-06-10 22:43:08,370 - INFO -  nova - Switching from ollama (model: deepseek-r1:1.5b) to ollama (model: None)
+2025-06-10 22:43:21,633 - INFO -  nova - Stopping session 1_a3f45c36-d8ed-4c55-ba06-b49446a2c102_11b9b9ed (force=False)
+2025-06-10 22:43:21,633 - INFO -  nova - Cleaned up session 1_a3f45c36-d8ed-4c55-ba06-b49446a2c102_11b9b9ed
+2025-06-10 22:43:21,634 - INFO -  nova - Session 1_a3f45c36-d8ed-4c55-ba06-b49446a2c102_11b9b9ed already cleaned up or does not exist.
+2025-06-10 22:43:21,634 - INFO -  nova - Cleaned up session 1_a3f45c36-d8ed-4c55-ba06-b49446a2c102_11b9b9ed
+2025-06-10 22:47:26,235 - INFO -  nova - Application shutdown
+2025-06-16 20:35:12,189 - INFO -  nova - Logger initialized
+2025-06-16 20:36:42,713 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-16 20:36:49,877 - INFO -  nova - Logger initialized
+2025-06-16 20:37:11,909 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-16 20:37:12,088 - INFO -  nova - Application startup complete
+2025-06-16 21:00:24,946 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.41033053398132324}
+2025-06-16 21:02:53,808 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.012958288192749023}
+2025-06-16 21:03:30,800 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'OPTIONS'}, 'process Time': 0.0015320777893066406}
+2025-06-16 21:03:32,619 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 1.495147943496704}
+2025-06-16 21:03:33,056 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.3152012825012207}
+2025-06-16 21:03:33,070 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.3608837127685547}
+2025-06-16 21:10:18,651 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.01564502716064453}
+2025-06-16 21:16:44,378 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0}
+2025-06-16 21:16:51,681 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.6527829170227051}
+2025-06-16 21:16:52,060 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.012444019317626953}
+2025-06-16 21:17:12,595 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-06-16 21:17:12,699 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.09314560890197754}
+2025-06-16 21:17:12,711 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-06-16 21:17:12,752 - INFO -  nova - Request for huggingface. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 21:17:12,752 - INFO -  nova - Created session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6 for user 1
+2025-06-16 21:17:12,752 - INFO -  nova - Created session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6 for user 1
+2025-06-16 21:17:13,359 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.6340172290802002}
+2025-06-16 21:17:16,057 - INFO -  nova - Switching from None (model: None) to huggingface (model: Qwen/Qwen2.5-0.5B-Instruct)
+2025-06-16 21:17:16,177 - INFO -  nova - Loading HF model Qwen/Qwen2.5-0.5B-Instruct on cuda
+2025-06-16 21:17:32,381 - INFO -  nova - HuggingFace generation thread started for session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6
+2025-06-16 21:17:37,595 - INFO -  nova - HuggingFace generation thread completed for session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6
+2025-06-16 21:17:38,962 - INFO -  nova - HuggingFace final cleanup for session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6. Completed normally: True
+2025-06-16 21:17:38,962 - INFO -  nova - Stopping session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6 (force=False)
+2025-06-16 21:17:38,962 - INFO -  nova - Cleaned up session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6
+2025-06-16 21:17:38,962 - INFO -  nova - Session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6 already cleaned up or does not exist.
+2025-06-16 21:17:38,962 - INFO -  nova - Cleaned up session 1_6f19e135-d631-48bd-bda4-acfc0c13c940_896534e6
+2025-06-16 21:29:10,758 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.007452249526977539}
+2025-06-16 21:29:37,130 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.005658149719238281}
+2025-06-16 21:29:56,878 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/6f19e135-d631-48bd-bda4-acfc0c13c940'), 'method': 'GET'}, 'process Time': 0.019649267196655273}
+2025-06-16 21:29:56,888 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/6f19e135-d631-48bd-bda4-acfc0c13c940'), 'method': 'GET'}, 'process Time': 0.0035483837127685547}
+2025-06-16 21:35:19,522 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.015403985977172852}
+2025-06-16 21:35:19,570 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/6f19e135-d631-48bd-bda4-acfc0c13c940'), 'method': 'GET'}, 'process Time': 0.007449626922607422}
+2025-06-16 21:35:19,611 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/6f19e135-d631-48bd-bda4-acfc0c13c940'), 'method': 'GET'}, 'process Time': 0.008277416229248047}
+2025-06-16 21:35:19,653 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/6f19e135-d631-48bd-bda4-acfc0c13c940'), 'method': 'GET'}, 'process Time': 0.009753704071044922}
+2025-06-16 21:35:19,670 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/6f19e135-d631-48bd-bda4-acfc0c13c940'), 'method': 'GET'}, 'process Time': 0.0039713382720947266}
+2025-06-16 21:35:50,283 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.009491682052612305}
+2025-06-16 21:37:10,711 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.003781557083129883}
+2025-06-16 21:41:28,931 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.006388187408447266}
+2025-06-16 21:44:17,364 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.014393329620361328}
+2025-06-16 21:44:48,347 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.481203556060791}
+2025-06-16 21:44:48,408 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.0062863826751708984}
+2025-06-16 21:44:48,414 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.015086174011230469}
+2025-06-16 21:44:55,510 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.04126238822937012}
+2025-06-16 21:44:55,571 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 21:44:55,579 - INFO -  nova - Created session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94 for user 1
+2025-06-16 21:44:55,582 - INFO -  nova - Created session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94 for user 1
+2025-06-16 21:44:55,641 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.10460615158081055}
+2025-06-16 21:44:57,026 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 21:44:57,031 - INFO -  nova - HuggingFace generation thread started for session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94
+2025-06-16 21:44:58,247 - INFO -  nova - HuggingFace generation thread completed for session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94
+2025-06-16 21:44:58,981 - INFO -  nova - HuggingFace final cleanup for session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94. Completed normally: True
+2025-06-16 21:44:58,981 - INFO -  nova - Stopping session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94 (force=False)
+2025-06-16 21:44:58,983 - INFO -  nova - Cleaned up session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94
+2025-06-16 21:44:58,984 - INFO -  nova - Session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94 already cleaned up or does not exist.
+2025-06-16 21:44:58,986 - INFO -  nova - Cleaned up session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_374bda94
+2025-06-16 21:47:01,873 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.010101318359375}
+2025-06-16 21:48:12,710 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 21:48:12,711 - INFO -  nova - Created session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc for user 1
+2025-06-16 21:48:12,711 - INFO -  nova - Created session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc for user 1
+2025-06-16 21:48:12,869 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.16486597061157227}
+2025-06-16 21:48:14,197 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 21:48:14,204 - INFO -  nova - HuggingFace generation thread started for session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc
+2025-06-16 21:48:23,898 - INFO -  nova - HuggingFace final cleanup for session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc. Completed normally: False
+2025-06-16 21:48:23,898 - INFO -  nova - Stopping session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc (force=True)
+2025-06-16 21:48:23,899 - INFO -  nova - Waiting for generation thread to finish for session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc
+2025-06-16 21:48:23,900 - INFO -  nova - Stopping criteria met: stop event is set.
+2025-06-16 21:48:23,902 - INFO -  nova - HuggingFace generation thread completed for session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc
+2025-06-16 21:48:23,905 - INFO -  nova - Cleaned up session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc
+2025-06-16 21:48:23,905 - INFO -  nova - Session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc already cleaned up or does not exist.
+2025-06-16 21:48:23,906 - INFO -  nova - Cleaned up session 1_88de80aa-b3a4-4af3-b73c-ed52aa2255d9_0c8f27bc
+2025-06-16 21:48:45,288 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.15375471115112305}
+2025-06-16 21:48:45,346 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 21:48:45,347 - INFO -  nova - Created session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0 for user 1
+2025-06-16 21:48:45,349 - INFO -  nova - Created session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0 for user 1
+2025-06-16 21:48:45,377 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.03695392608642578}
+2025-06-16 21:48:46,775 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 21:48:46,778 - INFO -  nova - HuggingFace generation thread started for session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0
+2025-06-16 21:48:54,983 - INFO -  nova - HuggingFace final cleanup for session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0. Completed normally: False
+2025-06-16 21:48:54,984 - INFO -  nova - Stopping session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0 (force=True)
+2025-06-16 21:48:54,988 - INFO -  nova - Waiting for generation thread to finish for session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0
+2025-06-16 21:48:55,119 - INFO -  nova - Stopping criteria met: stop event is set.
+2025-06-16 21:48:55,120 - INFO -  nova - HuggingFace generation thread completed for session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0
+2025-06-16 21:48:55,122 - INFO -  nova - Cleaned up session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0
+2025-06-16 21:48:55,123 - INFO -  nova - Session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0 already cleaned up or does not exist.
+2025-06-16 21:48:55,123 - INFO -  nova - Cleaned up session 1_e79559e5-2c70-4c35-91f9-7dcd7c2d1a71_73403fc0
+2025-06-16 21:49:09,570 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.012133359909057617}
+2025-06-16 21:49:19,928 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.5471031665802002}
+2025-06-16 21:49:19,988 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.007311582565307617}
+2025-06-16 21:49:19,999 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.02161121368408203}
+2025-06-16 21:49:23,299 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.03621506690979004}
+2025-06-16 21:49:23,341 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 21:49:23,354 - INFO -  nova - Created session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf for user 1
+2025-06-16 21:49:23,365 - INFO -  nova - Created session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf for user 1
+2025-06-16 21:49:23,412 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.09302926063537598}
+2025-06-16 21:49:24,803 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 21:49:24,808 - INFO -  nova - HuggingFace generation thread started for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf
+2025-06-16 21:49:26,055 - INFO -  nova - HuggingFace generation thread completed for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf
+2025-06-16 21:49:26,793 - INFO -  nova - HuggingFace final cleanup for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf. Completed normally: True
+2025-06-16 21:49:26,793 - INFO -  nova - Stopping session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf (force=False)
+2025-06-16 21:49:26,794 - INFO -  nova - Cleaned up session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf
+2025-06-16 21:49:26,794 - INFO -  nova - Session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf already cleaned up or does not exist.
+2025-06-16 21:49:26,795 - INFO -  nova - Cleaned up session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_f08777cf
+2025-06-16 21:52:31,190 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.007003307342529297}
+2025-06-16 21:53:57,537 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 21:53:57,538 - INFO -  nova - Created session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87 for user 1
+2025-06-16 21:53:57,539 - INFO -  nova - Created session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87 for user 1
+2025-06-16 21:53:57,688 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.15596365928649902}
+2025-06-16 21:53:59,144 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 21:53:59,148 - INFO -  nova - HuggingFace generation thread started for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87
+2025-06-16 21:54:00,459 - INFO -  nova - HuggingFace generation thread completed for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87
+2025-06-16 21:54:01,204 - INFO -  nova - HuggingFace final cleanup for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87. Completed normally: True
+2025-06-16 21:54:01,205 - INFO -  nova - Stopping session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87 (force=False)
+2025-06-16 21:54:01,205 - INFO -  nova - Cleaned up session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87
+2025-06-16 21:54:01,207 - INFO -  nova - Session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87 already cleaned up or does not exist.
+2025-06-16 21:54:01,208 - INFO -  nova - Cleaned up session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_da9d9f87
+2025-06-16 21:54:20,624 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 21:54:20,626 - INFO -  nova - Created session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0 for user 1
+2025-06-16 21:54:20,627 - INFO -  nova - Created session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0 for user 1
+2025-06-16 21:54:20,736 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.11546850204467773}
+2025-06-16 21:54:22,043 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 21:54:22,048 - INFO -  nova - HuggingFace generation thread started for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0
+2025-06-16 21:54:42,595 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 1}
+2025-06-16 21:54:42,596 - INFO -  nova - Created session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38 for user 1
+2025-06-16 21:54:42,597 - INFO -  nova - Created session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38 for user 1
+2025-06-16 21:54:42,632 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.7536487579345703}
+2025-06-16 21:54:44,702 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 21:54:44,710 - INFO -  nova - HuggingFace generation thread started for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38
+2025-06-16 21:54:48,616 - INFO -  nova - HuggingFace generation thread completed for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0
+2025-06-16 21:54:50,031 - INFO -  nova - HuggingFace final cleanup for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0. Completed normally: True
+2025-06-16 21:54:50,032 - INFO -  nova - Stopping session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0 (force=False)
+2025-06-16 21:54:50,033 - INFO -  nova - Cleaned up session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0
+2025-06-16 21:54:50,035 - INFO -  nova - Session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0 already cleaned up or does not exist.
+2025-06-16 21:54:50,036 - INFO -  nova - Cleaned up session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_2ba483b0
+2025-06-16 21:54:52,750 - INFO -  nova - HuggingFace generation thread completed for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38
+2025-06-16 21:54:53,491 - INFO -  nova - HuggingFace final cleanup for session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38. Completed normally: True
+2025-06-16 21:54:53,492 - INFO -  nova - Stopping session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38 (force=False)
+2025-06-16 21:54:53,492 - INFO -  nova - Cleaned up session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38
+2025-06-16 21:54:53,494 - INFO -  nova - Session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38 already cleaned up or does not exist.
+2025-06-16 21:54:53,496 - INFO -  nova - Cleaned up session 1_fc37c037-b0bd-4c38-b5bc-07177ac6623d_94e4ac38
+2025-06-16 22:01:06,775 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.020263671875}
+2025-06-16 22:01:49,193 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.0045337677001953125}
+2025-06-16 22:02:05,516 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.30408644676208496}
+2025-06-16 22:02:05,545 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.002836942672729492}
+2025-06-16 22:02:05,859 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.009256124496459961}
+2025-06-16 22:02:08,921 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.017603158950805664}
+2025-06-16 22:02:08,936 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 22:02:08,936 - INFO -  nova - Created session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13 for user 1
+2025-06-16 22:02:08,937 - INFO -  nova - Created session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13 for user 1
+2025-06-16 22:02:08,950 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.017794370651245117}
+2025-06-16 22:02:09,422 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 22:02:09,425 - INFO -  nova - HuggingFace generation thread started for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13
+2025-06-16 22:02:09,998 - INFO -  nova - HuggingFace generation thread completed for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13
+2025-06-16 22:02:10,257 - INFO -  nova - HuggingFace final cleanup for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13. Completed normally: True
+2025-06-16 22:02:10,258 - INFO -  nova - Stopping session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13 (force=False)
+2025-06-16 22:02:10,258 - INFO -  nova - Cleaned up session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13
+2025-06-16 22:02:10,259 - INFO -  nova - Session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13 already cleaned up or does not exist.
+2025-06-16 22:02:10,259 - INFO -  nova - Cleaned up session 1_0df90fac-a370-4e2a-9304-7db7790ce139_faf98a13
+2025-06-16 22:02:20,131 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 22:02:20,132 - INFO -  nova - Created session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e for user 1
+2025-06-16 22:02:20,134 - INFO -  nova - Created session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e for user 1
+2025-06-16 22:02:20,151 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.0226900577545166}
+2025-06-16 22:02:20,606 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 22:02:20,610 - INFO -  nova - HuggingFace generation thread started for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e
+2025-06-16 22:02:27,647 - INFO -  nova - HuggingFace generation thread completed for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e
+2025-06-16 22:02:27,919 - INFO -  nova - HuggingFace final cleanup for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e. Completed normally: True
+2025-06-16 22:02:27,920 - INFO -  nova - Stopping session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e (force=False)
+2025-06-16 22:02:27,921 - INFO -  nova - Cleaned up session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e
+2025-06-16 22:02:27,921 - INFO -  nova - Session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e already cleaned up or does not exist.
+2025-06-16 22:02:27,922 - INFO -  nova - Cleaned up session 1_0df90fac-a370-4e2a-9304-7db7790ce139_04df351e
+2025-06-16 22:02:57,396 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.011608362197875977}
+2025-06-16 22:02:57,440 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 22:02:57,444 - INFO -  nova - Created session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290 for user 1
+2025-06-16 22:02:57,445 - INFO -  nova - Created session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290 for user 1
+2025-06-16 22:02:57,462 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.03339505195617676}
+2025-06-16 22:02:57,924 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 22:02:57,928 - INFO -  nova - HuggingFace generation thread started for session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290
+2025-06-16 22:02:59,598 - INFO -  nova - HuggingFace generation thread completed for session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290
+2025-06-16 22:02:59,898 - INFO -  nova - HuggingFace final cleanup for session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290. Completed normally: True
+2025-06-16 22:02:59,899 - INFO -  nova - Stopping session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290 (force=False)
+2025-06-16 22:02:59,899 - INFO -  nova - Cleaned up session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290
+2025-06-16 22:02:59,900 - INFO -  nova - Session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290 already cleaned up or does not exist.
+2025-06-16 22:02:59,901 - INFO -  nova - Cleaned up session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_b51c8290
+2025-06-16 22:03:25,159 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 22:03:25,162 - INFO -  nova - Created session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2 for user 1
+2025-06-16 22:03:25,162 - INFO -  nova - Created session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2 for user 1
+2025-06-16 22:03:25,188 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.02998661994934082}
+2025-06-16 22:03:25,654 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 22:03:25,660 - INFO -  nova - HuggingFace generation thread started for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2
+2025-06-16 22:03:29,834 - INFO -  nova - HuggingFace generation thread completed for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2
+2025-06-16 22:03:30,148 - INFO -  nova - HuggingFace final cleanup for session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2. Completed normally: True
+2025-06-16 22:03:30,149 - INFO -  nova - Stopping session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2 (force=False)
+2025-06-16 22:03:30,149 - INFO -  nova - Cleaned up session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2
+2025-06-16 22:03:30,150 - INFO -  nova - Session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2 already cleaned up or does not exist.
+2025-06-16 22:03:30,150 - INFO -  nova - Cleaned up session 1_0df90fac-a370-4e2a-9304-7db7790ce139_2cc5afc2
+2025-06-16 22:04:53,214 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 22:04:53,215 - INFO -  nova - Created session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291 for user 1
+2025-06-16 22:04:53,216 - INFO -  nova - Created session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291 for user 1
+2025-06-16 22:04:53,347 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.13726592063903809}
+2025-06-16 22:04:53,785 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 22:04:53,789 - INFO -  nova - HuggingFace generation thread started for session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291
+2025-06-16 22:05:04,206 - INFO -  nova - HuggingFace generation thread completed for session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291
+2025-06-16 22:05:04,480 - INFO -  nova - HuggingFace final cleanup for session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291. Completed normally: True
+2025-06-16 22:05:04,482 - INFO -  nova - Stopping session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291 (force=False)
+2025-06-16 22:05:04,482 - INFO -  nova - Cleaned up session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291
+2025-06-16 22:05:04,482 - INFO -  nova - Session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291 already cleaned up or does not exist.
+2025-06-16 22:05:04,482 - INFO -  nova - Cleaned up session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291

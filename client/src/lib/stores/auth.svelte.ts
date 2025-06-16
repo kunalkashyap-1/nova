@@ -1,4 +1,4 @@
-import { authAPI } from '../auth-api';
+import { authAPI } from '../api/auth-api';
 import type { User, AuthState, LoginRequest, RegisterRequest } from '../types/auth';
 
 function createAuthStore() {

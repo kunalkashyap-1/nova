@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { ChevronDown, Settings } from 'lucide-svelte';
+	import { ChevronDown, Settings, Info } from 'lucide-svelte';
 	import { modelStore, selectedModel, modelParameters } from '../stores/modelStore.svelte';
 	import { onMount } from 'svelte';
 	import type { Model } from '$lib/types';
-	import { Dropdown, DropdownItem, Button, Spinner } from 'flowbite-svelte';
+	import { Dropdown, DropdownItem, Button, Spinner, Tooltip } from 'flowbite-svelte';
 	import { fade } from 'svelte/transition';
 
 	// State
@@ -14,6 +14,12 @@
 	function handleModelSelect(modelId: number) {
 		modelStore.selectModel(modelId);
 		openDropdown = false;
+	}
+
+	// Truncate description to specified length
+	function truncateDescription(description: string, maxLength: number = 60): string {
+		if (!description || description.length <= maxLength) return description;
+		return description.substring(0, maxLength).trim() + '...';
 	}
 
 	// Handle parameter update
@@ -78,9 +84,26 @@
 								<div class="flex-1">
 									<h3 class="font-medium text-gray-200">{model.name}</h3>
 									{#if model.description}
-										<p class="mt-1 text-sm text-gray-400">
-											{model.description}
-										</p>
+										<div class="mt-1 flex items-center gap-2">
+											<p class="text-sm text-gray-400">
+												{truncateDescription(model.description)}
+											</p>
+											{#if model.description.length > 60}
+												<div class="relative">
+													<Info 
+														id="info-{model.id}" 
+														class="h-4 w-4 text-gray-500 hover:text-gray-300 cursor-help flex-shrink-0" 
+													/>
+													<Tooltip 
+														triggeredBy="#info-{model.id}" 
+														class="bg-gray-900 text-gray-200 border border-gray-600 max-w-xs text-sm"
+														placement="top"
+													>
+														{model.description}
+													</Tooltip>
+												</div>
+											{/if}
+										</div>
 									{/if}
 								</div>
 							</div>

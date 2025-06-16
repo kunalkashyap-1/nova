@@ -4,7 +4,7 @@ import type {
     LoginRequest, 
     RegisterRequest, 
     AuthCheckResponse 
-  } from './types/auth';
+  } from '../types/auth';
   import api from './api';
   import type { AxiosRequestConfig, AxiosResponse } from 'axios';
   

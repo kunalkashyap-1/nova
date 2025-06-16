@@ -1,7 +1,7 @@
 import { writable, derived, get } from 'svelte/store';
 import type { Model } from '$lib/types';
 import { browser } from '$app/environment';
-import api from '../api';
+import api from '../api/api';
 import { setSelectedModel } from './chatStore.svelte';
 
 // This is now the single source of truth for model state. All components should use this store.
