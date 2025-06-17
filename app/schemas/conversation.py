@@ -1,11 +1,12 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 from uuid import UUID
 
 class ConversationCreate(BaseModel):
     title: str
-    user_id: int
+    # Accept either integer user ID or special string like "guest"; optional to allow backend to create guest account automatically
+    user_id: Optional[Union[int, str]] = None
     model_id: Optional[int] = None
     system_prompt: Optional[str] = None
     folder_id: Optional[int] = None

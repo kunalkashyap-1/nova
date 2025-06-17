@@ -503,3 +503,156 @@
 2025-06-16 22:05:04,482 - INFO -  nova - Cleaned up session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291
 2025-06-16 22:05:04,482 - INFO -  nova - Session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291 already cleaned up or does not exist.
 2025-06-16 22:05:04,482 - INFO -  nova - Cleaned up session 1_2b1d5910-8cd1-40c2-a282-aacfc40c523b_e13e1291
+2025-06-16 22:12:08,698 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.010371685028076172}
+2025-06-16 22:18:39,408 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.00860905647277832}
+2025-06-16 22:18:39,421 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.006579875946044922}
+2025-06-16 22:19:48,395 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.005975246429443359}
+2025-06-16 22:21:16,210 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0015082359313964844}
+2025-06-16 22:21:16,225 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.007645845413208008}
+2025-06-16 22:21:36,527 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'OPTIONS'}, 'process Time': 0.0016024112701416016}
+2025-06-16 22:21:37,325 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.47634387016296387}
+2025-06-16 22:21:37,438 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.010285615921020508}
+2025-06-16 22:21:37,446 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.02295517921447754}
+2025-06-16 22:21:57,033 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-06-16 22:21:57,081 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.04174661636352539}
+2025-06-16 22:21:57,142 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 22:21:57,143 - INFO -  nova - Created session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e for user 1
+2025-06-16 22:21:57,145 - INFO -  nova - Created session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e for user 1
+2025-06-16 22:21:57,181 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.04710102081298828}
+2025-06-16 22:21:58,472 - INFO -  nova - Returning already loaded HF model: Qwen/Qwen2.5-0.5B-Instruct
+2025-06-16 22:21:58,477 - INFO -  nova - HuggingFace generation thread started for session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e
+2025-06-16 22:22:11,476 - INFO -  nova - HuggingFace generation thread completed for session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e
+2025-06-16 22:22:12,223 - INFO -  nova - HuggingFace final cleanup for session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e. Completed normally: True
+2025-06-16 22:22:12,224 - INFO -  nova - Stopping session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e (force=False)
+2025-06-16 22:22:12,225 - INFO -  nova - Cleaned up session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e
+2025-06-16 22:22:12,225 - INFO -  nova - Session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e already cleaned up or does not exist.
+2025-06-16 22:22:12,225 - INFO -  nova - Cleaned up session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_0347e83e
+2025-06-16 22:23:47,961 - INFO -  nova - Application shutdown
+2025-06-16 22:23:53,455 - INFO -  nova - Logger initialized
+2025-06-16 22:23:58,303 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-16 22:23:58,354 - INFO -  nova - Application startup complete
+2025-06-16 22:24:03,353 - INFO -  nova - Request for huggingface. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_sessions': 0}
+2025-06-16 22:24:03,354 - INFO -  nova - Created session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_69d3b922 for user 1
+2025-06-16 22:24:03,355 - INFO -  nova - Created session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_69d3b922 for user 1
+2025-06-16 22:24:03,670 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.325455904006958}
+2025-06-16 22:24:04,709 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/tools/search'), 'method': 'POST'}, 'process Time': 0.34847521781921387}
+2025-06-16 22:24:04,715 - ERROR -  nova - Error in message streaming: local variable 'context_messages' referenced before assignment
+2025-06-16 22:24:04,718 - INFO -  nova - Stopping session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_69d3b922 (force=True)
+2025-06-16 22:24:04,719 - INFO -  nova - Cleaned up session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_69d3b922
+2025-06-16 22:24:04,720 - INFO -  nova - Cleaned up session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_69d3b922
+2025-06-17 21:51:15,659 - INFO -  nova - Logger initialized
+2025-06-17 21:51:52,388 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 21:51:58,303 - INFO -  nova - Logger initialized
+2025-06-17 21:52:08,364 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 21:52:08,533 - INFO -  nova - Application startup complete
+2025-06-17 21:58:17,091 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'OPTIONS'}, 'process Time': 0.0005435943603515625}
+2025-06-17 21:58:18,014 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.6099674701690674}
+2025-06-17 21:58:19,171 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.16520094871520996}
+2025-06-17 21:58:19,226 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.24840188026428223}
+2025-06-17 22:01:34,653 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.008662223815917969}
+2025-06-17 22:02:47,946 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-06-17 22:02:48,650 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.3776111602783203}
+2025-06-17 22:02:48,767 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.02907109260559082}
+2025-06-17 22:02:48,819 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.07359886169433594}
+2025-06-17 22:03:01,488 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.011281490325927734}
+2025-06-17 22:09:33,809 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.023075342178344727}
+2025-06-17 22:09:41,784 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.04161882400512695}
+2025-06-17 22:09:42,351 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/check'), 'method': 'GET'}, 'process Time': 0.11404299736022949}
+2025-06-17 22:09:53,927 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.005259037017822266}
+2025-06-17 22:09:54,072 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/check'), 'method': 'GET'}, 'process Time': 0.020714998245239258}
+2025-06-17 22:10:41,752 - INFO -  nova - Application shutdown
+2025-06-17 22:10:48,309 - INFO -  nova - Logger initialized
+2025-06-17 22:10:58,488 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:10:58,566 - INFO -  nova - Application startup complete
+2025-06-17 22:14:35,346 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/check'), 'method': 'GET'}, 'process Time': 0.26653623580932617}
+2025-06-17 22:14:35,434 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.35669755935668945}
+2025-06-17 22:21:02,012 - INFO -  nova - Application shutdown
+2025-06-17 22:21:08,646 - INFO -  nova - Logger initialized
+2025-06-17 22:21:18,241 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:21:18,323 - INFO -  nova - Application startup complete
+2025-06-17 22:22:25,527 - INFO -  nova - Application shutdown
+2025-06-17 22:22:31,781 - INFO -  nova - Logger initialized
+2025-06-17 22:22:40,977 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:22:41,050 - INFO -  nova - Application startup complete
+2025-06-17 22:26:19,890 - INFO -  nova - Application shutdown
+2025-06-17 22:26:26,240 - INFO -  nova - Logger initialized
+2025-06-17 22:26:34,469 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:26:34,538 - INFO -  nova - Application startup complete
+2025-06-17 22:26:50,293 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0006346702575683594}
+2025-06-17 22:26:52,702 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.07828211784362793}
+2025-06-17 22:26:57,902 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'OPTIONS'}, 'process Time': 0.0009906291961669922}
+2025-06-17 22:26:58,109 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'POST'}, 'process Time': 0.1823594570159912}
+2025-06-17 22:26:58,134 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0010116100311279297}
+2025-06-17 22:26:58,180 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.03161430358886719}
+2025-06-17 22:29:20,182 - INFO -  nova - Application shutdown
+2025-06-17 22:29:30,803 - INFO -  nova - Logger initialized
+2025-06-17 22:29:50,248 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:29:50,349 - INFO -  nova - Application startup complete
+2025-06-17 22:29:50,649 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.06550979614257812}
+2025-06-17 22:29:50,696 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.03794097900390625}
+2025-06-17 22:33:48,702 - INFO -  nova - Application shutdown
+2025-06-17 22:33:57,835 - INFO -  nova - Logger initialized
+2025-06-17 22:34:10,867 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:34:10,966 - INFO -  nova - Application startup complete
+2025-06-17 22:36:05,669 - INFO -  nova - Request for huggingface. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_sessions': 0}
+2025-06-17 22:36:05,671 - INFO -  nova - Created session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0 for user guest
+2025-06-17 22:36:05,673 - INFO -  nova - Created session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0 for user guest
+2025-06-17 22:36:06,686 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 1.0403108596801758}
+2025-06-17 22:36:10,865 - INFO -  nova - Switching from None (model: None) to huggingface (model: Qwen/Qwen2.5-0.5B-Instruct)
+2025-06-17 22:36:10,952 - INFO -  nova - Loading HF model Qwen/Qwen2.5-0.5B-Instruct on cuda
+2025-06-17 22:36:28,643 - INFO -  nova - HuggingFace generation thread started for session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0
+2025-06-17 22:36:33,208 - INFO -  nova - HuggingFace generation thread completed for session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0
+2025-06-17 22:36:34,760 - INFO -  nova - HuggingFace final cleanup for session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0. Completed normally: True
+2025-06-17 22:36:34,763 - INFO -  nova - Stopping session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0 (force=False)
+2025-06-17 22:36:34,765 - INFO -  nova - Cleaned up session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0
+2025-06-17 22:36:34,772 - INFO -  nova - Session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0 already cleaned up or does not exist.
+2025-06-17 22:36:34,779 - INFO -  nova - Cleaned up session guest_4eb2c815-df68-454f-b954-0eb4c361430e_d266ebc0
+2025-06-17 22:36:47,382 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 1.1126258373260498}
+2025-06-17 22:36:47,513 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.02611541748046875}
+2025-06-17 22:45:27,783 - INFO -  nova - Application shutdown
+2025-06-17 22:45:41,470 - INFO -  nova - Logger initialized
+2025-06-17 22:46:08,374 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:46:08,556 - INFO -  nova - Application startup complete
+2025-06-17 22:47:11,708 - INFO -  nova - Application shutdown
+2025-06-17 22:47:37,010 - INFO -  nova - Logger initialized
+2025-06-17 22:49:26,085 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:49:26,255 - INFO -  nova - Application startup complete
+2025-06-17 22:51:24,822 - INFO -  nova - Application shutdown
+2025-06-17 22:51:38,382 - INFO -  nova - Logger initialized
+2025-06-17 22:52:05,746 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:52:05,957 - INFO -  nova - Application startup complete
+2025-06-17 22:52:40,276 - INFO -  nova - Application shutdown
+2025-06-17 22:52:52,244 - INFO -  nova - Logger initialized
+2025-06-17 22:53:24,433 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:53:24,672 - INFO -  nova - Application startup complete
+2025-06-17 22:53:26,455 - INFO -  nova - Application shutdown
+2025-06-17 22:53:41,581 - INFO -  nova - Logger initialized
+2025-06-17 22:54:05,320 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:54:05,518 - INFO -  nova - Application startup complete
+2025-06-17 22:57:53,125 - INFO -  nova - Application shutdown
+2025-06-17 22:58:06,243 - INFO -  nova - Logger initialized
+2025-06-17 22:58:19,968 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-17 22:58:20,145 - INFO -  nova - Application startup complete
+2025-06-17 23:12:10,039 - INFO -  nova - Request for huggingface. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_sessions': 0}
+2025-06-17 23:12:10,039 - INFO -  nova - Created session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb for user 1
+2025-06-17 23:12:10,043 - INFO -  nova - Created session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb for user 1
+2025-06-17 23:12:10,793 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.9782006740570068}
+2025-06-17 23:12:13,379 - INFO -  nova - Switching from None (model: None) to huggingface (model: Qwen/Qwen2.5-0.5B-Instruct)
+2025-06-17 23:12:13,466 - INFO -  nova - Loading HF model Qwen/Qwen2.5-0.5B-Instruct on cuda
+2025-06-17 23:12:25,089 - INFO -  nova - HuggingFace generation thread started for session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb
+2025-06-17 23:12:45,831 - INFO -  nova - HuggingFace generation thread completed for session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb
+2025-06-17 23:12:47,288 - INFO -  nova - HuggingFace final cleanup for session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb. Completed normally: True
+2025-06-17 23:12:47,289 - INFO -  nova - Stopping session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb (force=False)
+2025-06-17 23:12:47,291 - INFO -  nova - Cleaned up session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb
+2025-06-17 23:12:47,292 - INFO -  nova - Session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb already cleaned up or does not exist.
+2025-06-17 23:12:47,295 - INFO -  nova - Cleaned up session 1_4eb2c815-df68-454f-b954-0eb4c361430e_762cd6cb
+2025-06-17 23:14:02,448 - INFO -  nova - Request for huggingface. Current status: {'current_provider': 'huggingface', 'current_model': 'Qwen/Qwen2.5-0.5B-Instruct', 'hf_model_loaded': True, 'ollama_active': False, 'active_sessions': 0}
+2025-06-17 23:14:02,453 - INFO -  nova - Created session 1_4eb2c815-df68-454f-b954-0eb4c361430e_79b86ca4 for user 1
+2025-06-17 23:14:02,455 - INFO -  nova - Created session 1_4eb2c815-df68-454f-b954-0eb4c361430e_79b86ca4 for user 1
+2025-06-17 23:14:02,687 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.24356985092163086}
+2025-06-17 23:14:06,580 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/tools/search'), 'method': 'POST'}, 'process Time': 1.9916820526123047}
+2025-06-17 23:14:06,627 - ERROR -  nova - Error in message streaming: local variable 'context_messages' referenced before assignment
+2025-06-17 23:14:06,629 - INFO -  nova - Stopping session 1_4eb2c815-df68-454f-b954-0eb4c361430e_79b86ca4 (force=True)
+2025-06-17 23:14:06,636 - INFO -  nova - Cleaned up session 1_4eb2c815-df68-454f-b954-0eb4c361430e_79b86ca4
+2025-06-17 23:14:06,638 - INFO -  nova - Cleaned up session 1_4eb2c815-df68-454f-b954-0eb4c361430e_79b86ca4
+2025-06-17 23:15:05,120 - INFO -  nova - Application shutdown

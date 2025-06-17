@@ -2,6 +2,7 @@
 Web search service for retrieving context from the internet.
 """
 import aiohttp
+from app.services.llm_query_service import generate_search_query
 import logging
 from typing import List, Dict
 import os
@@ -15,6 +16,12 @@ logger = logging.getLogger(__name__)
 WEB_SEARCH_CACHE_TTL = int(os.getenv("WEB_SEARCH_CACHE_TTL", "1800"))  # 30 minutes
 
 async def get_web_search_context(query: str, max_results: int = 5) -> List[Dict]:
+    """Retrieve context via web search.
+
+    The original user prompt is first converted into a concise search query using an LLM
+    (deepseek-r1:1.5b via Ollama).  This yields fewer irrelevant tokens and improves search
+    hit-rate.  The generated query is cached transparently by the helper.
+    """
     """
     Get context from web search for a given query.
     
@@ -25,16 +32,22 @@ async def get_web_search_context(query: str, max_results: int = 5) -> List[Dict]
     Returns:
         List of context messages with web search results
     """
+    # Convert prompt → succinct search query via LLM (cached)
+    refined_query = generate_search_query(query)
+    if not refined_query:
+        refined_query = query  # fallback
+
     # Generate a cache key for this search query
-    query_hash = hashlib.md5(query.encode()).hexdigest()
+    query_hash = hashlib.md5(refined_query.encode()).hexdigest()
     cache_key = f"web_search:{query_hash}:{max_results}"
     
     # Try to get from cache first
+    logger.info(f"Checking cache for web search results for: {refined_query}")
     cached_results = await cache_get(cache_key)
     if cached_results:
         try:
             context_data = json.loads(cached_results)
-            logger.info(f"Using cached web search results for: {query}")
+            logger.info(f"Using cached web search results for: {refined_query}")
             return context_data
         except json.JSONDecodeError:
             pass
@@ -44,7 +57,7 @@ async def get_web_search_context(query: str, max_results: int = 5) -> List[Dict]
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 "http://localhost:8000/api/v1/tools/search",  # Using local endpoint
-                json={"query": query, "max_results": max_results, "safe_search": True},
+                json={"query": refined_query, "max_results": max_results, "safe_search": True},
                 timeout=30
             ) as response:
                 if response.status != 200:
@@ -54,11 +67,11 @@ async def get_web_search_context(query: str, max_results: int = 5) -> List[Dict]
                 data = await response.json()
                 
                 if not data.get("search_results"):
-                    logger.warning(f"No search results found for: {query}")
+                    logger.warning(f"No search results found for: {refined_query}")
                     return _get_fallback_context(query)
                 
                 # Format the search results into context
-                search_content = "Web search results:\n\n"
+                search_content = f"Web search results for \"{refined_query}\":\n\n"
                 
                 for i, result in enumerate(data["search_results"], 1):
                     search_content += f"[{i}] {result['title']}\n"
@@ -78,8 +91,8 @@ async def get_web_search_context(query: str, max_results: int = 5) -> List[Dict]
                 return context_messages
                 
     except Exception as e:
-        logger.exception(f"Error retrieving web search results: {str(e)}")
-        return _get_fallback_context(query)
+        logger.exception(f"Error retrieving web search results for {refined_query}: {str(e)}")
+        return _get_fallback_context(refined_query)
 
 def _get_fallback_context(query: str) -> List[Dict]:
     """Generate fallback context when search fails."""

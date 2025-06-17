@@ -24,6 +24,9 @@ ACCESS_TOKEN_EXPIRE_DAYS = 7
 UPLOAD_DIR = Path("uploads/profile_pictures")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
+# Cookie security configuration
+SECURE_COOKIE = os.getenv("SECURE_COOKIE", "false").lower() in ["true", "1", "yes"]
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token", auto_error=False)
 
@@ -151,7 +154,7 @@ def set_auth_cookie(response: Response, token: str) -> None:
         value=token,
         max_age=ACCESS_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,  # 7 days in seconds
         httponly=True,  # Prevent XSS attacks
-        secure=True,    # Only send over HTTPS in production
+        secure=SECURE_COOKIE,    # Only send over HTTPS in production when enabled
         samesite="lax"  # CSRF protection
     )
 
@@ -283,7 +286,7 @@ async def logout(response: Response):
     response.delete_cookie(
         key="auth_token",
         httponly=True,
-        secure=True,
+        secure=SECURE_COOKIE,
         samesite="lax"
     )
     return {"message": "Successfully logged out"}

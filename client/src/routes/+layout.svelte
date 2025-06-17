@@ -1,6 +1,13 @@
 <script lang="ts">
 	import '../app.css';
+	import { onMount } from 'svelte';
+	import { authStore } from '$lib/stores/auth.svelte';
 	let { children } = $props();
+
+	// Ensure session persists by verifying auth status on page load
+	onMount(() => {
+		authStore.checkAuth();
+	});
 
 </script>
 

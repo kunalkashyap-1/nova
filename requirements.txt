@@ -34,6 +34,10 @@ tenacity>=8.2.2
 prometheus-client>=0.16.0  # For metrics
 structlog>=23.1.0  # Better logging
 
+# Web scraping/search and async HTTP
+beautifulsoup4>=4.12.3
+aiohttp>=3.9.3
+
 # Security
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4

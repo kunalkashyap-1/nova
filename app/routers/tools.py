@@ -6,12 +6,16 @@ import asyncio
 import logging
 import os
 import json
-from typing import List
+from typing import List, Optional
 from bs4 import BeautifulSoup
+import bs4 as _bs4  # alias for fallback search
+import ollama
 import re
 import hashlib
 from app.utils.redis import cache_get, cache_set
 from datetime import timedelta
+
+LLM_MODEL = os.getenv("BACKEND_LLM_MODEL", "deepseek-r1:1.5b")
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -65,10 +69,34 @@ async def parse_webpage(html: str, query: str) -> str:
     
     return text
 
+async def _search_duckduckgo(query: str, max_results: int = 5) -> List[SearchResult]:
+    """Lightweight fallback search scraping DuckDuckGo HTML results (no API key required)."""
+    results: List[SearchResult] = []
+    try:
+        async with aiohttp.ClientSession() as session:
+            params = {"q": query, "kl": "us-en"}
+            async with session.get("https://duckduckgo.com/html/", params=params, timeout=15) as resp:
+                if resp.status != 200:
+                    logger.warning("DuckDuckGo request failed: %s", resp.status)
+                    return []
+                html = await resp.text()
+                soup = _bs4.BeautifulSoup(html, "html.parser")
+                for a in soup.select("a.result__a")[:max_results]:
+                    title = a.get_text()
+                    url = a.get("href")
+                    snippet_tag = a.find_parent("div", class_="result")
+                    snippet = snippet_tag.get_text(" ", strip=True) if snippet_tag else ""
+                    results.append(SearchResult(title=title, snippet=snippet[:256], url=url, source="duckduckgo"))
+        return results
+    except Exception as exc:
+        logger.error("DuckDuckGo scraping error: %s", exc)
+        return []
+
 async def search_serp_api(query: str, max_results: int = 5, safe_search: bool = True) -> List[SearchResult]:
     """Search the web using SerpAPI."""
+    # If no SERPAPI_KEY configured, immediately fall back to DuckDuckGo scraping
     if not SERPAPI_KEY:
-        raise HTTPException(status_code=500, detail="Search API key not configured")
+        return await _search_duckduckgo(query, max_results)
     
     # Create a cache key based on the query and parameters
     query_string = f"{query}:{max_results}:{safe_search}"
@@ -118,9 +146,13 @@ async def search_serp_api(query: str, max_results: int = 5, safe_search: bool = 
         return []
 
 async def search_and_extract(query: str, max_results: int = 5, safe_search: bool = True) -> List[SearchResult]:
+    """Search the web (SerpAPI → fallback DuckDuckGo) and scrape content."""
     """Search the web and extract content from top results."""
     search_results = await search_serp_api(query, max_results, safe_search)
     
+    if not search_results:
+        # Final attempt: DuckDuckGo fallback if not already used
+        search_results = await _search_duckduckgo(query, max_results)
     if not search_results:
         return []
     
@@ -142,6 +174,26 @@ async def search_and_extract(query: str, max_results: int = 5, safe_search: bool
                 logger.error(f"Error processing {result.url}: {str(e)}")
     
     return search_results
+
+@router.post("/llm_query", response_model=ToolOutput)
+async def llm_query(tool_input: ToolInput):
+    """Generic backend LLM call using Ollama and `deepseek-r1:1.5b` (or env override)"""
+    if not tool_input.query:
+        raise HTTPException(status_code=400, detail="Prompt is required")
+
+    try:
+        resp = ollama.chat(
+            model=LLM_MODEL,
+            messages=[{"role": "user", "content": tool_input.query.strip()}],
+            temperature=0.7,
+            top_p=0.95,
+        )
+        content: Optional[str] = resp.get("message", {}).get("content") if isinstance(resp, dict) else None
+        return ToolOutput(result=content or "")
+    except Exception as exc:
+        logger.error("LLM query failed: %s", exc)
+        raise HTTPException(status_code=500, detail="LLM query failed")
+
 
 @router.post("/search", response_model=ToolOutput)
 async def search(tool_input: ToolInput):

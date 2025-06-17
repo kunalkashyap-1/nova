@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Send, Mic, Search, StopCircle } from '@lucide/svelte';
 	import ModelSelector from './components/ModelSelector.svelte';
-	import { chatState, stopCurrentStream } from '$lib/stores/chatStore.svelte';
+	import { toggleWebSearch, chatState } from '$lib/stores/chatStore.svelte';
+	import { stopCurrentStream } from '$lib/stores/chatStore.svelte';
 	import { selectedModel } from './stores/modelStore.svelte';
 
 	interface Props {
@@ -168,31 +169,13 @@
 			>
 				<ModelSelector />
 				<button
+					onclick={toggleWebSearch}
 					type="button"
-					class="
-            flex
-            w-auto
-            items-center
-            justify-center
-            gap-1
-            rounded-full
-            border-0
-            bg-gray-700/50
-            px-2
-            py-0.5
-            text-base
-            text-gray-400
-            transition-colors
-            duration-150
-            hover:bg-gray-600/50
-            hover:text-green-400
-            focus:outline-none
-            sm:w-full
-            sm:px-1
-            sm:py-0.5
-            sm:text-sm
-          "
-					aria-label="Search"
+					class={`
+			            flex w-auto items-center justify-center gap-1 rounded-full border-0 px-2 py-0.5 text-base transition-colors duration-150 focus:outline-none sm:w-full sm:px-1 sm:py-0.5 sm:text-sm
+			            ${chatState.webSearchEnabled ? 'bg-green-600/70 text-white hover:bg-green-600' : 'bg-gray-700/50 text-gray-400 hover:bg-gray-600/50 hover:text-green-400'}
+			          `}
+					aria-label="Toggle Web Search"
 				>
 					<Search class="h-5 w-5 sm:h-4 sm:w-4" />
 					<span>Search</span>

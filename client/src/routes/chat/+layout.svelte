@@ -115,7 +115,7 @@
 		{/if}
 	</div>
 	<!-- Main content area -->
-	<div class="flex min-w-0 flex-1 flex-col transition-all duration-500 ease-in-out">
+	<div class="flex min-w-0 flex-1 flex-col transition-all duration-500 ease-in-out mt-2">
 		<div class="flex min-h-0 flex-1 flex-col">
 			<!-- Centered container for chat and input bar -->
 			<div class="mx-auto w-full max-w-4xl flex flex-col min-h-0 flex-1 h-full">

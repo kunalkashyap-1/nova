@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, List, Literal
+from typing import Optional, Dict, Any, List, Literal, Union
 from datetime import datetime
 
 
@@ -34,7 +34,8 @@ class MessageOut(MessageBase):
 
 class MessageStreamRequest(BaseModel):
     chat_id: str  
-    user_id: int  
+    # Accept numeric user IDs for registered users or string identifiers (e.g., "guest-<suffix>") for temporary guests
+    user_id: Union[int, str]  
     model: str
     message: str
     provider: Literal["ollama", "huggingface"] = "ollama"

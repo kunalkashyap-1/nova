@@ -50,6 +50,7 @@ export type ChatState = {
 	selectedModel: string;
 	isStreamActive: boolean;
 	isDBInitialized: boolean;
+	webSearchEnabled: boolean; // whether to request web results
 };
 
 export const chatState: ChatState = $state({
@@ -60,11 +61,16 @@ export const chatState: ChatState = $state({
 	errorMessage: '',
 	selectedModel: 'deepseek-r1:1.5b',
 	isStreamActive: false,
-	isDBInitialized: false
+	isDBInitialized: false,
+    webSearchEnabled: false
 });
 
 export function setLoading(isLoading: boolean) {
 	chatState.isLoading = isLoading;
+}
+
+export function toggleWebSearch() {
+    chatState.webSearchEnabled = !chatState.webSearchEnabled;
 }
 
 export function setError(message: string) {
@@ -404,8 +410,11 @@ function connectToChatSSE(
             model,
             message: userMessage,
             provider: preferences.selectedProvider || 'ollama',
+            web_search: chatState.webSearchEnabled,
+            web_search_query: chatState.webSearchEnabled ? userMessage : undefined,
+            max_search_results: chatState.webSearchEnabled ? 5 : undefined,
             stream: true,
-            context_strategy: 'hybrid',
+            context_strategy: chatState.webSearchEnabled ? 'web_search' : 'hybrid',
             optimize_context: true,
             max_context_docs: 15
         }),

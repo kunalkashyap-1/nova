@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
+import uuid
 from app.database import get_db
 from app.models.conversation import Conversation
 from app.models.user import User
@@ -15,24 +16,42 @@ def list_conversations(db: Session = Depends(get_db)):
 
 @router.post("/", response_model=ConversationOut)
 def create_conversation(convo: ConversationCreate, db: Session = Depends(get_db)):
-    # Check if user exists
-    user = db.query(User).filter(User.id == convo.user_id).first()
-    
-    # If user doesn't exist, create a minimal temporary user
-    if not user:
+    """Create a new conversation. If the provided `user_id` is missing, non-numeric,
+    or references a non-existent user, a temporary *guest* user is created and
+    the conversation is associated with it.
+    """
+    user: Optional[User] = None
+
+    # Attempt to resolve an existing user if a user_id was supplied
+    if convo.user_id is not None:
+        try:
+            uid = int(convo.user_id)  # may raise ValueError if 'guest' or other str
+            user = db.query(User).filter(User.id == uid).first()
+        except (ValueError, TypeError):
+            # Provided id is not an integer → treat as guest
+            pass
+
+    # Create a unique guest user if necessary
+    if user is None:
+        guest_suffix = uuid.uuid4().hex[:8]
         user = User(
-            id=convo.user_id,
-            full_name=f"Guest {convo.user_id}",
-            email=f"guest_{convo.user_id}@temporary.com",
-            username=f"guest_{convo.user_id}",
-            password_hash="",  
-            is_guest=True
+            full_name=f"Guest {guest_suffix}",
+            email=f"guest_{guest_suffix}@temporary.com",
+            username=f"guest_{guest_suffix}",
+            password_hash="",  # guests have no password
+            is_guest=True,
         )
         db.add(user)
-        db.flush() 
-    
-    # Create the conversation
-    conversation = Conversation(**convo.dict())
+        db.flush()  # get generated user.id
+
+    # Now create the conversation linked to this user
+    conversation = Conversation(
+        title=convo.title,
+        user_id=user.id,
+        model_id=convo.model_id,
+        system_prompt=convo.system_prompt,
+        folder_id=convo.folder_id,
+    )
     db.add(conversation)
     db.commit()
     db.refresh(conversation)
