@@ -97,11 +97,13 @@ export async function initializeDB(): Promise<void> {
 		const conversationsToFetch: string[] = [];
 		
 		for (const conv of recentConversations) {
-			const hasMessages = await indexedDBManager.hasConversationMessages(conv.id);
-			if (!hasMessages) {
-				conversationsToFetch.push(conv.id);
-			}
-		}
+            // Only sync remote (numeric) conversations
+            if (!/^[0-9]+$/.test(conv.id)) continue;
+            const hasMessages = await indexedDBManager.hasConversationMessages(conv.id);
+            if (!hasMessages) {
+                conversationsToFetch.push(conv.id);
+            }
+        }
 		
 		// Fetch missing conversation messages from API
 		if (conversationsToFetch.length > 0) {
@@ -174,19 +176,73 @@ export async function loadConversations() {
     }
 	setLoading(true);
 	try {
-		if (chatState.isDBInitialized) {
-			chatState.conversations = await indexedDBManager.getAllConversations();
-		} else {
-			chatState.conversations = loadConversationsFromStorage();
-		}
-	} catch (e) {
-		console.error('Failed to load conversations:', e);
-		setError('Failed to load conversations');
-		// Fallback to localStorage
-		chatState.conversations = loadConversationsFromStorage();
-	} finally {
-		setLoading(false);
-	}
+        if (chatState.isDBInitialized) {
+            // 1️⃣ Load from IndexedDB first for instant UI feedback.
+            chatState.conversations = await indexedDBManager.getAllConversations();
+        } else {
+            chatState.conversations = loadConversationsFromStorage();
+        }
+
+        // 2️⃣ Always attempt to fetch the latest list from the backend so that
+        //    we have conversations created on other devices or after clearing storage.
+        try {
+            const { data } = await api.get('/conversations/');
+            if (Array.isArray(data)) {
+                const remoteConversations: Conversation[] = data.map((c: any) => ({
+                    id: String(c.id ?? c.uuid ?? c.conversation_id ?? crypto.randomUUID?.() ?? Math.random().toString(36)),
+                    title: c.title ?? 'Untitled',
+                    // fall back to created_at if updated_at missing
+                    updatedAt: c.updated_at ?? c.updatedAt ?? c.created_at ?? new Date().toISOString(),
+                }));
+
+                // Merge remote with local (keep most recent updatedAt for duplicates)
+                const mergedMap = new Map<string, Conversation>();
+                [...chatState.conversations, ...remoteConversations].forEach((conv) => {
+                    const existing = mergedMap.get(conv.id);
+                    if (!existing || new Date(conv.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
+                        mergedMap.set(conv.id, conv);
+                    }
+                });
+                chatState.conversations = Array.from(mergedMap.values()).sort((a, b) =>
+                    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+                );
+
+                // Persist latest copy locally for offline use
+                if (chatState.isDBInitialized) {
+                    await saveConversationsToIndexedDB(chatState.conversations);
+                    // Sync missing messages for remote numeric conversations
+                    const numericConvIds = chatState.conversations
+                        .filter((c) => /^[0-9]+$/.test(c.id))
+                        .map((c) => c.id);
+                    const missingConvIds: string[] = [];
+                    for (const cid of numericConvIds) {
+                        const hasMsgs = await indexedDBManager.hasConversationMessages(cid);
+                        if (!hasMsgs) missingConvIds.push(cid);
+                    }
+                    if (missingConvIds.length > 0) {
+                        await fetchAndSyncConversationMessages(missingConvIds);
+                    }
+                } else {
+                    saveConversationsToStorage(chatState.conversations);
+                }
+            }
+        } catch (apiErr) {
+            // If API fetch fails we still have the local conversations, so only log
+            console.error('Failed to fetch conversations from API:', apiErr);
+        }
+    } catch (e) {
+        console.error('Failed to load conversations:', e);
+        setError('Failed to load conversations');
+        // Fallback to localStorage
+        chatState.conversations = loadConversationsFromStorage();
+    } finally {
+        setLoading(false);
+        if (!chatState.activeConversationId && chatState.conversations.length > 0) {
+            // Prefer first remote (numeric) conversation
+            const initialConv = chatState.conversations.find((c) => /^[0-9]+$/.test(c.id)) || chatState.conversations[0];
+            await loadConversation(initialConv.id);
+        }
+    }
 }
 
 export async function loadConversation(id: string) {

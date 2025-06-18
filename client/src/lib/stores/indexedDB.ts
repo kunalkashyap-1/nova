@@ -67,7 +67,7 @@ class IndexedDBManager {
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['conversations'], 'readwrite');
 			const store = transaction.objectStore('conversations');
-			
+
 			const request = store.put(conversation);
 			request.onsuccess = () => resolve();
 			request.onerror = () => reject(request.error);
@@ -79,7 +79,7 @@ class IndexedDBManager {
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['conversations'], 'readwrite');
 			const store = transaction.objectStore('conversations');
-			
+
 			let completed = 0;
 			const total = conversations.length;
 
@@ -88,7 +88,7 @@ class IndexedDBManager {
 				return;
 			}
 
-			conversations.forEach(conversation => {
+			conversations.forEach((conversation) => {
 				const request = store.put(conversation);
 				request.onsuccess = () => {
 					completed++;
@@ -104,7 +104,7 @@ class IndexedDBManager {
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['conversations'], 'readonly');
 			const store = transaction.objectStore('conversations');
-			
+
 			const request = store.get(id);
 			request.onsuccess = () => resolve(request.result || null);
 			request.onerror = () => reject(request.error);
@@ -117,10 +117,10 @@ class IndexedDBManager {
 			const transaction = db.transaction(['conversations'], 'readonly');
 			const store = transaction.objectStore('conversations');
 			const index = store.index('updatedAt');
-			
+
 			const request = index.openCursor(null, 'prev'); // Most recent first
 			const conversations: Conversation[] = [];
-			
+
 			request.onsuccess = (event) => {
 				const cursor = (event.target as IDBRequest).result;
 				if (cursor) {
@@ -140,11 +140,11 @@ class IndexedDBManager {
 			const transaction = db.transaction(['conversations'], 'readonly');
 			const store = transaction.objectStore('conversations');
 			const index = store.index('updatedAt');
-			
+
 			const request = index.openCursor(null, 'prev'); // Most recent first
 			const conversations: Conversation[] = [];
 			let count = 0;
-			
+
 			request.onsuccess = (event) => {
 				const cursor = (event.target as IDBRequest).result;
 				if (cursor && count < limit) {
@@ -163,16 +163,16 @@ class IndexedDBManager {
 		const db = this.ensureDB();
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['conversations', 'messages'], 'readwrite');
-			
+
 			// Delete conversation
 			const conversationStore = transaction.objectStore('conversations');
 			const deleteConvRequest = conversationStore.delete(id);
-			
+
 			// Delete associated messages
 			const messageStore = transaction.objectStore('messages');
 			const messageIndex = messageStore.index('conversation_id');
 			const deleteMessagesRequest = messageIndex.openCursor(IDBKeyRange.only(id));
-			
+
 			deleteMessagesRequest.onsuccess = (event) => {
 				const cursor = (event.target as IDBRequest).result;
 				if (cursor) {
@@ -192,7 +192,7 @@ class IndexedDBManager {
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['messages'], 'readwrite');
 			const store = transaction.objectStore('messages');
-			
+
 			const request = store.put(message);
 			request.onsuccess = () => resolve();
 			request.onerror = () => reject(request.error);
@@ -204,7 +204,7 @@ class IndexedDBManager {
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['messages'], 'readwrite');
 			const store = transaction.objectStore('messages');
-			
+
 			let completed = 0;
 			const total = messages.length;
 
@@ -213,7 +213,7 @@ class IndexedDBManager {
 				return;
 			}
 
-			messages.forEach(message => {
+			messages.forEach((message) => {
 				const request = store.put(message);
 				request.onsuccess = () => {
 					completed++;
@@ -230,7 +230,7 @@ class IndexedDBManager {
 			const transaction = db.transaction(['messages'], 'readonly');
 			const store = transaction.objectStore('messages');
 			const index = store.index('conversation_id');
-			
+
 			const request = index.getAll(conversationId);
 			request.onsuccess = () => {
 				const messages = request.result || [];
@@ -248,7 +248,7 @@ class IndexedDBManager {
 			const transaction = db.transaction(['messages'], 'readonly');
 			const store = transaction.objectStore('messages');
 			const index = store.index('conversation_id');
-			
+
 			const request = index.count(conversationId);
 			request.onsuccess = () => resolve(request.result > 0);
 			request.onerror = () => reject(request.error);
@@ -261,13 +261,13 @@ class IndexedDBManager {
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['user_data'], 'readwrite');
 			const store = transaction.objectStore('user_data');
-			
+
 			const userData = {
 				id,
 				data,
 				updated_at: new Date().toISOString()
 			};
-			
+
 			const request = store.put(userData);
 			request.onsuccess = () => resolve();
 			request.onerror = () => reject(request.error);
@@ -279,7 +279,7 @@ class IndexedDBManager {
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['user_data'], 'readonly');
 			const store = transaction.objectStore('user_data');
-			
+
 			const request = store.get(id);
 			request.onsuccess = () => {
 				const result = request.result;
@@ -294,11 +294,11 @@ class IndexedDBManager {
 		const db = this.ensureDB();
 		return new Promise((resolve, reject) => {
 			const transaction = db.transaction(['conversations', 'messages', 'user_data'], 'readwrite');
-			
+
 			const stores = ['conversations', 'messages', 'user_data'];
 			let completed = 0;
-			
-			stores.forEach(storeName => {
+
+			stores.forEach((storeName) => {
 				const store = transaction.objectStore(storeName);
 				const request = store.clear();
 				request.onsuccess = () => {
@@ -307,6 +307,8 @@ class IndexedDBManager {
 				};
 				request.onerror = () => reject(request.error);
 			});
+
+			transaction.onerror = () => reject(transaction.error);
 		});
 	}
 
@@ -316,7 +318,7 @@ class IndexedDBManager {
 			const transaction = db.transaction(['conversations', 'messages', 'user_data'], 'readonly');
 			const result = { conversations: 0, messages: 0, userData: 0 };
 			let completed = 0;
-			
+
 			// Count conversations
 			const convStore = transaction.objectStore('conversations');
 			const convRequest = convStore.count();
@@ -325,7 +327,8 @@ class IndexedDBManager {
 				completed++;
 				if (completed === 3) resolve(result);
 			};
-			
+			convRequest.onerror = () => reject(convRequest.error);
+
 			// Count messages
 			const msgStore = transaction.objectStore('messages');
 			const msgRequest = msgStore.count();
@@ -334,7 +337,8 @@ class IndexedDBManager {
 				completed++;
 				if (completed === 3) resolve(result);
 			};
-			
+			msgRequest.onerror = () => reject(msgRequest.error);
+
 			// Count user data
 			const userStore = transaction.objectStore('user_data');
 			const userRequest = userStore.count();
@@ -343,28 +347,40 @@ class IndexedDBManager {
 				completed++;
 				if (completed === 3) resolve(result);
 			};
-			
+			userRequest.onerror = () => reject(userRequest.error);
+
 			transaction.onerror = () => reject(transaction.error);
 		});
 	}
 
 	// Utility method to fetch conversation messages from API
 	async fetchConversationMessagesFromAPI(conversationId: string): Promise<Message[]> {
+		// Our backend path expects an integer ID. Older offline/guest conversations may
+		// have a UUID. Skip the request for those to avoid 422 errors and simply return
+		// an empty list so the UI can still function.
+		// if (!/^[0-9]+$/.test(String(conversationId))) {
+		// 	console.debug(
+		// 		`[IndexedDB] Skipping remote message fetch for local conversation ${conversationId}`
+		// 	);
+		// 	return [];
+		// }
+
 		try {
 			const response = await api.get(`/conversations/messages/${conversationId}`);
 			const apiMessages = response.data.messages || [];
-			
-			// Transform API messages to match our Message type
+
+			// Normalize the payload to our Message type
 			return apiMessages.map((msg: any) => ({
-				id: msg.id || crypto.randomUUID?.() || Math.random().toString(36),
+				id: msg.id ?? this.generateId(),
 				role: msg.role,
 				content: msg.content,
-				timestamp: msg.created_at || msg.timestamp || new Date().toISOString(),
+				timestamp: msg.created_at ?? msg.timestamp ?? new Date().toISOString(),
 				meta: msg.meta
 			}));
 		} catch (error) {
-			console.error('Failed to fetch messages from API:', error);
-			throw error;
+			// Log and fall back to empty list instead of bubbling the error repeatedly.
+			console.error(`Failed to fetch messages from API for conversation ${conversationId}:`, error);
+			return [];
 		}
 	}
 
@@ -375,11 +391,11 @@ class IndexedDBManager {
 				const hasMessages = await this.hasConversationMessages(conversationId);
 				if (!hasMessages) {
 					const messages = await this.fetchConversationMessagesFromAPI(conversationId);
-					const messagesWithConvId = messages.map(msg => ({
+					const messagesWithConvId = messages.map((msg) => ({
 						...msg,
 						conversation_id: conversationId
 					}));
-					
+
 					if (messagesWithConvId.length > 0) {
 						await this.saveMessages(messagesWithConvId);
 					}
@@ -389,6 +405,15 @@ class IndexedDBManager {
 				// Continue with other conversations even if one fails
 			}
 		}
+	}
+
+	// Helper method to generate IDs with fallback for older browsers
+	private generateId(): string {
+		if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+			return crypto.randomUUID();
+		}
+		// Fallback for older browsers
+		return 'msg-' + Math.random().toString(36).substring(2) + Date.now().toString(36);
 	}
 }
 

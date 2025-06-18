@@ -131,13 +131,6 @@
 	<div
 		class="w-full max-w-lg space-y-8 rounded-lg border border-gray-700 bg-gray-800 p-8 shadow-2xl"
 	>
-		<!-- Error Display -->
-		{#if error}
-			<div class="rounded-md border border-red-500/30 bg-red-900/20 p-4">
-				<p class="text-sm text-red-400">{error}</p>
-			</div>
-		{/if}
-
 		{#if isLogin}
 			<div class="space-y-6">
 				<h1 class="text-center text-3xl font-bold text-white">Login</h1>
@@ -352,6 +345,12 @@
 					</div>
 					{@render tryIt()}
 				</div>
+			</div>
+		{/if}
+		<!-- Error Display -->
+		{#if error}
+			<div class="rounded-md border border-red-500/30 bg-red-900/20 p-4">
+				<p class="text-sm text-red-400">{error}</p>
 			</div>
 		{/if}
 	</div>

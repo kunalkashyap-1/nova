@@ -69,7 +69,7 @@ def update_conversation(id: int, updates: ConversationUpdate, db: Session = Depe
     return conversation 
 
 @router.get("/messages/{conversation_id}", status_code=status.HTTP_200_OK, summary="Get conversation messages")
-async def get_conversation_messages(conversation_id: int, db: Session = Depends(get_db)):
+async def get_conversation_messages(conversation_id: uuid.UUID, db: Session = Depends(get_db)):
     """
     Get all messages for a specific conversation.
     

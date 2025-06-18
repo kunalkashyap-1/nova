@@ -656,3 +656,188 @@
 2025-06-17 23:14:06,636 - INFO -  nova - Cleaned up session 1_4eb2c815-df68-454f-b954-0eb4c361430e_79b86ca4
 2025-06-17 23:14:06,638 - INFO -  nova - Cleaned up session 1_4eb2c815-df68-454f-b954-0eb4c361430e_79b86ca4
 2025-06-17 23:15:05,120 - INFO -  nova - Application shutdown
+2025-06-18 21:20:51,575 - INFO -  nova - Logger initialized
+2025-06-18 21:21:28,991 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-18 21:21:33,653 - INFO -  nova - Logger initialized
+2025-06-18 21:21:42,183 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-18 21:21:42,302 - INFO -  nova - Application startup complete
+2025-06-18 21:32:44,919 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/check'), 'method': 'GET'}, 'process Time': 0.003442525863647461}
+2025-06-18 21:38:54,542 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.3016655445098877}
+2025-06-18 21:39:04,412 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-06-18 21:39:04,496 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.07324671745300293}
+2025-06-18 21:40:20,195 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.009413480758666992}
+2025-06-18 21:40:54,730 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.5683650970458984}
+2025-06-18 21:40:54,836 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.05253911018371582}
+2025-06-18 21:40:55,006 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.1566917896270752}
+2025-06-18 21:53:22,945 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.00918889045715332}
+2025-06-18 21:53:23,001 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0425722599029541}
+2025-06-18 21:53:23,033 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.06981325149536133}
+2025-06-18 21:53:23,050 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.011116743087768555}
+2025-06-18 21:53:23,067 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.009890556335449219}
+2025-06-18 21:53:23,091 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.017881155014038086}
+2025-06-18 21:53:23,121 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.01669764518737793}
+2025-06-18 21:55:33,387 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.001971006393432617}
+2025-06-18 21:55:51,762 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/check'), 'method': 'GET'}, 'process Time': 0.005388736724853516}
+2025-06-18 21:56:06,101 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.43518900871276855}
+2025-06-18 21:56:06,419 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.023993968963623047}
+2025-06-18 21:56:06,429 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.03896737098693848}
+2025-06-18 21:56:06,457 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.02309560775756836}
+2025-06-18 21:56:06,513 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/4eb2c815-df68-454f-b954-0eb4c361430e'), 'method': 'GET'}, 'process Time': 0.03693103790283203}
+2025-06-18 21:56:06,536 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/4eb2c815-df68-454f-b954-0eb4c361430e'), 'method': 'GET'}, 'process Time': 0.017096519470214844}
+2025-06-18 21:56:06,545 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/bc9de5b4-a7dc-4b2c-96d0-5bed4893782a'), 'method': 'GET'}, 'process Time': 0.012277603149414062}
+2025-06-18 21:56:06,571 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/bc9de5b4-a7dc-4b2c-96d0-5bed4893782a'), 'method': 'GET'}, 'process Time': 0.012369632720947266}
+2025-06-18 21:56:06,583 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/2b1d5910-8cd1-40c2-a282-aacfc40c523b'), 'method': 'GET'}, 'process Time': 0.015190362930297852}
+2025-06-18 21:56:06,606 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/2b1d5910-8cd1-40c2-a282-aacfc40c523b'), 'method': 'GET'}, 'process Time': 0.012645959854125977}
+2025-06-18 21:56:06,614 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/0df90fac-a370-4e2a-9304-7db7790ce139'), 'method': 'GET'}, 'process Time': 0.011214733123779297}
+2025-06-18 21:56:06,630 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/0df90fac-a370-4e2a-9304-7db7790ce139'), 'method': 'GET'}, 'process Time': 0.0074253082275390625}
+2025-06-18 21:56:06,647 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/fc37c037-b0bd-4c38-b5bc-07177ac6623d'), 'method': 'GET'}, 'process Time': 0.017017841339111328}
+2025-06-18 21:56:06,662 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/fc37c037-b0bd-4c38-b5bc-07177ac6623d'), 'method': 'GET'}, 'process Time': 0.004869937896728516}
+2025-06-18 21:56:06,690 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.019414901733398438}
+2025-06-18 21:56:06,712 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.012271881103515625}
+2025-06-18 22:43:47,279 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.08210563659667969}
+2025-06-18 22:43:47,493 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.2726328372955322}
+2025-06-18 22:43:47,520 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.020970582962036133}
+2025-06-18 22:43:47,553 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015500068664550781}
+2025-06-18 22:43:49,404 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0029747486114501953}
+2025-06-18 22:43:59,806 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/check'), 'method': 'GET'}, 'process Time': 0.019545555114746094}
+2025-06-18 22:44:47,146 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'OPTIONS'}, 'process Time': 0.0010247230529785156}
+2025-06-18 22:44:47,886 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.4294266700744629}
+2025-06-18 22:44:48,223 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0308840274810791}
+2025-06-18 22:44:48,241 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.03185081481933594}
+2025-06-18 22:44:48,274 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.03493833541870117}
+2025-06-18 22:44:48,304 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.01801323890686035}
+2025-06-18 22:44:48,335 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.01813673973083496}
+2025-06-18 22:45:19,440 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.010296821594238281}
+2025-06-18 22:45:19,459 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.013425827026367188}
+2025-06-18 22:45:31,603 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.014675378799438477}
+2025-06-18 22:45:31,682 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.0198976993560791}
+2025-06-18 22:59:26,640 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.008884191513061523}
+2025-06-18 22:59:26,656 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.01070094108581543}
+2025-06-18 23:00:30,307 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0067653656005859375}
+2025-06-18 23:00:30,319 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.006700038909912109}
+2025-06-18 23:00:30,339 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.013630151748657227}
+2025-06-18 23:00:30,356 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.010180234909057617}
+2025-06-18 23:00:30,377 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.008742332458496094}
+2025-06-18 23:01:04,700 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.00587010383605957}
+2025-06-18 23:01:04,788 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.007864713668823242}
+2025-06-18 23:01:04,799 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.006548881530761719}
+2025-06-18 23:01:04,874 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.007851123809814453}
+2025-06-18 23:01:04,889 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.008759260177612305}
+2025-06-18 23:01:07,529 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0}
+2025-06-18 23:01:12,860 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/check'), 'method': 'GET'}, 'process Time': 0.0016527175903320312}
+2025-06-18 23:01:25,579 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.31850314140319824}
+2025-06-18 23:01:25,815 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.005156993865966797}
+2025-06-18 23:01:25,828 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.00502777099609375}
+2025-06-18 23:01:25,867 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.009857892990112305}
+2025-06-18 23:01:25,887 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.012214899063110352}
+2025-06-18 23:01:25,906 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.011306285858154297}
+2025-06-18 23:01:28,545 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.007314205169677734}
+2025-06-18 23:01:28,560 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.00929570198059082}
+2025-06-18 23:01:36,103 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.016887426376342773}
+2025-06-18 23:01:36,146 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015455245971679688}
+2025-06-18 23:08:23,485 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.008236169815063477}
+2025-06-18 23:08:23,503 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.012251853942871094}
+2025-06-18 23:08:23,526 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.014574289321899414}
+2025-06-18 23:08:23,546 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.010723590850830078}
+2025-06-18 23:08:23,564 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.011644124984741211}
+2025-06-18 23:13:54,373 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.010054588317871094}
+2025-06-18 23:13:54,393 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.013164281845092773}
+2025-06-18 23:13:54,414 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.011655330657958984}
+2025-06-18 23:13:54,440 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.014145135879516602}
+2025-06-18 23:13:54,458 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.013154983520507812}
+2025-06-18 23:17:52,420 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.011139631271362305}
+2025-06-18 23:17:52,452 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.020700931549072266}
+2025-06-18 23:17:52,482 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.018372535705566406}
+2025-06-18 23:17:52,504 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.010426759719848633}
+2025-06-18 23:17:52,524 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.011186838150024414}
+2025-06-18 23:22:32,803 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.009907007217407227}
+2025-06-18 23:22:32,829 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.017995595932006836}
+2025-06-18 23:22:42,652 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.0049898624420166016}
+2025-06-18 23:22:42,790 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.005603313446044922}
+2025-06-18 23:22:42,807 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.009171009063720703}
+2025-06-18 23:22:42,867 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.00881814956665039}
+2025-06-18 23:22:42,881 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.009595632553100586}
+2025-06-18 23:24:03,959 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.011323690414428711}
+2025-06-18 23:24:03,980 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/4eb2c815-df68-454f-b954-0eb4c361430e'), 'method': 'GET'}, 'process Time': 0.009800434112548828}
+2025-06-18 23:24:04,027 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/4eb2c815-df68-454f-b954-0eb4c361430e'), 'method': 'GET'}, 'process Time': 0.01484537124633789}
+2025-06-18 23:24:04,041 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.029955148696899414}
+2025-06-18 23:24:04,047 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/4eb2c815-df68-454f-b954-0eb4c361430e'), 'method': 'GET'}, 'process Time': 0.009688377380371094}
+2025-06-18 23:24:04,067 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/4eb2c815-df68-454f-b954-0eb4c361430e'), 'method': 'GET'}, 'process Time': 0.00987100601196289}
+2025-06-18 23:24:04,074 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.026184558868408203}
+2025-06-18 23:24:04,093 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.012025594711303711}
+2025-06-18 23:24:04,199 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.008290290832519531}
+2025-06-18 23:28:32,923 - INFO -  nova - Application shutdown
+2025-06-18 23:28:44,747 - INFO -  nova - Logger initialized
+2025-06-18 23:29:12,826 - INFO -  nova - Server starting... Version: 0.1.0, Debug: False
+2025-06-18 23:29:12,886 - INFO -  nova - Application startup complete
+2025-06-18 23:29:32,012 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/bc9de5b4-a7dc-4b2c-96d0-5bed4893782a'), 'method': 'GET'}, 'process Time': 0.19615530967712402}
+2025-06-18 23:29:32,043 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/bc9de5b4-a7dc-4b2c-96d0-5bed4893782a'), 'method': 'GET'}, 'process Time': 0.016808509826660156}
+2025-06-18 23:29:32,142 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.3245842456817627}
+2025-06-18 23:29:32,196 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015770435333251953}
+2025-06-18 23:29:33,737 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/4eb2c815-df68-454f-b954-0eb4c361430e'), 'method': 'GET'}, 'process Time': 0.01382589340209961}
+2025-06-18 23:29:33,764 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.029690265655517578}
+2025-06-18 23:29:33,780 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/4eb2c815-df68-454f-b954-0eb4c361430e'), 'method': 'GET'}, 'process Time': 0.030980348587036133}
+2025-06-18 23:29:33,796 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.019398212432861328}
+2025-06-18 23:29:35,760 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.006615161895751953}
+2025-06-18 23:29:35,785 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.018826007843017578}
+2025-06-18 23:29:37,730 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.009519577026367188}
+2025-06-18 23:29:37,759 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.022411823272705078}
+2025-06-18 23:29:44,058 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/logout'), 'method': 'POST'}, 'process Time': 0.0019829273223876953}
+2025-06-18 23:29:55,105 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/check'), 'method': 'GET'}, 'process Time': 0.003011465072631836}
+2025-06-18 23:30:55,017 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/login'), 'method': 'POST'}, 'process Time': 0.5940096378326416}
+2025-06-18 23:30:55,511 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/auth/media/user_1_6852edcd8c5f4896967794badf1c2f49.jpg'), 'method': 'GET'}, 'process Time': 0.1806175708770752}
+2025-06-18 23:30:55,533 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/models/?provider=all'), 'method': 'GET'}, 'process Time': 0.2106163501739502}
+2025-06-18 23:30:55,563 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015169620513916016}
+2025-06-18 23:30:55,591 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.016254186630249023}
+2025-06-18 23:30:55,619 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015325307846069336}
+2025-06-18 23:30:59,458 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.013133764266967773}
+2025-06-18 23:30:59,492 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.026290416717529297}
+2025-06-18 23:31:01,669 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015608787536621094}
+2025-06-18 23:31:01,707 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.028879404067993164}
+2025-06-18 23:31:06,805 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.010555505752563477}
+2025-06-18 23:31:06,842 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.028789043426513672}
+2025-06-18 23:31:08,789 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.009111642837524414}
+2025-06-18 23:31:08,803 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.00922703742980957}
+2025-06-18 23:31:24,933 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/e79559e5-2c70-4c35-91f9-7dcd7c2d1a71'), 'method': 'GET'}, 'process Time': 0.016179800033569336}
+2025-06-18 23:31:24,984 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.06741762161254883}
+2025-06-18 23:31:25,009 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/e79559e5-2c70-4c35-91f9-7dcd7c2d1a71'), 'method': 'GET'}, 'process Time': 0.051757097244262695}
+2025-06-18 23:31:25,043 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.01779007911682129}
+2025-06-18 23:31:32,172 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/0df90fac-a370-4e2a-9304-7db7790ce139'), 'method': 'GET'}, 'process Time': 0.01749563217163086}
+2025-06-18 23:31:32,241 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.07561612129211426}
+2025-06-18 23:31:32,247 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/0df90fac-a370-4e2a-9304-7db7790ce139'), 'method': 'GET'}, 'process Time': 0.028806686401367188}
+2025-06-18 23:31:32,275 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.02844381332397461}
+2025-06-18 23:31:34,572 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/2b1d5910-8cd1-40c2-a282-aacfc40c523b'), 'method': 'GET'}, 'process Time': 0.011647224426269531}
+2025-06-18 23:31:34,641 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/2b1d5910-8cd1-40c2-a282-aacfc40c523b'), 'method': 'GET'}, 'process Time': 0.06128263473510742}
+2025-06-18 23:31:34,649 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.07891964912414551}
+2025-06-18 23:31:34,680 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.014034032821655273}
+2025-06-18 23:31:36,590 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015709877014160156}
+2025-06-18 23:31:36,635 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.03190183639526367}
+2025-06-18 23:31:39,770 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.011148214340209961}
+2025-06-18 23:31:39,789 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.011686086654663086}
+2025-06-18 23:31:41,175 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.014789342880249023}
+2025-06-18 23:31:41,239 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.05532526969909668}
+2025-06-18 23:31:56,029 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'OPTIONS'}, 'process Time': 0.0}
+2025-06-18 23:31:56,054 - INFO -  nova - Request for huggingface. Current status: {'current_provider': None, 'current_model': None, 'hf_model_loaded': False, 'ollama_active': False, 'active_sessions': 0}
+2025-06-18 23:31:56,069 - INFO -  nova - Created session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497 for user 1
+2025-06-18 23:31:56,075 - INFO -  nova - Created session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497 for user 1
+2025-06-18 23:31:56,560 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/messages/'), 'method': 'POST'}, 'process Time': 0.5218918323516846}
+2025-06-18 23:31:58,942 - INFO -  nova - Switching from None (model: None) to huggingface (model: Qwen/Qwen2.5-0.5B-Instruct)
+2025-06-18 23:31:59,050 - INFO -  nova - Loading HF model Qwen/Qwen2.5-0.5B-Instruct on cuda
+2025-06-18 23:32:08,514 - INFO -  nova - HuggingFace generation thread started for session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497
+2025-06-18 23:32:10,130 - INFO -  nova - HuggingFace generation thread completed for session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497
+2025-06-18 23:32:10,432 - INFO -  nova - HuggingFace final cleanup for session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497. Completed normally: True
+2025-06-18 23:32:10,432 - INFO -  nova - Stopping session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497 (force=False)
+2025-06-18 23:32:10,432 - INFO -  nova - Cleaned up session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497
+2025-06-18 23:32:10,434 - INFO -  nova - Session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497 already cleaned up or does not exist.
+2025-06-18 23:32:10,434 - INFO -  nova - Cleaned up session 1_bc9de5b4-a7dc-4b2c-96d0-5bed4893782a_6c171497
+2025-06-18 23:36:46,737 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015970706939697266}
+2025-06-18 23:36:46,782 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.03142380714416504}
+2025-06-18 23:36:48,647 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/88de80aa-b3a4-4af3-b73c-ed52aa2255d9'), 'method': 'GET'}, 'process Time': 0.01608443260192871}
+2025-06-18 23:36:48,780 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/messages/88de80aa-b3a4-4af3-b73c-ed52aa2255d9'), 'method': 'GET'}, 'process Time': 0.12324786186218262}
+2025-06-18 23:36:48,785 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.14161252975463867}
+2025-06-18 23:36:48,808 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015269279479980469}
+2025-06-18 23:36:57,134 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.015916824340820312}
+2025-06-18 23:36:57,190 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.04294562339782715}
+2025-06-18 23:36:57,857 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.011285066604614258}
+2025-06-18 23:36:57,900 - INFO -  nova - {'request': {'url': URL('http://localhost:8000/api/v1/conversations/'), 'method': 'GET'}, 'process Time': 0.03585934638977051}
+2025-06-18 23:37:10,651 - INFO -  nova - Application shutdown
